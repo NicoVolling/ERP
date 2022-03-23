@@ -5,6 +5,7 @@ using ERP.Server.WebServer;
 using ERP.Test.Commands.Base;
 using System.Net.Http;
 using System.Reflection;
+using ERP.Reporting;
 
 namespace ERP.Server
 {
@@ -63,6 +64,8 @@ namespace ERP.Server
             Thread.Sleep(1000);
 
             client.Start();
+
+            new TestClass().TestMethod();
 
             Console.ReadLine();
         }
