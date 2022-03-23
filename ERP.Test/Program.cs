@@ -3,6 +3,8 @@ using ERP.BaseLib.Serialization;
 using ERP.Commands.Base;
 using ERP.Server.WebServer;
 using ERP.Test.Commands.Base;
+using ERP.Test.ObjectClients;
+using ERP.Test.Objects;
 using System.Net.Http;
 using System.Reflection;
 
@@ -50,6 +52,16 @@ namespace ERP.Server
                             Console.WriteLine("Test has failed");
                         }
 
+                        Person Nico = new Person() { Name = "Volling", FirstName = "Nico" };
+                        PersonClient Client = new PersonClient(new User("Nico", "Volling"));
+
+                        Client.Create(Nico);
+                        Client.GetData(Nico.ID);
+                        Client.Delete(Nico.ID);
+                        Client.GetList();
+
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("Test was successful");
                     }
                 }
                 catch

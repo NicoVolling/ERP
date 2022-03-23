@@ -1,4 +1,5 @@
 ﻿using ERP.BaseLib.Attributes;
+using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace ERP.Commands.Base
         public static Result ExecuteCommand(DataInput DataInput)
         {
             Reload();
-            if (CommandCollectionTypes.FirstOrDefault(o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Namespace) == true && o.Name.Replace("CC_", "") == DataInput.Class && o.GetMethod(DataInput.Command) != null) is Type CCType)
+            if (CommandCollectionTypes.FirstOrDefault(o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Command.Namespace) == true && o.Name.Replace("CC_", "") == DataInput.Command.Class && o.GetMethod(DataInput.Command.Action) != null) is Type CCType)
             {
                 try
                 {
@@ -41,7 +42,7 @@ namespace ERP.Commands.Base
             }
             else 
             {
-                throw new Exception($"No such Command: {DataInput.Namespace}.{DataInput.Class}.{DataInput.Command}");
+                throw new Exception($"No such Command: {DataInput.Command.Namespace}.{DataInput.Command.Class}.{DataInput.Command}");
             }
         }
 
@@ -57,7 +58,7 @@ namespace ERP.Commands.Base
                 foreach (Type Type in CommandCollection.CommandAssembly.GetTypes().Where(o =>
                 o.IsClass &&
                 o.Namespace?.StartsWith(CommandCollection.ParentNamespace) == true &&
-                o.BaseType == typeof(CommandCollection)))
+                ReflectionHelper.DoesInheritFrom(o, typeof(CommandCollection))))
                 {
                     try
                     {

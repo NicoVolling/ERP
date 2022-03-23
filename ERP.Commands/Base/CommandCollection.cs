@@ -95,7 +95,7 @@ namespace ERP.Commands.Base
         {
             List<Object> Params = new List<object>();
 
-            if (this.GetType().GetMethod(Input.Command) is MethodInfo MI)
+            if (this.GetType().GetMethod(Input.Command.Action) is MethodInfo MI)
             {
                 if(MI.GetCustomAttribute<RequireLoginAttribute>() is RequireLoginAttribute RLA) 
                 {
@@ -254,7 +254,7 @@ namespace ERP.Commands.Base
                     User = user;
                 }
 
-                return ExecuteCommand(new DataInput(User, Namespace, Class, Command, (ArgumentCollection)Parameters));
+                return ExecuteCommand(new DataInput(User, new Command(Namespace, Class, Command), (ArgumentCollection)Parameters));
 
             }
 

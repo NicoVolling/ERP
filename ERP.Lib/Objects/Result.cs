@@ -47,6 +47,16 @@ namespace ERP.BaseLib.Objects
         }
 
         /// <summary>
+        /// Constructor for answer on a successful request
+        /// </summary>
+        /// <param name="ReturnValue">All data wich server sends to client.</param>
+        public Result(Object ReturnValue)
+        {
+            this.ReturnValue = Json.Serialize(ReturnValue);
+            this.ErrorMessage = String.Empty;
+        }
+
+        /// <summary>
         /// Constructor for answer on a failed request
         /// </summary>
         /// <param name="Error">Wether the request was successful.</param>
