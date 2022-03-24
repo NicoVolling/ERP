@@ -8,6 +8,7 @@ using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Commands.Base;
+using ERP.Exceptions.ErpExceptions;
 
 namespace ERP.Server.WebServer
 {
@@ -68,11 +69,11 @@ namespace ERP.Server.WebServer
 
         private string GetDataString(HttpListenerRequest Request)
         {
-            Result Result = new Result(true, "UnknownError");
+            Result Result = new Result(new ErpException("UnknownError"));
 
             if(Request == null) 
             {
-                Result = new Result(true, "Request is null");
+                Result = new Result(new ErpException("Request is null"));
             }
             else
             {

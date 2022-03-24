@@ -2,6 +2,7 @@
 using ERP.BaseLib.Serialization;
 using ERP.Business.Objects;
 using ERP.Commands.Base;
+using ERP.Exceptions.ErpExceptions;
 using ERP.IO.FileSystem;
 using System;
 using System.Collections.Generic;
@@ -195,7 +196,7 @@ namespace ERP.Business.Server
         {
             Load();
             if(ObjectList.FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
-            throw new Exception($"Cound not find ID:{ID} of object {typeof(T_BusinessObject).Name}");
+            throw new MissingObjectErpException(typeof(T_BusinessObject), ID);
         }
 
         string IFileSaver.Serialize()
@@ -252,7 +253,7 @@ namespace ERP.Business.Server
                 }
                 if(ID < 0) 
                 {
-                    throw new Exception("ID-Generation failed.");
+                    throw new IDGenerationErpException();
                 }
             }
             else 

@@ -3,6 +3,7 @@ using ERP.BaseLib.Serialization;
 using ERP.Business.Objects;
 using ERP.Business.Server;
 using ERP.Commands.Base;
+using ERP.Exceptions.ErpExceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace ERP.Business.Client
                 }
                 else 
                 {
-                    throw new Exception(Result.ErrorMessage);
+                    throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
             }
         }
@@ -74,7 +75,7 @@ namespace ERP.Business.Client
                 }
                 else
                 {
-                    throw new Exception(Result.ErrorMessage);
+                    throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
             }
         }
@@ -95,7 +96,7 @@ namespace ERP.Business.Client
                 }
                 else
                 {
-                    throw new Exception(Result.ErrorMessage);
+                    throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
             }
         }
@@ -118,7 +119,7 @@ namespace ERP.Business.Client
                 }
                 else
                 {
-                    throw new Exception(Result.ErrorMessage);
+                    throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
             }
         }
@@ -137,7 +138,7 @@ namespace ERP.Business.Client
             }
             else
             {
-                throw new Exception(Result.ErrorMessage);
+                throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
             }
         }
 

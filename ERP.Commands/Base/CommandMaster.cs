@@ -1,6 +1,7 @@
 ﻿using ERP.BaseLib.Attributes;
 using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
+using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using ERP.IO.FileSystem;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace ERP.Commands.Base
             }
             else 
             {
-                throw new Exception($"No such Command: {DataInput.Command.Namespace}.{DataInput.Command.Class}.{DataInput.Command}");
+                throw new CommandNotFoundEroException(DataInput.Command.ToString());
             }
         }
 
