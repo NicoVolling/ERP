@@ -3,6 +3,9 @@ using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
+using ERP.Exceptions.ErpExceptions;
+using ERP.Exceptions.ErpExceptions;
+using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -57,7 +60,7 @@ namespace ERP.Commands.Base
 
             if (string.IsNullOrEmpty(value) && MustExist)
             {
-                throw new Exception($"Missing Argument: {ArgumentName}");
+                throw new MissingArgumentErpException(ArgumentName);
             }
 
             return value;
@@ -83,7 +86,7 @@ namespace ERP.Commands.Base
                     return true;
                 }
             }
-            throw new Exception($"Command is protected and requires PermissionLevel {PermissionLevel}");
+            throw new ProtectionErpException(PermissionLevel);
         }
 
         /// <summary>
@@ -140,7 +143,7 @@ namespace ERP.Commands.Base
                     }
                     else
                     {
-                        throw new Exception($"Command: {Input.Command}, Parametertype is not supported: {Parameter.ParameterType}:{Parameter.Name}");
+                        throw new ParameterNotSupportedErpException(Parameter.ParameterType);
                     }
                 }
                 if (MI.ReturnType == typeof(Result))
@@ -153,7 +156,7 @@ namespace ERP.Commands.Base
                         }
                         else
                         {
-                            throw new Exception($"Command: {Input.Command}, Command could not return a Result");
+                            throw new CommandExecutionErpException(Input.Command.ToString());
                         }
                     }
                     catch (Exception ex)
@@ -167,12 +170,12 @@ namespace ERP.Commands.Base
                 }
                 else
                 {
-                    throw new Exception($"Command: {Input.Command}, Command mismatches the Returntype");
+                    throw new CommandExecutionErpException(Input.Command.ToString());
                 }
             }
             else
             {
-                throw new Exception($"Command: {Input.Command}, No such Command");
+                throw new CommandNotFoundEroException(Input.Command.ToString());
             }
         }
 
@@ -192,7 +195,7 @@ namespace ERP.Commands.Base
             }
             catch(Exception ex)
             {
-                return new Result(true, ex.Message);
+                return new Result(ex);
             }
         }
 
@@ -225,7 +228,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         protected Result GetClientResult(params object[] Arguments) 
         {
-            Result Result = new Result(true, "Client: Unknown Error");
+            Result Result = new Result(new ErpException("Client: Unknown Error"));
 
             if(new StackTrace().GetFrame(1) is StackFrame frame && frame.GetMethod() is MethodBase MB && this.GetType() is Type Type)
             {
@@ -249,7 +252,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments) 
         {
-            Result Result = new Result(true, "Client: Unknown Error");
+            Result Result = new Result(new ErpException("Client: Unknown Error"));
 
             if (Type.GetMethod(MethodBase.Name) is MethodInfo MI)
             {
@@ -263,11 +266,11 @@ namespace ERP.Commands.Base
                     {
                         if (Arguments.Length <= i)
                         {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}");
+                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}"));
                         }
                         if (Arguments[i].GetType() != PI.ParameterType && !ReflectionHelper.DoesInheritFrom(Arguments[i].GetType(), PI.ParameterType))
                         {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}");
+                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}"));
                         }
                         Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
                     }
@@ -347,7 +350,7 @@ namespace ERP.Commands.Base
                     }
                     else
                     {
-                        throw new Exception($"Could not create Instance of type {Type.Name}");
+                        throw new ReflectionErpException($"Couldn't create instance of {Type.Name}");
                     }
                 }
                 catch

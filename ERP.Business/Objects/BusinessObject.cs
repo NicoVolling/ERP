@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using ERP.Exceptions.ErpExceptions;
 
 namespace ERP.Business.Objects
 {
@@ -36,7 +37,7 @@ namespace ERP.Business.Objects
         {
             if(Object.GetType() != this.GetType()) 
             {
-                throw new Exception($"Type mismatch while Deserializeing {this.GetType()}");
+                throw new TypeMismatchErpException(this.GetType(), Object.GetType());
             }
 
             foreach (PropertyInfo Property in this.GetType().GetProperties())

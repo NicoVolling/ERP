@@ -18,9 +18,14 @@ namespace ERP.BaseLib.Objects
         public bool Error;
 
         /// <summary>
-        /// if request has failed, further informations are here.
+        /// If request has failed, further informations are here.
         /// </summary>
         public string ErrorMessage;
+
+        /// <summary>
+        /// The Type the Error. Example: ErpException
+        /// </summary>
+        public string ErrorType;
 
         /// <summary>
         /// All data wich server sends to client.
@@ -59,13 +64,13 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Constructor for answer on a failed request
         /// </summary>
-        /// <param name="Error">Wether the request was successful.</param>
-        /// <param name="ErrorMessage">if request has failed, further informations are here.</param>
-        public Result(bool Error, string ErrorMessage) 
+        /// <param name="Exception">The Exception that has been thrown</param>
+        public Result(Exception Exception) 
         {
             this.ReturnValue = String.Empty;
-            this.Error = Error;
-            this.ErrorMessage = ErrorMessage;
+            this.Error = true;
+            this.ErrorType = Exception.GetType().Name;
+            this.ErrorMessage = Exception.Message;
         }
 
         /// <summary>

@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.IO", "ERP.IO\ERP.IO.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test", "ERP.Test\ERP.Test.csproj", "{AC06DA9C-BE29-4B1A-9786-B574E9469EF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Business", "ERP.Business\ERP.Business.csproj", "{21820F89-FD07-4F24-B39D-9DF639C1E86A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Business", "ERP.Business\ERP.Business.csproj", "{21820F89-FD07-4F24-B39D-9DF639C1E86A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Exceptions", "ERP.Exceptions\ERP.Exceptions.csproj", "{5EF38CCB-D28D-4D46-B354-AD24E48D1531}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{21820F89-FD07-4F24-B39D-9DF639C1E86A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21820F89-FD07-4F24-B39D-9DF639C1E86A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21820F89-FD07-4F24-B39D-9DF639C1E86A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
