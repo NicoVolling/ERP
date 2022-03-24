@@ -58,8 +58,9 @@ namespace ERP.Server
                         Client.Create(Nico);
                         Client.GetData(Nico.ID);
                         Client.Delete(Nico.ID);
-                        Client.GetList();
+                        var b = Client.GetList();
 
+                        Console.WriteLine(String.Join(",", b));
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine("Test was successful");
                     }

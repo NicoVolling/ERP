@@ -1,6 +1,7 @@
 ﻿using ERP.BaseLib.Attributes;
 using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
+using ERP.IO.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,32 @@ namespace ERP.Commands.Base
                     CommandCollectionTypes.Add(Type);
                 }
             }
+            if(timer is null) 
+            {
+                timer = new Timer(new TimerCallback((o) => 
+                {
+                    Save();
+                }), null, 0, 150000); //2:30 min.
+            }
         }
+
+        /// <summary>
+        /// Executes Save() on every CommandCollection that is in Cache.
+        /// </summary>
+        private static void Save()
+        {
+            foreach (Type Type in CommandCollectionTypes)
+            {
+                if (CommandCollection.DoesInstanceExists(Type))
+                {
+                    if (CommandCollection.GetInstance(Type) is IFileSaver FS)
+                    {
+                        FS.Save();
+                    }
+                }
+            }
+        }
+
+        private static Timer timer;
     }
 }

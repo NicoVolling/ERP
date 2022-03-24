@@ -110,7 +110,7 @@ namespace ERP.Business.Client
         {
             if (BeforeChange())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(CurrentUser, ID, Data);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(CurrentUser, Data);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);

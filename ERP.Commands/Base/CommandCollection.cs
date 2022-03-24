@@ -1,4 +1,5 @@
 ﻿using ERP.BaseLib.Attributes;
+using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
@@ -30,7 +31,7 @@ namespace ERP.Commands.Base
         /// <summary>
         /// The relative namespace of this commandcollection
         /// </summary>
-        internal string Namespace { get => this.GetType().Namespace.Replace(ParentNamespace + ".", ""); }
+        protected internal string Namespace { get => this.GetType().Namespace.Replace(ParentNamespace + ".", ""); }
 
         /// <summary>
         /// Wether the command is been executed by the server.
@@ -113,6 +114,10 @@ namespace ERP.Commands.Base
                     if (Parameter.ParameterType == Input.Arguments.GetType())
                     {
                         Params.Add(Input.Arguments);
+                    }
+                    if(Parameter.ParameterType == typeof(User)) 
+                    {
+                        EnsureUser(Input.User, -1);
                     }
                     if (Parameter.Name != null)
                     {
@@ -228,33 +233,7 @@ namespace ERP.Commands.Base
                 string? Class = Type.Name.Replace("CC_", "");
                 string? Command = MB.Name;
 
-                Dictionary<string, string> Parameters = new Dictionary<string, string>();
-
-                int i = 0;
-                foreach(ParameterInfo PI in MB.GetParameters()) 
-                {
-                    if (PI.Name != null)
-                    {
-                        if(Arguments.Length <= i) 
-                        {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MB.Name}");
-                        }
-                        if (PI.ParameterType != Arguments[i].GetType())
-                        {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MB.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}");
-                        }
-                        Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
-                    }
-
-                    i++;
-                }
-                User User = null;
-                if(Arguments.FirstOrDefault(o => o.GetType() == typeof(User)) is User user) 
-                {
-                    User = user;
-                }
-
-                return ExecuteCommand(new DataInput(User, new Command(Namespace, Class, Command), (ArgumentCollection)Parameters));
+                return GetClientResult(new Command(Namespace, Class, Command), Type, MB, Arguments);
 
             }
 
@@ -262,10 +241,55 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Return an Instance of the given Type
+        /// This Method makes a request on the server and returns the handed result.
         /// </summary>
-        /// <typeparam name="T">Type of CommandCollection</typeparam>
-        /// <returns>Instance of the given Type</returns>
+        /// <param name="Command">The Command that should be executed</param>
+        /// <param name="Type">The Type of the commandocllection</param>
+        /// <param name="Arguments">Arguments must be in the correct order.</param>
+        /// <returns>The Result wich comes from the server.</returns>
+        private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments) 
+        {
+            Result Result = new Result(true, "Client: Unknown Error");
+
+            if (Type.GetMethod(MethodBase.Name) is MethodInfo MI)
+            {
+
+                Dictionary<string, string> Parameters = new Dictionary<string, string>();
+
+                int i = 0;
+                foreach (ParameterInfo PI in MI.GetParameters())
+                {
+                    if (PI.Name != null)
+                    {
+                        if (Arguments.Length <= i)
+                        {
+                            return new Result(true, $"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}");
+                        }
+                        if (Arguments[i].GetType() != PI.ParameterType && !ReflectionHelper.DoesInheritFrom(Arguments[i].GetType(), PI.ParameterType))
+                        {
+                            return new Result(true, $"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}");
+                        }
+                        Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
+                    }
+
+                    i++;
+                }
+                User User = null;
+                if (Arguments.FirstOrDefault(o => o.GetType() == typeof(User)) is User user)
+                {
+                    User = user;
+                }
+
+                return ExecuteCommand(new DataInput(User, Command, (ArgumentCollection)Parameters));
+            }
+            return Result;
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection.</typeparam>
+        /// <returns>Instance of the given Type.</returns>
         public static T GetInstance<T>() where T : CommandCollection, new()
         {
             if (CommandCollectionList.FirstOrDefault(o => o is T) is T CoCo)
@@ -281,10 +305,30 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Return an Instance of the given Type
+        /// Returns if an instance of the given type exists.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection</typeparam>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists<T>() where T : CommandCollection, new()
+        {
+            return CommandCollectionList.Any(o => o is T);
+        }
+
+        /// <summary>
+        /// Returns if an instance of the given type exists.
         /// </summary>
         /// <param name="Type">Type of CommandCollection</param>
-        /// <returns>Instance of the given Type</returns>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists(Type Type)
+        {
+            return CommandCollectionList.Any(o => o.GetType() == Type);
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <param name="Type">Type of CommandCollection.</param>
+        /// <returns>Instance of the given Type.</returns>
         internal static CommandCollection GetInstance(Type Type) 
         {
             if (CommandCollectionList.FirstOrDefault(o => o.GetType() == Type) is CommandCollection CoCo)

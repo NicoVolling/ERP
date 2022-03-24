@@ -52,5 +52,10 @@ namespace ERP.BaseLib.Objects
             this.Action = string.Empty;
             this.Class = string.Empty;
         }
+
+        public override string ToString()
+        {
+            return $"{Namespace}.{Class}.{Action}";
+        }
     }
 }

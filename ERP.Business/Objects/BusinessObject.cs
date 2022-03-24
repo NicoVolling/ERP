@@ -47,5 +47,7 @@ namespace ERP.Business.Objects
                 }
             }
         }
+
+        public override abstract string ToString();
     }
 }
