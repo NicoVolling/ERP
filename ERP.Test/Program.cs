@@ -5,6 +5,7 @@ using ERP.Server.WebServer;
 using ERP.Test.Commands.Base;
 using ERP.Test.ObjectClients;
 using ERP.Test.Objects;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 
@@ -23,7 +24,7 @@ namespace ERP.Server
                 try
                 {
                     HttpServer Server = new HttpServer();
-                    Server.Start();
+                    Server.Start(ERP.BaseLib.Statics.Http.ServerUrl);
                 }
                 catch
                 {

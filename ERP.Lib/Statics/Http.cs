@@ -14,6 +14,6 @@ namespace ERP.BaseLib.Statics
         /// <summary>
         /// The url the server listens on
         /// </summary>
-        public static string Url = "http://localhost:55555/";
+        public static string ServerUrl = "http://localhost:55555/";
     }
 }

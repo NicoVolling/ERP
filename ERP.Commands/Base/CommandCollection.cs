@@ -62,6 +62,10 @@ namespace ERP.Commands.Base
             {
                 throw new MissingArgumentErpException(ArgumentName);
             }
+            else if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
 
             return value;
         }
@@ -186,7 +190,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private Result ExecuteCommandClient(DataInput Input) 
         {
-            var response = new HttpClient().PostAsync(Http.Url, new StringContent(Json.Serialize(Input)));
+            var response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
             string res = response.Result.Content.ReadAsStringAsync().Result;
             try
             {
