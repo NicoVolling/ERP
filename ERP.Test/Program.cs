@@ -56,11 +56,13 @@ namespace ERP.Server
                             Console.WriteLine("Test has failed");
                         }
 
-                        Person Nico = new Person() { Name = "Volling", FirstName = "Nico" };
+                        Person Nico = new Person() { Name = "Volling", Firstname = "Nico", Birthday = new DateTime(1996,12,01)};
                         PersonClient Client = new PersonClient();
 
                         Client.Create(Nico);
                         Client.GetData(Nico.ID);
+
+                        Console.WriteLine(Client.Data.Birthday);
                         Client.Delete(Nico.ID);
                         var b = Client.GetList();
 

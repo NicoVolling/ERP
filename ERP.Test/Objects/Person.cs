@@ -12,11 +12,13 @@ namespace ERP.Test.Objects
     {
         public string Name { get; set; }
 
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
+
+        public DateTime Birthday { get; set; }
 
         public override string ToString()
         {
-            return $"{FirstName} {Name}";
+            return $"{Firstname} {Name}";
         }
     }
 }
