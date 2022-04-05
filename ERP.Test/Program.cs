@@ -18,6 +18,8 @@ namespace ERP.Server
     {
         public static void Main(string[]? args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             CommandCollection.ParentNamespace = "ERP.Test.Commands";
             CommandCollection.CommandAssembly = Assembly.GetExecutingAssembly();
 
@@ -40,7 +42,6 @@ namespace ERP.Server
                 try
                 {
                     {
-
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine("Test was successful");
                     }
