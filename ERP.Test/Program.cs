@@ -40,33 +40,7 @@ namespace ERP.Server
                 try
                 {
                     {
-                        Result result = CC_Ping.GetInstance<CC_Ping>().Ping(Result.OK);
-                        if (!result.Error)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine(Json.Serialize(result.ReturnValue));
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("Test was successful");
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(Json.Serialize(result.ErrorMessage));
-                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                            Console.WriteLine("Test has failed");
-                        }
 
-                        Person Nico = new Person() { Name = "Volling", Firstname = "Nico", Birthday = new DateTime(1996,12,01)};
-                        PersonClient Client = new PersonClient();
-
-                        Client.Create(Nico);
-                        Client.GetData(Nico.ID);
-
-                        Console.WriteLine(Client.Data.Birthday.ToString("dd.MM.yyyy"));
-                        Client.Delete(Nico.ID);
-                        var b = Client.GetList();
-
-                        Console.WriteLine(String.Join(",", b));
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine("Test was successful");
                     }
