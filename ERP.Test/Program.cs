@@ -62,7 +62,7 @@ namespace ERP.Server
                         Client.Create(Nico);
                         Client.GetData(Nico.ID);
 
-                        Console.WriteLine(Client.Data.Birthday);
+                        Console.WriteLine(Client.Data.Birthday.ToString("dd.MM.yyyy"));
                         Client.Delete(Nico.ID);
                         var b = Client.GetList();
 
