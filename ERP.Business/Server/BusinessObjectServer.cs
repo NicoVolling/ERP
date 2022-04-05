@@ -278,7 +278,7 @@ namespace ERP.Business.Server
         /// </summary>
         public BusinessObjectServer() 
         {
-            Filename = System.IO.Path.Combine(Namespace.Replace(".", System.IO.Path.DirectorySeparatorChar.ToString()), this.GetType().Name);
+            Filename = $"{Namespace}.{this.GetType().Name}";
         }
     }
 }

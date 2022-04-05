@@ -84,7 +84,7 @@ namespace ERP.Commands.Base
         /// <summary>
         /// Executes Save() on every CommandCollection that is in Cache.
         /// </summary>
-        private static void Save()
+        public static void Save()
         {
             foreach (Type Type in CommandCollectionTypes)
             {
