@@ -245,7 +245,7 @@ namespace ERP.Business.Server
                 }
                 if(ID < 0) 
                 {
-                    throw new IDGenerationErpException();
+                    ID = previous + 1;
                 }
             }
             else 
@@ -253,6 +253,7 @@ namespace ERP.Business.Server
                 ID = 0;
             }
 
+            Object.ID = ID;
             ObjectList.Add(Object);
 
             return ID;

@@ -45,15 +45,18 @@ namespace ERP.BaseLib.WebServer
                 {
                     byte[] data = Encoding.UTF8.GetBytes(GetResultFromRequest(req));
 
-                    ConsoleColor cl = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"Request #{++reqCount}");
-                    Console.WriteLine("{");
-                    Console.ForegroundColor = cl;
-                    Console.WriteLine($"    [{req.HttpMethod}] " + req.Url.ToString());
-                    Console.WriteLine($"    \"{req.UserHostName}\" - " + req.UserHostAddress);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("}" + Environment.NewLine);
+                    if (ConsoleOutput)
+                    {
+                        ConsoleColor cl = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Request #{++reqCount}");
+                        Console.WriteLine("{");
+                        Console.ForegroundColor = cl;
+                        Console.WriteLine($"    [{req.HttpMethod}] " + req.Url.ToString());
+                        Console.WriteLine($"    \"{req.UserHostName}\" - " + req.UserHostAddress);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("}" + Environment.NewLine); 
+                    }
 
                     resp.ContentType = "text/html";
                     resp.ContentEncoding = Encoding.UTF8;
@@ -67,6 +70,9 @@ namespace ERP.BaseLib.WebServer
 
         protected abstract string GetResultFromRequest(HttpListenerRequest Request);
 
+        public bool ConsoleOutput { get; set; } = true;
+
+
         /// <summary>
         /// Starts the server.
         /// </summary>
@@ -75,9 +81,11 @@ namespace ERP.BaseLib.WebServer
             IsRunning = true;
             listener.Prefixes.Add(Url);
             listener.Start();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Listening for connections on {Url}");
-
+            if (ConsoleOutput)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Listening for connections on {Url}");
+            }
             Task listenTask = HandleIncommingConnections();
             listenTask.GetAwaiter().GetResult();
 
