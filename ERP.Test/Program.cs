@@ -1,13 +1,16 @@
 ﻿using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
+using ERP.Client.WindowsForms;
 using ERP.Commands.Base;
 using ERP.Server.WebServer;
 using ERP.Test.Commands.Base;
+using ERP.Test.GUI;
 using ERP.Test.ObjectClients;
 using ERP.Test.Objects;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace ERP.Server
 {
@@ -77,6 +80,10 @@ namespace ERP.Server
             Thread.Sleep(1000);
 
             client.Start();
+
+            BaseForm BF = new BaseForm("ERP-Test", Client.WindowsForms.Base.Resources.WindowIcon);
+            BF.OpenWindow(new CP_Test());
+            Application.Run(BF);
 
             Console.ReadLine();
         }
