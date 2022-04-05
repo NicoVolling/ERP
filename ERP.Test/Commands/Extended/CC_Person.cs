@@ -1,5 +1,4 @@
-﻿using ERP.BaseLib.Attributes;
-using ERP.BaseLib.Objects;
+﻿using ERP.BaseLib.Objects;
 using ERP.Business.Server;
 using ERP.Test.Objects;
 using Newtonsoft.Json;
@@ -13,10 +12,5 @@ namespace ERP.Test.Commands.Extended
 {
     public class CC_Person : BusinessObjectServer<Person>
     {
-        [RequireLogin(1)]
-        protected override Person OnCreate(User User, Person Data)
-        {
-            return base.OnCreate(User, Data);
-        }
     }
 }

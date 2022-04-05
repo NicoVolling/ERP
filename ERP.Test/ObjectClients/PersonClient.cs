@@ -12,8 +12,5 @@ namespace ERP.Test.ObjectClients
 {
     public class PersonClient : BusinessObjectClient<CC_Person, Person>
     {
-        public PersonClient(User CurrentUser) : base(CurrentUser)
-        {
-        }
     }
 }

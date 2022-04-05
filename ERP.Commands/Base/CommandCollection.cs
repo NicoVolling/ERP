@@ -1,5 +1,4 @@
-﻿using ERP.BaseLib.Attributes;
-using ERP.BaseLib.Helpers;
+﻿using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
@@ -71,29 +70,6 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Ensures that the userlogin is correct and the user has access.
-        /// <para>
-        /// If user has no access, exception will be thrown.
-        /// </para>
-        /// </summary>
-        /// <param name="User">User</param>
-        /// <param name="PermissionLevel">Needed Accesslevel</param>
-        /// <returns>True if user has access</returns>
-        /// <exception cref="Exception"></exception>
-        protected static bool EnsureUser(User? User, int PermissionLevel) 
-        {
-            if(User is User user)
-            {
-                user = User.Login(User.Name, User.Password);
-                if (user.LoggedIn && user.PermissionLevel >= PermissionLevel)
-                {
-                    return true;
-                }
-            }
-            throw new ProtectionErpException(PermissionLevel);
-        }
-
-        /// <summary>
         /// Serversided Execute-Method.
         /// </summary>
         /// <param name="Input">Data.</param>
@@ -105,26 +81,11 @@ namespace ERP.Commands.Base
 
             if (this.GetType().GetMethod(Input.Command.Action) is MethodInfo MI)
             {
-                if(MI.GetCustomAttribute<RequireLoginAttribute>() is RequireLoginAttribute RLA) 
-                {
-                    try
-                    {
-                        EnsureUser(Input.User, RLA.PermissionLevel);
-                    }
-                    catch 
-                    {
-                        throw;
-                    }
-                }
                 foreach (ParameterInfo Parameter in MI.GetParameters())
                 {
                     if (Parameter.ParameterType == Input.Arguments.GetType())
                     {
                         Params.Add(Input.Arguments);
-                    }
-                    if(Parameter.ParameterType == typeof(User)) 
-                    {
-                        EnsureUser(Input.User, -1);
                     }
                     if (Parameter.Name != null)
                     {
@@ -281,13 +242,8 @@ namespace ERP.Commands.Base
 
                     i++;
                 }
-                User User = null;
-                if (Arguments.FirstOrDefault(o => o.GetType() == typeof(User)) is User user)
-                {
-                    User = user;
-                }
 
-                return ExecuteCommand(new DataInput(User, Command, (ArgumentCollection)Parameters));
+                return ExecuteCommand(new DataInput(Command, (ArgumentCollection)Parameters));
             }
             return Result;
         }

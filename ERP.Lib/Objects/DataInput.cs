@@ -18,11 +18,6 @@ namespace ERP.BaseLib.Objects
         public Command Command { get; set; }
 
         /// <summary>
-        /// The User is needed for accessing protected commands.
-        /// </summary>
-        public User? User { get; set; }
-
-        /// <summary>
         /// This is a list of all Arguments (Parameters) that are needed for executing the command.
         /// </summary>
         public ArgumentCollection Arguments { get; set; }
@@ -35,19 +30,6 @@ namespace ERP.BaseLib.Objects
         {
             this.Command = Command;
             this.Arguments = new ArgumentCollection();
-            this.User = null;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Command">Is used to identify a command.</param>
-        public DataInput(User User, Command Command)
-        {
-            this.Command = Command;
-            this.Arguments = new ArgumentCollection();
-            this.User = User;
         }
 
         /// <summary>
@@ -59,20 +41,6 @@ namespace ERP.BaseLib.Objects
         {
             this.Command = Command;
             this.Arguments = Arguments;
-            this.User = null;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Command">Is used to identify a command.</param>
-        /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(User User, Command Command, ArgumentCollection Arguments)
-        {
-            this.Command = Command;
-            this.Arguments = Arguments;
-            this.User = User;
         }
 
         /// <summary>
@@ -80,24 +48,10 @@ namespace ERP.BaseLib.Objects
         /// </summary>
         /// <param name="Command">Is used to identify a command.</param>
         /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(Command Command, params Argument[] Arguments) 
+        public DataInput(Command Command, params Argument[] Arguments)
         {
             this.Command = Command;
             this.Arguments = Arguments;
-            this.User = null;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Command">Is used to identify a command.</param>
-        /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(User User, Command Command, params Argument[] Arguments)
-        {
-            this.Command = Command;
-            this.Arguments = Arguments;
-            this.User = User;
         }
 
         /// <summary>
@@ -107,7 +61,6 @@ namespace ERP.BaseLib.Objects
         {
             this.Command = default(Command);
             this.Arguments = new ArgumentCollection();
-            this.User = null;
         }
     }
 }

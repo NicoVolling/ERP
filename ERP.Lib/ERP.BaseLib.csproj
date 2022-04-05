@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ERP.Exceptions\ERP.Exceptions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+  </ItemGroup>
+
 </Project>

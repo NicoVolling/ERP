@@ -40,7 +40,7 @@ namespace ERP.Server
                 try
                 {
                     {
-                        Result result = CC_Ping.GetInstance<CC_Ping>().Ping(Result.OK, new User("Nico", "Volling"));
+                        Result result = CC_Ping.GetInstance<CC_Ping>().Ping(Result.OK);
                         if (!result.Error)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -57,7 +57,7 @@ namespace ERP.Server
                         }
 
                         Person Nico = new Person() { Name = "Volling", FirstName = "Nico" };
-                        PersonClient Client = new PersonClient(new User("Nico", "Volling"));
+                        PersonClient Client = new PersonClient();
 
                         Client.Create(Nico);
                         Client.GetData(Nico.ID);

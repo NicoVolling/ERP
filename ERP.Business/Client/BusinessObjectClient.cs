@@ -19,10 +19,6 @@ namespace ERP.Business.Client
         where T_CommandCollection : BusinessObjectServer<T_BusinessObject>, new() 
         where T_BusinessObject : BusinessObject, new()
     {
-        /// <summary>
-        /// The user that is currently using the client.
-        /// </summary>
-        protected User CurrentUser { get; }
 
         protected virtual bool BeforeGetData() { return true; }
         
@@ -46,7 +42,7 @@ namespace ERP.Business.Client
         {
             if (BeforeGetData())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetData(CurrentUser, ID);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetData(ID);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);
@@ -67,7 +63,7 @@ namespace ERP.Business.Client
         {
             if (BeforeCreate()) 
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Create(CurrentUser, Data);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Create(Data);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);
@@ -89,7 +85,7 @@ namespace ERP.Business.Client
         {
             if (BeforeDelete())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Delete(CurrentUser, ID);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Delete(ID);
                 if (!Result.Error)
                 {
                     Data = new T_BusinessObject();
@@ -111,7 +107,7 @@ namespace ERP.Business.Client
         {
             if (BeforeChange())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(CurrentUser, Data);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(Data);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);
@@ -131,7 +127,7 @@ namespace ERP.Business.Client
         /// <exception cref="Exception"></exception>
         public List<T_BusinessObject> GetList()
         {
-            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList(CurrentUser);
+            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList();
             if (!Result.Error)
             {
                 return Json.Deserialize<List<T_BusinessObject>>(Result.ReturnValue);
@@ -145,10 +141,8 @@ namespace ERP.Business.Client
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="CurrentUser">The user that is currently using the client.</param>
-        public BusinessObjectClient(User CurrentUser) 
+        public BusinessObjectClient() 
         {
-            this.CurrentUser = CurrentUser;
         }
     }
 }

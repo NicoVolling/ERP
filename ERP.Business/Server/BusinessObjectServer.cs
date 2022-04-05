@@ -33,7 +33,7 @@ namespace ERP.Business.Server
         /// <param name="User"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnCreate(User User, T_BusinessObject Data) 
+        protected virtual T_BusinessObject OnCreate(T_BusinessObject Data) 
         {
             try 
             { 
@@ -52,20 +52,19 @@ namespace ERP.Business.Server
         /// <param name="User"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Create(User User, T_BusinessObject Data) 
+        public Result Create(T_BusinessObject Data) 
         {
-            if(!ServerSide) { return GetClientResult(User, Data); }
-            return new Result(OnCreate(User, Data));
+            if(!ServerSide) { return GetClientResult(Data); }
+            return new Result(OnCreate(Data));
         }
 
         /// <summary>
         /// Changes the Object.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnChange(User User, T_BusinessObject Data) 
+        protected virtual T_BusinessObject OnChange(T_BusinessObject Data) 
         {
             try 
             { 
@@ -82,23 +81,21 @@ namespace ERP.Business.Server
         /// <summary>
         /// Changes the Object.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Change(User User, T_BusinessObject Data) 
+        public Result Change(T_BusinessObject Data) 
         {
-            if(!ServerSide) { return GetClientResult(User, Data); }
-            return new Result(OnChange(User, Data));
+            if(!ServerSide) { return GetClientResult(Data); }
+            return new Result(OnChange(Data));
         }
 
         /// <summary>
         /// Delete Object.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public virtual bool OnDelete(User User, int ID) 
+        public virtual bool OnDelete(int ID) 
         {
             try
             {
@@ -115,22 +112,20 @@ namespace ERP.Business.Server
         /// <summary>
         /// Delete Object.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result Delete(User User, int ID)
+        public Result Delete(int ID)
         {
-            if (!ServerSide) { return GetClientResult(User, ID); }
-            return new Result(OnDelete(User, ID));
+            if (!ServerSide) { return GetClientResult(ID); }
+            return new Result(OnDelete(ID));
         }
 
         /// <summary>
         /// Gets Object by ID.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public virtual T_BusinessObject OnGetData(User User, int ID) 
+        public virtual T_BusinessObject OnGetData(int ID) 
         {
             try
             {
@@ -145,21 +140,19 @@ namespace ERP.Business.Server
         /// <summary>
         /// Gets Object by ID.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetData(User User, int ID)
+        public Result GetData(int ID)
         {
-            if (!ServerSide) { return GetClientResult(User, ID); }
-            return new Result(OnGetData(User, ID));
+            if (!ServerSide) { return GetClientResult(ID); }
+            return new Result(OnGetData(ID));
         }
 
         /// <summary>
         /// Gets a list of all Objects.
         /// </summary>
-        /// <param name="User"></param>
         /// <returns></returns>
-        public virtual List<T_BusinessObject> OnGetList(User User) 
+        public virtual List<T_BusinessObject> OnGetList() 
         {
             try
             {
@@ -175,12 +168,11 @@ namespace ERP.Business.Server
         /// <summary>
         /// Gets a list of all Objects.
         /// </summary>
-        /// <param name="User"></param>
         /// <returns></returns>
-        public Result GetList(User User)
+        public Result GetList( )
         {
-            if (!ServerSide) { return GetClientResult(User); }
-            return new Result(OnGetList(User));
+            if (!ServerSide) { return GetClientResult(); }
+            return new Result(OnGetList());
         }
 
         public bool DataLoaded { get; private set; } = false;
