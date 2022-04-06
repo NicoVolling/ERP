@@ -33,7 +33,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             Color DrawBackColor = this.BackColor;
 
-            gfx.Clear(this.Parent.BackColor);
+            gfx.Clear(Color.FromArgb(40, 40, 40));
             GraphicsPath grPath1 = new GraphicsPath();
 
             grPath1.AddPolygon(new Point[] { new Point(this.Width, 0), new Point(this.Width, this.Height), new Point(0, this.Height) });

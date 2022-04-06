@@ -30,17 +30,33 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             }
         }
 
-        [Category("Darstellung")]
-        public Color StatusColor { get => StatusLed.ForeColor; set => StatusLed.ForeColor = value; }
+        public bool HasFocus
+        {
+            get
+            {
+                return this.BackColor == Color.FromArgb(255, 255, 255);
+            }
+            set
+            {
+                if (value)
+                {
+                    foreach (BaseWindow BW in ParentForm.Windows)
+                    {
+                        BW.HasFocus = false;
+                    }
+                    this.BringToFront();
+                }
+                this.BackColor = value ? Color.FromArgb(255, 255, 255) : Color.FromArgb(40, 40, 40);
+            }
+        }
 
         [Category("Darstellung")]
-        public Image Icon { get => IconBox.Image; set { IconBox.Image = value; if (IconBox.Image == null) { IconBox.Visible = false; } else { IconBox.Visible = true; } } }
+        public Color StatusColor { get => this.TitleBar.StatusColor; set => this.TitleBar.StatusColor = value; }
 
-        public override string Text { get => TitleLabel.Text; set => TitleLabel.Text = value; }
+        [Category("Darstellung")]
+        public Image Icon { get => this.TitleBar.Icon; set { this.TitleBar.Icon = value; } }
 
-        private bool title_mousedown = false;
-
-        private Point title_mouseposition = new Point(0, 0);
+        public override string Text { get => this.TitleBar.Text; set => this.TitleBar.Text = value; }
 
         private BaseForm ParentForm;
 
@@ -49,6 +65,27 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             InitializeComponent();
             this.ParentForm = ParentForm;
             this.ContentPanel = ContentPanel;
+            CreateEvents(this);
+        }
+
+        private void CreateEvents(Control Parent) 
+        {
+            Parent.MouseDown += (s, e) => 
+            {
+                HasFocus = true;
+            };
+            Parent.GotFocus += (s, e) =>
+            {
+                HasFocus = true;
+            };
+            Parent.ControlAdded += (s, e) => 
+            {
+                CreateEvents(e.Control);
+            };
+            foreach(Control Control in Parent.Controls) 
+            {
+                CreateEvents(Control);
+            }
         }
 
         private void btn_close_Click(object sender, EventArgs e)
@@ -72,12 +109,11 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             this.Dock = Dock == DockStyle.Fill ? DockStyle.None : DockStyle.Fill;
         }
 
-        bool isMinimized;
-
         private void btn_minimize_Click(object sender, EventArgs e)
         {
-            isMinimized = !isMinimized;
-            ContentPanel.OnMinimized(isMinimized);
+            Visible = false;
+            HasFocus = false;
+            ContentPanel.OnMinimized(Visible);
         }
 
         protected override void OnDockChanged(EventArgs e)
@@ -86,47 +122,6 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             btn_maximize.Image = Dock == DockStyle.Fill ? ERP.Client.WindowsForms.Base.Resources.No_Maximize : ERP.Client.WindowsForms.Base.Resources.Maximize; 
             ContentPanel.OnMaximized(Dock == DockStyle.Fill);
         }
-        private void TitleLabel_MouseDown(object sender, MouseEventArgs e)
-        {
-            title_mousedown = true;
-            title_mouseposition = e.Location;
-        }
 
-        private void TitleLabel_MouseUp(object sender, MouseEventArgs e)
-        {
-            title_mousedown = false;
-        }
-
-        private void TitleLabel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if(title_mousedown) 
-            {
-                Point Destination = new Point(this.Location.X + (e.X - title_mouseposition.X), this.Location.Y + (e.Y - title_mouseposition.Y));
-
-                if (this.Dock == DockStyle.Fill && Destination.Y > 0)
-                {
-                    this.Dock = DockStyle.None;
-                }
-
-                if (Destination.X < 0) 
-                {
-                    Destination.X = 0;
-                }
-                else if(Destination.X > this.Parent.Width - this.Width) 
-                {
-                    Destination.X = this.Parent.Width - this.Width;
-                }
-                if(Destination.Y < 0) 
-                {
-                    Destination.Y = 0;
-                    this.Dock = DockStyle.Fill;
-                }
-                else if(Destination.Y > this.Parent.Height - this.Height) 
-                {
-                    Destination.Y = this.Parent.Height - this.Height;
-                }
-                this.Location = Destination;
-            }
-        }
     }
 }

@@ -13,20 +13,38 @@ namespace ERP.Client.WindowsForms
             this.Text = ApplicationTitle;
             this.Icon = MainIcon;
             this.DoubleBuffered = true;
+            this.WindowPanel.Click += (s, e) => 
+            {
+                foreach (BaseWindow BW in Windows ) 
+                {
+                    BW.HasFocus = false;
+                }
+            };
         }
+
+        public IEnumerable<BaseWindow> Windows { get => WindowPanel.Controls.Cast<Control>().Where(o => o is BaseWindow).Select(o => o as BaseWindow); }
 
         public BaseWindow OpenWindow(ContentPanel Panel) 
         {
             BaseWindow BW = new BaseWindow(this, Panel);
-            BW.StatusColor = Color.Red;
+            Panel.Open(BW);
             WindowPanel.Controls.Add(BW);
             BW.BringToFront();
+
+            BaseWindowTitleBar BWTB = new BaseWindowTitleBar(BW) { Dock = DockStyle.Top };
+            BWTB.Icon = BW.Icon;
+            BWTB.StatusColor = BW.StatusColor;
+            BWTB.Text = BW.Text;
+            BWTB.SetTaskBar();
+            WindowListPanel.Controls.Add(BWTB);
+
             return BW;
         }
 
         internal void Close(BaseWindow Window) 
         {
             WindowPanel.Controls.Remove(Window);
+            WindowListPanel.Controls.Remove(WindowListPanel.Controls.Cast<Control>().Where(o => o is BaseWindowTitleBar BWTB && BWTB.BaseWindow == Window).FirstOrDefault());
         }
     }
 }

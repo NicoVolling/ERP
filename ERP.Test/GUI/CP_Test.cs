@@ -1,6 +1,8 @@
 ﻿using ERP.Client.WindowsForms.Controls.Base;
+using ERP.Client.WindowsForms.Controls.Windows;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace ERP.Test.GUI
     {
         private System.Windows.Forms.Label label1;
 
-        public CP_Test() 
+        public CP_Test()
         {
             InitializeComponent();
         }
@@ -38,6 +40,13 @@ namespace ERP.Test.GUI
             this.Name = "CP_Test";
             this.ResumeLayout(false);
 
+        }
+
+        protected override void OnOpened()
+        {
+            base.OnOpened();
+            BaseWindow.Text = "Test-Fenster";
+            BaseWindow.StatusColor = Color.Green;
         }
     }
 }
