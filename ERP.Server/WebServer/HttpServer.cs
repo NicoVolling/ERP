@@ -8,71 +8,31 @@ using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Commands.Base;
+using ERP.Exceptions.ErpExceptions;
 
 namespace ERP.Server.WebServer
 {
     /// <summary>
     /// The HttpServer wich must be started in order to handle request from the client.
     /// </summary>
-    public sealed class HttpServer
+    public sealed class HttpServer : ERP.BaseLib.WebServer.HttpServer
     {
-        private HttpListener listener;
-        private int reqCount = 0;
-
-        /// <summary>
-        /// Determines if the server is currently running.
-        /// </summary>
-        public bool IsRunning { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public HttpServer()
         {
-            listener = new HttpListener();
             CommandMaster.Reload();
         }
 
-        private async Task HandleIncommingConnections() 
+        protected override string GetResultFromRequest(HttpListenerRequest Request)
         {
-            while(IsRunning) 
-            {
-                HttpListenerContext ctx = await listener.GetContextAsync();
-
-                HttpListenerRequest req = ctx.Request;
-                HttpListenerResponse resp = ctx.Response;
-
-                if (req.Url?.AbsolutePath != "/favicon.ico")
-                {
-                    byte[] data = Encoding.UTF8.GetBytes(GetDataString(req));
-
-                    ConsoleColor cl = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"Request #{++reqCount}");
-                    Console.WriteLine("{");
-                    Console.ForegroundColor = cl;
-                    Console.WriteLine($"    [{req.HttpMethod}] " + req.Url.ToString());
-                    Console.WriteLine($"    \"{req.UserHostName}\" - " + req.UserHostAddress);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("}" + Environment.NewLine);
-
-                    resp.ContentType = "text/html";
-                    resp.ContentEncoding = Encoding.UTF8;
-                    resp.ContentLength64 = data.LongLength;
-                    await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                }
-
-                resp.Close();
-            }
-        }
-
-        private string GetDataString(HttpListenerRequest Request)
-        {
-            Result Result = new Result(true, "UnknownError");
+            Result Result = new Result(new ErpException("UnknownError"));
 
             if(Request == null) 
             {
-                Result = new Result(true, "Request is null");
+                Result = new Result(new ErpException("Request is null"));
             }
             else
             {
@@ -121,23 +81,6 @@ namespace ERP.Server.WebServer
             }
 
             return resultObject;
-        }
-
-        /// <summary>
-        /// Starts the server.
-        /// </summary>
-        public void Start()
-        {
-            IsRunning = true;
-            listener.Prefixes.Add(Http.Url);
-            listener.Start();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Listening for connections on {Http.Url}");
-
-            Task listenTask = HandleIncommingConnections();
-            listenTask.GetAwaiter().GetResult();
-
-            listener.Close();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace ERP.BaseLib.Serialization.Converters
     {
         public override bool CanConvert(Type objectType)
         {
-            return true;
+            return objectType == typeof(ArgumentCollection);
         }
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)

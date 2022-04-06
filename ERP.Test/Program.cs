@@ -1,10 +1,16 @@
 ﻿using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
+using ERP.Client.WindowsForms;
 using ERP.Commands.Base;
 using ERP.Server.WebServer;
 using ERP.Test.Commands.Base;
+using ERP.Test.GUI;
+using ERP.Test.ObjectClients;
+using ERP.Test.Objects;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
+using System.Windows.Forms;
 using ERP.Reporting;
 
 namespace ERP.Server
@@ -13,6 +19,8 @@ namespace ERP.Server
     {
         public static void Main(string[]? args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             CommandCollection.ParentNamespace = "ERP.Test.Commands";
             CommandCollection.CommandAssembly = Assembly.GetExecutingAssembly();
 
@@ -22,7 +30,7 @@ namespace ERP.Server
                 try
                 {
                     HttpServer Server = new HttpServer();
-                    Server.Start();
+                    Server.Start(ERP.BaseLib.Statics.Http.ServerUrl);
                 }
                 catch
                 {
@@ -35,22 +43,8 @@ namespace ERP.Server
                 try
                 {
                     {
-                        Result result = CC_Ping.GetInstance<CC_Ping>().Ping(Result.OK, new User("Nico", "Volling"));
-                        if (!result.Error)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine(Json.Serialize(result.ReturnValue));
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("Test was successful");
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(Json.Serialize(result.ErrorMessage));
-                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                            Console.WriteLine("Test has failed");
-                        }
-
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("Test was successful");
                     }
                 }
                 catch
@@ -65,7 +59,9 @@ namespace ERP.Server
 
             client.Start();
 
-            new TestClass().TestMethod();
+            BaseForm BF = new BaseForm("ERP-Test", Client.WindowsForms.Base.Resources.WindowIcon);
+            BF.OpenWindow(new CP_Test());
+            Application.Run(BF);
 
             Console.ReadLine();
         }

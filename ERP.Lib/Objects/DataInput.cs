@@ -13,28 +13,9 @@ namespace ERP.BaseLib.Objects
     public sealed class DataInput
     {
         /// <summary>
-        /// The relative namespace of the command. The Namespace begins after "[...].List"
+        /// Is used to identify a command.
         /// </summary>
-        public string Namespace { get; set; }
-
-        /// <summary>
-        /// The name of the command.
-        /// <para />
-        /// Its equal to the methodname.
-        /// </summary>
-        public string Command { get; set; }
-
-        /// <summary>
-        /// The name of the commandcollection wich contains the command.
-        /// <para />
-        /// Without "CC_".
-        /// </summary>
-        public string Class { get; set; }
-
-        /// <summary>
-        /// The User is needed for accessing protected commands.
-        /// </summary>
-        public User? User { get; set; }
+        public Command Command { get; set; }
 
         /// <summary>
         /// This is a list of all Arguments (Parameters) that are needed for executing the command.
@@ -44,98 +25,33 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
-        public DataInput(string Namespace, string Class, string Command)
+        /// <param name="Command">Is used to identify a command.</param>
+        public DataInput(Command Command)
         {
-            this.Namespace = Namespace;
             this.Command = Command;
-            this.Class = Class;
             this.Arguments = new ArgumentCollection();
-            this.User = null;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
-        public DataInput(User User, string Namespace, string Class, string Command)
-        {
-            this.Namespace = Namespace;
-            this.Command = Command;
-            this.Class = Class;
-            this.Arguments = new ArgumentCollection();
-            this.User = User;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
+        /// <param name="Command">Is used to identify a command.</param>
         /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(string Namespace, string Class, string Command, ArgumentCollection Arguments) 
+        public DataInput(Command Command, ArgumentCollection Arguments) 
         {
-            this.Namespace = Namespace;
             this.Command = Command;
-            this.Class = Class;
             this.Arguments = Arguments;
-            this.User = null;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
+        /// <param name="Command">Is used to identify a command.</param>
         /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(User User, string Namespace, string Class, string Command, ArgumentCollection Arguments)
+        public DataInput(Command Command, params Argument[] Arguments)
         {
-            this.Namespace = Namespace;
             this.Command = Command;
-            this.Class = Class;
             this.Arguments = Arguments;
-            this.User = User;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
-        /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(string Namespace, string Class, string Command, params Argument[] Arguments) 
-        {
-            this.Namespace = Namespace;
-            this.Command = Command;
-            this.Class = Class;
-            this.Arguments = Arguments;
-            this.User = null;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="User">The User is needed for accessing protected commands.</param>
-        /// <param name="Namespace">The relative namespace of the command. The Namespace begins after "[...].List"</param>
-        /// <param name="Class">The name of the commandcollection wich contains the command. (Without "CC_")</param>
-        /// <param name="Command">The name of the command. (Its equal to the methodname)</param>
-        /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(User User, string Namespace, string Class, string Command, params Argument[] Arguments)
-        {
-            this.Namespace = Namespace;
-            this.Command = Command;
-            this.Class = Class;
-            this.Arguments = Arguments;
-            this.User = User;
         }
 
         /// <summary>
@@ -143,11 +59,8 @@ namespace ERP.BaseLib.Objects
         /// </summary>
         public DataInput() 
         {
-            this.Command = string.Empty;
-            this.Namespace = string.Empty;
-            this.Class = string.Empty;
+            this.Command = default(Command);
             this.Arguments = new ArgumentCollection();
-            this.User = null;
         }
     }
 }

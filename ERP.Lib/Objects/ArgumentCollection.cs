@@ -1,5 +1,6 @@
 ﻿using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Serialization.Converters;
+using ERP.Exceptions.ErpExceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -71,7 +72,7 @@ namespace ERP.BaseLib.Objects
         {
             if(_arguments.Contains(Argument)) 
             {
-                throw new Exception($"Argument \"{Argument.Name}\" already exists.");
+                throw new ArgumentAlreadyExistsErpException(Argument.Name);
             }
         }
 

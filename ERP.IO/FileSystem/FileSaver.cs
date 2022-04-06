@@ -10,51 +10,51 @@ namespace ERP.IO.FileSystem
     /// <summary>
     /// Provides functions for saving the Data withing the class.
     /// </summary>
-    public abstract class Saveable
+    public interface IFileSaver
     {
 
         /// <summary>
         /// The relative path to the file.
         /// </summary>
-        protected abstract string Filename { get; }
+        protected internal string Filename { get; }
 
         /// <summary>
         /// Serializes the data in the class.
         /// </summary>
         /// <returns>Serialized Data.</returns>
-        protected abstract string Serialize();
+        protected internal string Serialize();
 
         /// <summary>
         /// Deserializes the data in the class.
         /// </summary>
         /// <param name="Raw">Serialized Data.</param>
-        protected abstract void Deserialize(string Raw);
+        protected internal void Deserialize(string Raw);
 
         /// <summary>
         /// Will be executed before data will be saved.
         /// </summary>
         /// <returns>If it is allowed to save data now.</returns>
-        protected virtual bool CanSave() { return true; }
+        protected internal bool CanSave();
 
         /// <summary>
         /// Will be executed before data will be loaded.
         /// </summary>
         /// <returns>If it is allowed to load data now.</returns>
-        protected virtual bool CanLoad() { return true; }
+        protected internal bool CanLoad();
 
         /// <summary>
-        /// Saves all data.
+        /// Loads all data.
         /// </summary>
-        public void Save() 
+        public static void Save(IFileSaver Target) 
         {
-            if(!CanSave()) { return; }
+            if(!Target.CanSave()) { return; }
             try 
             {
                 if (!System.IO.Directory.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data"))))
                 {
                     System.IO.Directory.CreateDirectory(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data")));
                 }
-                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Filename), Serialize());
+                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename), Target.Serialize());
             } 
             catch 
             { 
@@ -65,17 +65,30 @@ namespace ERP.IO.FileSystem
         /// <summary>
         /// Loads all data.
         /// </summary>
-        public void Load() 
+        public static void Load(IFileSaver Target) 
         {
-            if (!CanLoad()) { return; }
+            if (!Target.CanLoad()) { return; }
             try
             {
-                Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", (Filename))));
+                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data"))))
+                {
+                    Target.Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", (Target.Filename))));
+                }
             }
             catch
             {
                 throw;
             }
         }
+
+        /// <summary>
+        /// Loads all data.
+        /// </summary>
+        public void Save();
+
+        /// <summary>
+        /// Loads all data.
+        /// </summary>
+        public void Load();
     }
 }

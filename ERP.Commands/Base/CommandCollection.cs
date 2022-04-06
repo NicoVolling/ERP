@@ -1,7 +1,10 @@
-﻿using ERP.BaseLib.Attributes;
+﻿using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
+using ERP.Exceptions.ErpExceptions;
+using ERP.Exceptions.ErpExceptions;
+using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,7 +33,7 @@ namespace ERP.Commands.Base
         /// <summary>
         /// The relative namespace of this commandcollection
         /// </summary>
-        internal string Namespace { get => this.GetType().Namespace.Replace(ParentNamespace + ".", ""); }
+        protected internal string Namespace { get => this.GetType().Namespace.Replace(ParentNamespace + ".", ""); }
 
         /// <summary>
         /// Wether the command is been executed by the server.
@@ -56,33 +59,14 @@ namespace ERP.Commands.Base
 
             if (string.IsNullOrEmpty(value) && MustExist)
             {
-                throw new Exception($"Missing Argument: {ArgumentName}");
+                throw new MissingArgumentErpException(ArgumentName);
+            }
+            else if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
             }
 
             return value;
-        }
-
-        /// <summary>
-        /// Ensures that the userlogin is correct and the user has access.
-        /// <para>
-        /// If user has no access, exception will be thrown.
-        /// </para>
-        /// </summary>
-        /// <param name="User">User</param>
-        /// <param name="PermissionLevel">Needed Accesslevel</param>
-        /// <returns>True if user has access</returns>
-        /// <exception cref="Exception"></exception>
-        protected static bool EnsureUser(User? User, int PermissionLevel) 
-        {
-            if(User is User user)
-            {
-                user = User.Login(User.Name, User.Password);
-                if (user.LoggedIn && user.PermissionLevel >= PermissionLevel)
-                {
-                    return true;
-                }
-            }
-            throw new Exception($"Command is protected and requires PermissionLevel {PermissionLevel}");
         }
 
         /// <summary>
@@ -95,19 +79,8 @@ namespace ERP.Commands.Base
         {
             List<Object> Params = new List<object>();
 
-            if (this.GetType().GetMethod(Input.Command) is MethodInfo MI)
+            if (this.GetType().GetMethod(Input.Command.Action) is MethodInfo MI)
             {
-                if(MI.GetCustomAttribute<RequireLoginAttribute>() is RequireLoginAttribute RLA) 
-                {
-                    try
-                    {
-                        EnsureUser(Input.User, RLA.PermissionLevel);
-                    }
-                    catch 
-                    {
-                        throw;
-                    }
-                }
                 foreach (ParameterInfo Parameter in MI.GetParameters())
                 {
                     if (Parameter.ParameterType == Input.Arguments.GetType())
@@ -135,7 +108,7 @@ namespace ERP.Commands.Base
                     }
                     else
                     {
-                        throw new Exception($"Command: {Input.Command}, Parametertype is not supported: {Parameter.ParameterType}:{Parameter.Name}");
+                        throw new ParameterNotSupportedErpException(Parameter.ParameterType);
                     }
                 }
                 if (MI.ReturnType == typeof(Result))
@@ -148,7 +121,7 @@ namespace ERP.Commands.Base
                         }
                         else
                         {
-                            throw new Exception($"Command: {Input.Command}, Command could not return a Result");
+                            throw new CommandExecutionErpException(Input.Command.ToString());
                         }
                     }
                     catch (Exception ex)
@@ -162,12 +135,12 @@ namespace ERP.Commands.Base
                 }
                 else
                 {
-                    throw new Exception($"Command: {Input.Command}, Command mismatches the Returntype");
+                    throw new CommandExecutionErpException(Input.Command.ToString());
                 }
             }
             else
             {
-                throw new Exception($"Command: {Input.Command}, No such Command");
+                throw new CommandNotFoundEroException(Input.Command.ToString());
             }
         }
 
@@ -178,7 +151,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private Result ExecuteCommandClient(DataInput Input) 
         {
-            var response = new HttpClient().PostAsync(Http.Url, new StringContent(Json.Serialize(Input)));
+            var response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
             string res = response.Result.Content.ReadAsStringAsync().Result;
             try
             {
@@ -187,7 +160,7 @@ namespace ERP.Commands.Base
             }
             catch(Exception ex)
             {
-                return new Result(true, ex.Message);
+                return new Result(ex);
             }
         }
 
@@ -220,7 +193,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         protected Result GetClientResult(params object[] Arguments) 
         {
-            Result Result = new Result(true, "Client: Unknown Error");
+            Result Result = new Result(new ErpException("Client: Unknown Error"));
 
             if(new StackTrace().GetFrame(1) is StackFrame frame && frame.GetMethod() is MethodBase MB && this.GetType() is Type Type)
             {
@@ -228,33 +201,7 @@ namespace ERP.Commands.Base
                 string? Class = Type.Name.Replace("CC_", "");
                 string? Command = MB.Name;
 
-                Dictionary<string, string> Parameters = new Dictionary<string, string>();
-
-                int i = 0;
-                foreach(ParameterInfo PI in MB.GetParameters()) 
-                {
-                    if (PI.Name != null)
-                    {
-                        if(Arguments.Length <= i) 
-                        {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MB.Name}");
-                        }
-                        if (PI.ParameterType != Arguments[i].GetType())
-                        {
-                            return new Result(true, $"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MB.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}");
-                        }
-                        Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
-                    }
-
-                    i++;
-                }
-                User User = null;
-                if(Arguments.FirstOrDefault(o => o.GetType() == typeof(User)) is User user) 
-                {
-                    User = user;
-                }
-
-                return ExecuteCommand(new DataInput(User, Namespace, Class, Command, (ArgumentCollection)Parameters));
+                return GetClientResult(new Command(Namespace, Class, Command), Type, MB, Arguments);
 
             }
 
@@ -262,10 +209,50 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Return an Instance of the given Type
+        /// This Method makes a request on the server and returns the handed result.
         /// </summary>
-        /// <typeparam name="T">Type of CommandCollection</typeparam>
-        /// <returns>Instance of the given Type</returns>
+        /// <param name="Command">The Command that should be executed</param>
+        /// <param name="Type">The Type of the commandocllection</param>
+        /// <param name="Arguments">Arguments must be in the correct order.</param>
+        /// <returns>The Result wich comes from the server.</returns>
+        private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments) 
+        {
+            Result Result = new Result(new ErpException("Client: Unknown Error"));
+
+            if (Type.GetMethod(MethodBase.Name) is MethodInfo MI)
+            {
+
+                Dictionary<string, string> Parameters = new Dictionary<string, string>();
+
+                int i = 0;
+                foreach (ParameterInfo PI in MI.GetParameters())
+                {
+                    if (PI.Name != null)
+                    {
+                        if (Arguments.Length <= i)
+                        {
+                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}"));
+                        }
+                        if (Arguments[i].GetType() != PI.ParameterType && !ReflectionHelper.DoesInheritFrom(Arguments[i].GetType(), PI.ParameterType))
+                        {
+                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}"));
+                        }
+                        Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
+                    }
+
+                    i++;
+                }
+
+                return ExecuteCommand(new DataInput(Command, (ArgumentCollection)Parameters));
+            }
+            return Result;
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection.</typeparam>
+        /// <returns>Instance of the given Type.</returns>
         public static T GetInstance<T>() where T : CommandCollection, new()
         {
             if (CommandCollectionList.FirstOrDefault(o => o is T) is T CoCo)
@@ -281,10 +268,30 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Return an Instance of the given Type
+        /// Returns if an instance of the given type exists.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection</typeparam>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists<T>() where T : CommandCollection, new()
+        {
+            return CommandCollectionList.Any(o => o is T);
+        }
+
+        /// <summary>
+        /// Returns if an instance of the given type exists.
         /// </summary>
         /// <param name="Type">Type of CommandCollection</param>
-        /// <returns>Instance of the given Type</returns>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists(Type Type)
+        {
+            return CommandCollectionList.Any(o => o.GetType() == Type);
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <param name="Type">Type of CommandCollection.</param>
+        /// <returns>Instance of the given Type.</returns>
         internal static CommandCollection GetInstance(Type Type) 
         {
             if (CommandCollectionList.FirstOrDefault(o => o.GetType() == Type) is CommandCollection CoCo)
@@ -303,7 +310,7 @@ namespace ERP.Commands.Base
                     }
                     else
                     {
-                        throw new Exception($"Could not create Instance of type {Type.Name}");
+                        throw new ReflectionErpException($"Couldn't create instance of {Type.Name}");
                     }
                 }
                 catch
