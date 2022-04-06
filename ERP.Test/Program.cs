@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 using System.Windows.Forms;
+using ERP.Reporting;
 
 namespace ERP.Server
 {
