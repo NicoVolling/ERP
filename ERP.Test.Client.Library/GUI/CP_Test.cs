@@ -1,5 +1,4 @@
 ﻿using ERP.Client.WindowsForms.Controls.Base;
-using ERP.Client.WindowsForms.Controls.Windows;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.Test.GUI
+namespace ERP.Test.Client.Library.GUI
 {
     public class CP_Test : ContentPanel
     {

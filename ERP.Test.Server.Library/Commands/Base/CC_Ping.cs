@@ -1,5 +1,4 @@
 ﻿using ERP.BaseLib.Objects;
-using ERP.BaseLib.Serialization;
 using ERP.Commands.Base;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.Test.Commands.Base
+namespace ERP.Test.Server.Library.Commands.Base
 {
     public class CC_Ping : CommandCollection
     {

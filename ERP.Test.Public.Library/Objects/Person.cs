@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.Test.Objects
+namespace ERP.Test.Public.Library.Objects
 {
     public class Person : BusinessObject
     {
