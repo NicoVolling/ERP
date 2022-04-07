@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.Client.WindowsForms.Base
+namespace ERP.BaseLib.Objecs
 {
     public class PropertyChangedNotifier : INotifyPropertyChanged
     {

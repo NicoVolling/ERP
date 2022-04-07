@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using ERP.Exceptions.ErpExceptions;
+using ERP.BaseLib.Objecs;
 
 namespace ERP.Business.Objects
 {
     /// <summary>
     /// This class contains all Properties (Data).
     /// </summary>
-    public abstract class BusinessObject
+    public abstract class BusinessObject : PropertyChangedNotifier
     {
 
         /// <summary>

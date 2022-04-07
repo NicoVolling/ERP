@@ -8,7 +8,7 @@ namespace ERP.Client.WindowsForms
     public partial class BaseForm : Form
     {
 
-        public BaseForm(string ApplicationTitle, Icon MainIcon, Dictionary<string, Dictionary<string, BaseWindow>> WindowMenus)
+        public BaseForm(string ApplicationTitle, Icon MainIcon, Dictionary<string, Dictionary<string, Func<BaseWindow>>> WindowMenus)
         {
             InitializeComponent();
             this.MenuStrip.Renderer = new renderer();
@@ -40,16 +40,7 @@ namespace ERP.Client.WindowsForms
                         TSMI1.ForeColor = this.ForeColor;
                         TSMI1.Click += (s, e) =>
                         {
-                            Object? instance = Activator.CreateInstance(kvp1.Value.ContentPanel.GetType());
-                            if (instance is ContentPanel CP)
-                            {
-                                BaseWindow BW = new BaseWindow(CP);
-                                BW.Icon = kvp1.Value.Icon;
-                                BW.Text = kvp1.Value.Text;
-                                BW.StatusColor = kvp1.Value.StatusColor;
-
-                                OpenWindow(BW);
-                            }
+                            OpenWindow(kvp1.Value());
                         };
                         TSMI.DropDownItems.Add(TSMI1);
                     } 
@@ -86,6 +77,7 @@ namespace ERP.Client.WindowsForms
             BWTB.Text = BaseWindow.Text;
             BWTB.SetTaskBar();
             WindowListPanel.Controls.Add(BWTB);
+            BaseWindow.ContentPanel.Open(BaseWindow);
         }
 
         internal void Close(BaseWindow Window) 

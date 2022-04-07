@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="GUI\CP_Test.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="GUI\CP_Test.cs" />
   </ItemGroup>
 
 </Project>

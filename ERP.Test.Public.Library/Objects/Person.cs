@@ -10,11 +10,15 @@ namespace ERP.Test.Public.Library.Objects
 {
     public class Person : BusinessObject
     {
-        public string Name { get; set; }
+        private string name;
+        private string firstname;
+        private DateTime birthday;
 
-        public string Firstname { get; set; }
+        public string Name { get => name; set { name = value; NotifyPropertyChanged(); } }
 
-        public DateTime Birthday { get; set; }
+        public string Firstname { get => firstname; set { firstname = value; NotifyPropertyChanged(); } }
+
+        public DateTime Birthday { get => birthday; set { birthday = value; NotifyPropertyChanged(); } }
 
         public override string ToString()
         {

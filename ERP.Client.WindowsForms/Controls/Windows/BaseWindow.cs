@@ -24,9 +24,16 @@ namespace ERP.Client.WindowsForms.Controls.Windows
                 } 
                 else 
                 {
-                    ContentsPanel.Controls.Clear();
-                    ContentsPanel.Controls.Add(value);
-                    value.Dock = DockStyle.Fill;
+                    if (value is Control Control)
+                    {
+                        ContentsPanel.Controls.Clear();
+                        ContentsPanel.Controls.Add(Control);
+                        Control.Dock = DockStyle.Fill;
+                    }
+                    else
+                    {
+                        throw new ErpException("Invalid Type");
+                    }
                 } 
             }
         }
@@ -103,7 +110,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         public void Close() 
         {
             ParentForm.Close(this);
-            ContentPanel.OnClosed();
+            ContentPanel.Closed();
         }
 
         private void btn_maximize_Click(object sender, EventArgs e)
@@ -120,14 +127,14 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         {
             Visible = false;
             HasFocus = false;
-            ContentPanel.OnMinimized(Visible);
+            ContentPanel.Minimized(Visible);
         }
 
         protected override void OnDockChanged(EventArgs e)
         {
             base.OnDockChanged(e);
             btn_maximize.Image = Dock == DockStyle.Fill ? ERP.Client.WindowsForms.Base.Resources.No_Maximize : ERP.Client.WindowsForms.Base.Resources.Maximize; 
-            ContentPanel.OnMaximized(Dock == DockStyle.Fill);
+            ContentPanel.Maximized(Dock == DockStyle.Fill);
         }
 
     }

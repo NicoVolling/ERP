@@ -41,12 +41,12 @@ namespace ERP.Test.Client.App
                 throw;
             }
 
-            var WindowList = new Dictionary<string, Dictionary<string, BaseWindow>>()
+            var WindowList = new Dictionary<string, Dictionary<string, Func<BaseWindow>>>()
             {
                 { "Test",
-                    new Dictionary<string, BaseWindow>()
+                    new Dictionary<string, Func<BaseWindow>>()
                     {
-                        { "Moin", new BaseWindow(new CP_Test()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon, StatusColor = Color.Green } } 
+                        { "Moin",() =>  new BaseWindow(new CP_Test()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon, StatusColor = Color.Green } } 
                     } 
                 } 
             };

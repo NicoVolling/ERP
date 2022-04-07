@@ -7,15 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Attributes\**" />
+    <EmbeddedResource Remove="Attributes\**" />
+    <None Remove="Attributes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ERP.Exceptions\ERP.Exceptions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Attributes\" />
   </ItemGroup>
 
 </Project>

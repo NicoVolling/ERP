@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ERP.Exceptions\ERP.Exceptions.csproj" />
+    <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
