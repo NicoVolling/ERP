@@ -1,9 +1,11 @@
 ﻿using ERP.Client.WindowsForms;
+using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Commands.Base;
 using ERP.Test.Client.Library.GUI;
 using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net.Http;
 using System.Reflection;
 using System.Windows.Forms;
@@ -39,8 +41,18 @@ namespace ERP.Test.Client.App
                 throw;
             }
 
-            BaseForm BF = new BaseForm("ERP-Test", ERP.Client.WindowsForms.Base.Resources.WindowIcon);
-            BF.OpenWindow(new CP_Test());
+            var WindowList = new Dictionary<string, Dictionary<string, BaseWindow>>()
+            {
+                { "Test",
+                    new Dictionary<string, BaseWindow>()
+                    {
+                        { "Moin", new BaseWindow(new CP_Test()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon, StatusColor = Color.Green } } 
+                    } 
+                } 
+            };
+
+            BaseForm BF;
+            BF = new BaseForm("ERP-Test", ERP.Client.WindowsForms.Base.Resources.WindowIcon, WindowList);
             Application.Run(BF);
         }
     }

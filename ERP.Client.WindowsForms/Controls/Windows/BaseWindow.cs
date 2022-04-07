@@ -1,4 +1,5 @@
 ﻿using ERP.Client.WindowsForms.Controls.Base;
+using ERP.Exceptions.ErpExceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,14 +59,20 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public override string Text { get => this.TitleBar.Text; set => this.TitleBar.Text = value; }
 
-        private BaseForm ParentForm;
+        public BaseForm ParentForm { get { if (parentForm == null) { throw new ErpException("Cannot access ParentForm without setting it"); } return parentForm; } set => parentForm = value; }
 
-        public BaseWindow(BaseForm ParentForm, ContentPanel ContentPanel)
+        private BaseForm parentForm;
+
+        public BaseWindow(ContentPanel ContentPanel)
         {
             InitializeComponent();
-            this.ParentForm = ParentForm;
             this.ContentPanel = ContentPanel;
             CreateEvents(this);
+        }
+
+        public void SetParent(BaseForm ParentForm) 
+        {
+            this.ParentForm = ParentForm;
         }
 
         private void CreateEvents(Control Parent) 

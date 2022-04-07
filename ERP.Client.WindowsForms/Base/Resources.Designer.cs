@@ -71,12 +71,12 @@ namespace ERP.Client.WindowsForms.Base {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Icon Icon {
+        public static System.Drawing.Bitmap Icon {
             get {
                 object obj = ResourceManager.GetObject("Icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

@@ -20,6 +20,27 @@
             base.Dispose(disposing);
         }
 
+        private class renderer : ToolStripProfessionalRenderer
+        {
+            public renderer() : base() { }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                if (e.Item.Selected || e.Item.Pressed)
+                {
+                    Rectangle rc = new Rectangle(new Point(2, 0), new Size(e.Item.Size.Width - 4, e.Item.Size.Height));
+                    Color c = Color.FromArgb(e.Item.BackColor.R + 30, e.Item.BackColor.G + 30, e.Item.BackColor.B + 30);
+                    e.Graphics.FillRectangle(new SolidBrush(c), rc);
+                }
+                else
+                {
+                    Rectangle rc = new Rectangle(new Point(2, 0), new Size(e.Item.Size.Width - 4, e.Item.Size.Height));
+                    Color c = Color.FromArgb(e.Item.BackColor.R, e.Item.BackColor.G, e.Item.BackColor.B);
+                    e.Graphics.FillRectangle(new SolidBrush(c), rc);
+                }
+            }
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>

@@ -13,12 +13,15 @@ namespace ERP.Client.WindowsForms.Controls.Base
         private TagLabel TitleLabel;
         private PictureBox IconBox;
         private StatusLed StatusLed;
-
+        private Label MinimizeLabel;
         internal BaseWindow BaseWindow;
 
         public BaseWindowTitleBar(BaseWindow BaseWindow) 
         {
             InitializeComponent();
+            this.TitleLabel.MouseDown += TitleLabel_MouseDown;
+            this.TitleLabel.MouseUp += TitleLabel_MouseUp;
+            this.TitleLabel.MouseMove += TitleLabel_MouseMove;
             this.BaseWindow = BaseWindow;
         }
 
@@ -27,6 +30,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             this.TitleLabel = new ERP.Client.WindowsForms.Controls.Base.TagLabel();
             this.IconBox = new System.Windows.Forms.PictureBox();
             this.StatusLed = new ERP.Client.WindowsForms.Controls.Base.StatusLed();
+            this.MinimizeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.IconBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -37,23 +41,21 @@ namespace ERP.Client.WindowsForms.Controls.Base
             this.TitleLabel.Cursor = System.Windows.Forms.Cursors.SizeAll;
             this.TitleLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TitleLabel.Location = new System.Drawing.Point(49, 0);
+            this.TitleLabel.Location = new System.Drawing.Point(67, 0);
             this.TitleLabel.Name = "TitleLabel";
             this.TitleLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.TitleLabel.Size = new System.Drawing.Size(231, 34);
+            this.TitleLabel.Size = new System.Drawing.Size(213, 34);
             this.TitleLabel.TabIndex = 6;
             this.TitleLabel.Text = "Title";
             this.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.TitleLabel.MouseDown += TitleLabel_MouseDown;
-            this.TitleLabel.MouseUp += TitleLabel_MouseUp;
-            this.TitleLabel.MouseMove += TitleLabel_MouseMove;
             // 
             // IconBox
             // 
             this.IconBox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.IconBox.Location = new System.Drawing.Point(15, 0);
+            this.IconBox.Location = new System.Drawing.Point(33, 0);
             this.IconBox.Name = "IconBox";
             this.IconBox.Size = new System.Drawing.Size(34, 34);
+            this.IconBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.IconBox.TabIndex = 8;
             this.IconBox.TabStop = false;
             this.IconBox.Visible = false;
@@ -61,12 +63,24 @@ namespace ERP.Client.WindowsForms.Controls.Base
             // StatusLed
             // 
             this.StatusLed.Dock = System.Windows.Forms.DockStyle.Left;
-            this.StatusLed.Location = new System.Drawing.Point(0, 0);
+            this.StatusLed.Location = new System.Drawing.Point(18, 0);
             this.StatusLed.Name = "StatusLed";
             this.StatusLed.Padding = new System.Windows.Forms.Padding(4);
             this.StatusLed.Size = new System.Drawing.Size(15, 34);
             this.StatusLed.TabIndex = 7;
             this.StatusLed.Text = "statusLed1";
+            // 
+            // MinimizeLabel
+            // 
+            this.MinimizeLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.MinimizeLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.MinimizeLabel.Location = new System.Drawing.Point(0, 0);
+            this.MinimizeLabel.Name = "MinimizeLabel";
+            this.MinimizeLabel.Size = new System.Drawing.Size(18, 34);
+            this.MinimizeLabel.TabIndex = 9;
+            this.MinimizeLabel.Text = ">>";
+            this.MinimizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MinimizeLabel.Visible = false;
             // 
             // BaseWindowTitleBar
             // 
@@ -74,6 +88,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.IconBox);
             this.Controls.Add(this.StatusLed);
+            this.Controls.Add(this.MinimizeLabel);
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "BaseWindowTitleBar";
             this.Size = new System.Drawing.Size(280, 34);
@@ -88,6 +103,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             this.TitleLabel.MouseUp -= TitleLabel_MouseUp;
             this.TitleLabel.MouseMove -= TitleLabel_MouseMove;
             this.TitleLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BaseWindow.VisibleChanged += (s, e) => { MinimizeLabel.Visible = !BaseWindow.Visible; };
             this.TitleLabel.Click += (s, e) => 
             { 
                 if (BaseWindow.HasFocus)
@@ -151,7 +167,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
         }
 
         [Category("Darstellung")]
-        public Color StatusColor { get => StatusLed.ForeColor; set => StatusLed.ForeColor = value; }
+        public Color StatusColor { get => StatusLed.ForeColor; set { StatusLed.ForeColor = value; MinimizeLabel.ForeColor = value; } }
 
         [Category("Darstellung")]
         public Image Icon { get => IconBox.Image; set { IconBox.Image = value; if (IconBox.Image == null) { IconBox.Visible = false; } else { IconBox.Visible = true; } } }
