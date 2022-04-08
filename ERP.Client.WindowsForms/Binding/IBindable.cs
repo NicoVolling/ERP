@@ -70,31 +70,16 @@ namespace ERP.Client.WindowsForms.Binding
 
         public static Color GetBindingStatusColor(BindingStatus Status)
         {
-            Color Color = Color.FromArgb(80, 80, 80);
-
-            switch (Status)
+            var color = Status switch
             {
-                case BindingStatus.Unbound:
-                    Color = Color.FromArgb(80, 80, 80);
-                    break;
-                case BindingStatus.NullOrDefault:
-                    Color = Color.FromArgb(200, 200, 200);
-                    break;
-                case BindingStatus.Unsaved:
-                    Color = Color.FromArgb(230, 200, 0);
-                    break;
-                case BindingStatus.Saved:
-                    Color = Color.FromArgb(0, 230, 0);
-                    break;
-                case BindingStatus.Error:
-                    Color = Color.FromArgb(230, 0, 0);
-                    break;
-                default:
-                    Color = Color.Black;
-                    break;
-            }
-
-            return Color;
+                BindingStatus.Unbound => Color.FromArgb(80, 80, 80),
+                BindingStatus.NullOrDefault => Color.FromArgb(200, 200, 200),
+                BindingStatus.Unsaved => Color.FromArgb(230, 200, 0),
+                BindingStatus.Saved => Color.FromArgb(0, 230, 0),
+                BindingStatus.Error => Color.FromArgb(230, 0, 0),
+                _ => Color.Black,
+            };
+            return color;
         }
 
         public Object ParseFromObject(Object Value);

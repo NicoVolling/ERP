@@ -59,7 +59,7 @@ namespace ERP.BaseLib.Objects
         /// </summary>
         public DataInput() 
         {
-            this.Command = default(Command);
+            this.Command = default;
             this.Arguments = new ArgumentCollection();
         }
     }

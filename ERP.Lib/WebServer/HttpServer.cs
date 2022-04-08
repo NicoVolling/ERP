@@ -16,7 +16,7 @@ namespace ERP.BaseLib.WebServer
     /// </summary>
     public abstract class HttpServer
     {
-        private HttpListener listener;
+        private readonly HttpListener listener;
         private int reqCount = 0;
 
         /// <summary>

@@ -24,10 +24,6 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            float X = 0;
-            float Y = 0;
-            float Height = this.Height;
-            float Width = this.Width;
             Graphics gfx = e.Graphics;
             gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;

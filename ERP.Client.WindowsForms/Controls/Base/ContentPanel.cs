@@ -18,7 +18,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
     {
         protected BaseWindow BaseWindow { get; private set; }
 
-        public DataContext _DataContext { get; set; }
+        public DataContext DataContext { get; set; }
 
         public ContentPanel()
         {
@@ -37,7 +37,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (_DataContext == null && !IsInDesignMode()) { throw new ErpException("DataContext is null"); }
+            if (DataContext == null && !IsInDesignMode()) { throw new ErpException("DataContext is null"); }
         }
 
         public void Open(BaseWindow BaseWindow)
@@ -126,7 +126,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                 {
                     if (Control.Tag is string Tag)
                     {
-                        if (Tag.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Count() > 0)
+                        if (Tag.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Any())
                         {
                             Bind(Bindable, str);
                             if (!Bindables.Contains(Bindable)) 
@@ -150,16 +150,10 @@ namespace ERP.Client.WindowsForms.Controls.Base
         private void Bind(IBindable Bindable, IEnumerable<string> ObjectName)
         {
             var tmp = ObjectName.ToList();
-            tmp.Insert(0, nameof(_DataContext));
+            tmp.Insert(0, nameof(DataContext));
             ObjectName = tmp;
 
-            Action<Object> Set;
-            Func<Object> Get;
-            PropertyChangedNotifier PropertyChangedNotifier;
-            string PropertyName;
-            Type TargetType;
-
-            GetAccessors(this, ObjectName, out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType);
+            GetAccessors(this, ObjectName, out Action<object> Set, out Func<object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType);
 
             if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {

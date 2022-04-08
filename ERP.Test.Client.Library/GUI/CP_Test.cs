@@ -21,7 +21,7 @@ namespace ERP.Test.Client.Library.GUI
         private Button btn_create;
         private ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox b_TextBox1;
 
-        public CP_Test_DataContext DataContext { get => _DataContext as CP_Test_DataContext; set => _DataContext = value; }
+        public new CP_Test_DataContext DataContext { get => base.DataContext as CP_Test_DataContext; set => base.DataContext = value; }
 
         public CP_Test()
         {
