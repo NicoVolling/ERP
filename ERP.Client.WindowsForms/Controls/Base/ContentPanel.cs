@@ -185,7 +185,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType)
         {
-            if (Parent.GetType().GetProperty(ObjectName.First()) is PropertyInfo PI)
+            if (Parent.GetType().GetProperties().Where(o => o.Name.Equals(ObjectName.First())).FirstOrDefault(o => o.DeclaringType != typeof(ContentPanel)) is PropertyInfo PI)
             {
                 if (PI.CanRead)
                 {
