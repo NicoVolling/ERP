@@ -180,7 +180,8 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         protected void OnStatusChanged(BindingStatus Status)
         {
-            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status));
+            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status)); 
+            ProofError();
         }
 
         protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType)
@@ -241,6 +242,27 @@ namespace ERP.Client.WindowsForms.Controls.Base
             {
                 throw new ErpException("Couldnt find Value");
             }
+        }
+
+        private bool error = false;
+
+        public bool HasError { get => error; }
+
+        private void ProofError() 
+        {
+            bool err = Bindables.Any(o => o.HasError);
+            if (error != err)
+            {
+                error = err; 
+                OnErrorChanged(); 
+            }
+        }
+
+        public event EventHandler ErrorChanged;
+
+        protected virtual void OnErrorChanged() 
+        {
+            ErrorChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void InitializeComponent()

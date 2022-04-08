@@ -2,6 +2,7 @@
 using ERP.BaseLib.Serialization;
 using ERP.Client.WindowsForms.Base;
 using ERP.Client.WindowsForms.Binding;
+using ERP.Client.WindowsForms.Binding.Parser;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             InitializeComponent();
         }
 
+        protected override IParser OnGetParser()
+        {
+            return IParser.GetParser(typeof(string), TargetType);
+        }
+
         protected override void OnBound()
         {
             textBox1.TextChanged += (s, e) =>
@@ -40,30 +46,6 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         {
             textBox1.Text = Get()?.ToString();
             Status = string.IsNullOrEmpty(textBox1.Text) || textBox1.Text.Equals("-1") ? BindingStatus.NullOrDefault : BindingStatus.Saved;
-        }
-
-        protected override object OnParseFromObject(object Value)
-        {
-            try 
-            { 
-                if(Value == null) { return ""; }
-                return base.OnParseFromObject(Value);
-            }
-            catch 
-            {
-                return "";
-            }
-        }
-
-        protected override object OnParseToObject(object Value)
-        {
-            if(TargetType == typeof(int)) 
-            {
-                if(Value == null) { return -1; }
-                return Json.Deserialize<int>(Value.ToString());
-            }
-            if(Value == null) { return ""; }
-            return base.OnParseToObject(Value);
         }
     }
 }

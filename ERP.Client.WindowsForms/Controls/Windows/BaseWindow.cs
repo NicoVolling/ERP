@@ -31,7 +31,9 @@ namespace ERP.Client.WindowsForms.Controls.Windows
                     {
                         ContentsPanel.Controls.Clear();
                         ContentsPanel.Controls.Add(Control);
-                        this.Size = new Size(this.Width - ContentsPanel.Width + Control.Width, this.Height - ContentsPanel.Height + Control.Height);
+                        this.Size = new Size(
+                            this.Width - ContentsPanel.Width + Control.Width + ContentsPanel.Padding.Left + ContentsPanel.Padding.Right, 
+                            this.Height - ContentsPanel.Height + Control.Height + ContentsPanel.Padding.Top + ContentsPanel.Padding.Bottom);
                         Control.Dock = DockStyle.Fill;
                     }
                     else

@@ -92,6 +92,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             this.ContentsPanel.Name = "ContentsPanel";
             this.ContentsPanel.Size = new System.Drawing.Size(400, 209);
             this.ContentsPanel.TabIndex = 1;
+            this.ContentsPanel.Padding = new System.Windows.Forms.Padding(8);
             // 
             // ResizePanel
             // 

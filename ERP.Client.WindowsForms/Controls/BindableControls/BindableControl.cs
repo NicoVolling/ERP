@@ -1,5 +1,6 @@
 ﻿using ERP.BaseLib.Objecs;
 using ERP.Client.WindowsForms.Binding;
+using ERP.Client.WindowsForms.Binding.Parser;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,13 +22,19 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public Type TargetType { get; private set; }
 
-        private bool Error = false; 
+        private bool error = false; 
+
+        public bool HasError { get => error; }
 
         private bool load = true;
 
         private BindingStatus status;
 
         private string description;
+
+        public IParser Parser { get; private set; }
+
+        private Type OrigingType { get; set; }
 
         public BindableControl()
         {
@@ -40,6 +47,8 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             lbl_Description_TextChanged(null, null);
             Status = BindingStatus.Unsaved;
         }
+
+        protected virtual IParser OnGetParser() { return new Parser<Object, Object>(o => o, o => o); }
 
         public static Color GetBindingStatusColor(BindingStatus Status)
         {
@@ -58,6 +67,9 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         public void Bind(Func<Object> Get, Action<Object> Set, PropertyChangedNotifier PropertyChangedNotifier, string PropertyName, Type TargetType)
         {
             this.TargetType = TargetType;
+            this.Parser = OnGetParser();
+            if(Parser.Type1 == TargetType) { OrigingType = Parser.Type2; }
+            if(Parser.Type2 == TargetType) { OrigingType = Parser.Type1; }
             this.Set = (Object) =>
             {
                 try
@@ -109,8 +121,8 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public BindingStatus Status 
         { 
-            get => Error ? BindingStatus.Error : status; 
-            protected set { status = value; OnStatusChanged(Status); SetBindingStatus(Status); } 
+            get => error ? BindingStatus.Error : status; 
+            protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); } 
         }
 
         public void Sync()
@@ -177,7 +189,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         {
             try
             {
-                return OnParseFromObject(Value);
+                return Parser.Parse(Value, OrigingType);
             }
             catch
             {
@@ -191,16 +203,16 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             {
                 try
                 {
-                    Object Result = OnParseToObject(Value);
-                    Error = false;
+                    Object Result = Parser.Parse(Value, TargetType);
+                    error = false;
                     Status = Status;
                     return Result;
                 }
                 catch
                 {
-                    Error = true;
+                    error = true;
                     Status = BindingStatus.Error;
-                    return OnParseToObject(null);
+                    return Parser.Parse(null, TargetType);
                 }
             }
             catch
@@ -208,8 +220,5 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
                 throw;
             }
         }
-
-        protected virtual Object OnParseFromObject(Object Value) { return Value; }
-        protected virtual Object OnParseToObject(Object Value) { return Value; }
     }
 }

@@ -133,6 +133,23 @@ namespace ERP.Test.Client.Library.GUI
             DataContext.Person = new Person();
         }
 
+        protected override void OnErrorChanged()
+        {
+            base.OnErrorChanged();
+            if(HasError) 
+            {
+                btn_create.Enabled = false;
+                btn_delete.Enabled = false;
+                btn_save.Enabled = false;
+            }
+            else 
+            {
+                btn_create.Enabled = true;
+                btn_delete.Enabled = true;
+                btn_save.Enabled = true;
+            }
+        }
+
         private void btn_save_Click(object sender, EventArgs e)
         {
             PersonClient Client = new PersonClient();
