@@ -1,4 +1,5 @@
 ﻿using ERP.BaseLib.Objecs;
+using ERP.BaseLib.Serialization;
 using ERP.Client.WindowsForms.Base;
 using ERP.Client.WindowsForms.Binding;
 using System;
@@ -23,12 +24,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             InitializeComponent();
         }
 
-        public void Bind(Func<object> Get, Action<object> Set, PropertyChangedNotifier PropertyChangedNotifier, string PropertyName)
+        public void Bind(Func<object> Get, Action<object> Set, PropertyChangedNotifier PropertyChangedNotifier, string PropertyName, Type TargetType)
         {
-            IBindable.Bind(this, Get, Set, PropertyChangedNotifier, PropertyName);
+            IBindable.Bind(this, Get, Set, PropertyChangedNotifier, PropertyName, TargetType);
             textBox1.TextChanged += (s, e) => 
             {
-                SetBindingStatus(BindingStatus.Unsaved);
+                Status = BindingStatus.Unsaved;
                 SaveData(); 
             };
         }
@@ -41,14 +42,31 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected override void OnLoadData()
         {
             textBox1.Text = Get()?.ToString();
-            if (String.IsNullOrEmpty(textBox1.Text))
-            {
-                SetBindingStatus(BindingStatus.NullOrDefault);
+            Status = string.IsNullOrEmpty(textBox1.Text) || textBox1.Text.Equals("-1") ? BindingStatus.NullOrDefault : BindingStatus.Saved;
+        }
+
+        protected override object OnParseFromObject(object Value)
+        {
+            try 
+            { 
+                if(Value == null) { return ""; }
+                return base.OnParseFromObject(Value);
             }
-            else 
+            catch 
             {
-                SetBindingStatus(BindingStatus.Saved);
+                return "";
             }
+        }
+
+        protected override object OnParseToObject(object Value)
+        {
+            if(TargetType == typeof(int)) 
+            {
+                if(Value == null) { return -1; }
+                return Json.Deserialize<int>(Value.ToString());
+            }
+            if(Value == null) { return ""; }
+            return base.OnParseToObject(Value);
         }
     }
 }

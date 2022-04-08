@@ -35,7 +35,7 @@
             // ControlPanel
             // 
             this.ControlPanel.Controls.Add(this.textBox1);
-            this.ControlPanel.Size = new System.Drawing.Size(307, 29);
+            this.ControlPanel.Size = new System.Drawing.Size(351, 29);
             // 
             // textBox1
             // 
@@ -45,7 +45,7 @@
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Location = new System.Drawing.Point(3, 3);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(300, 23);
+            this.textBox1.Size = new System.Drawing.Size(344, 23);
             this.textBox1.TabIndex = 0;
             // 
             // B_TextBox

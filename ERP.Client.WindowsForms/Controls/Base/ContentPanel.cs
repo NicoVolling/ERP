@@ -1,6 +1,7 @@
 ﻿using ERP.BaseLib.Objecs;
 using ERP.Client.WindowsForms.Base;
 using ERP.Client.WindowsForms.Binding;
+using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Exceptions.ErpExceptions;
 using System;
@@ -81,7 +82,39 @@ namespace ERP.Client.WindowsForms.Controls.Base
         {
         }
 
-        List<IBindable> Bindables { get; } = new List<IBindable>();
+        public BindingStatus Status 
+        { 
+            get 
+            {
+                int saved = 0;
+                int unbound = 0;
+
+                foreach(IBindable Bindable in Bindables) 
+                {
+                    if(Bindable.Status == BindingStatus.Error) 
+                    {
+                        return BindingStatus.Error;
+                    } 
+                    else if(Bindable.Status == BindingStatus.Unsaved) 
+                    {
+                        return BindingStatus.Unsaved;    
+                    }
+                    saved += Bindable.Status == BindingStatus.Saved ? 1 : 0;
+                    unbound += Bindable.Status == BindingStatus.Unbound ? 1 : 0;
+                }
+                if(saved == Bindables.Count - unbound) 
+                {
+                    return BindingStatus.Saved;
+                }
+                else if (unbound == Bindables.Count)
+                {
+                    return BindingStatus.Unbound;
+                }
+                return BindingStatus.NullOrDefault;
+            } 
+        }
+
+        protected List<IBindable> Bindables { get; } = new List<IBindable>();
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
@@ -124,10 +157,11 @@ namespace ERP.Client.WindowsForms.Controls.Base
             Func<Object> Get;
             PropertyChangedNotifier PropertyChangedNotifier;
             string PropertyName;
+            Type TargetType;
 
-            GetAccessors(this, ObjectName, out Set, out Get, out PropertyChangedNotifier, out PropertyName);
+            GetAccessors(this, ObjectName, out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType);
 
-            if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null)
+            if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
                 PropertyChangedNotifier.PropertyChanged += (s, e) =>
                 {
@@ -137,9 +171,10 @@ namespace ERP.Client.WindowsForms.Controls.Base
                     }
                 };
             }
-            else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null)
+            else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
-                Bindable.Bind(Get, Set, PropertyChangedNotifier, PropertyName);
+                Bindable.Bind(Get, Set, PropertyChangedNotifier, PropertyName, TargetType);
+                Bindable.StatusChanged += (s, e) => { OnStatusChanged(this.Status); };
             }
             else
             {
@@ -147,7 +182,14 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName)
+        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+
+        protected void OnStatusChanged(BindingStatus Status)
+        {
+            StatusChanged?.Invoke(this, new StatusChangedEventArgs(Status));
+        }
+
+        protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType)
         {
             if (Parent.GetType().GetProperty(ObjectName.First()) is PropertyInfo PI)
             {
@@ -158,7 +200,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                         Object? obj = PI.GetValue(Parent);
                         if (obj is PropertyChangedNotifier NewParent)
                         {
-                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName);
+                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType);
                         }
                         else if (obj is null && Parent is PropertyChangedNotifier PCN)
                         {
@@ -166,6 +208,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                             Get = null;
                             PropertyChangedNotifier = PCN;
                             PropertyName = ObjectName.First();
+                            TargetType = PI.PropertyType;
                         }
                         else
                         {
@@ -187,44 +230,12 @@ namespace ERP.Client.WindowsForms.Controls.Base
                             }
                             PropertyChangedNotifier = PCN;
                             PropertyName = ObjectName.First();
+                            TargetType = PI.PropertyType;
                         }
                         else
                         {
                             throw new ErpException("Parent is not in correct type");
                         }
-                    }
-                }
-                else
-                {
-                    throw new ErpException("Couldnt read Value");
-                }
-            }
-            else
-            {
-                throw new ErpException("Couldnt find Value");
-            }
-        }
-
-        protected Func<Object?> GetValue(Object Parent, IEnumerable<string> ObjectName)
-        {
-            if (Parent.GetType().GetProperty(ObjectName.First()) is PropertyInfo PI)
-            {
-                if (PI.CanRead)
-                {
-                    if (ObjectName.Count() > 1)
-                    {
-                        if (PI.GetValue(Parent) is Object NewParent)
-                        {
-                            return GetValue(NewParent, ObjectName.Skip(1));
-                        }
-                        else
-                        {
-                            throw new ErpException("Couldnt get Value");
-                        }
-                    }
-                    else
-                    {
-                        return () => { return PI.GetValue(Parent); };
                     }
                 }
                 else
@@ -246,7 +257,9 @@ namespace ERP.Client.WindowsForms.Controls.Base
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.ForeColor = System.Drawing.Color.White;
+            this.MinimumSize = new System.Drawing.Size(402, 245);
             this.Name = "ContentPanel";
+            this.Size = new System.Drawing.Size(402, 245);
             this.ResumeLayout(false);
 
         }

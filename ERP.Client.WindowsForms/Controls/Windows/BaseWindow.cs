@@ -1,4 +1,6 @@
-﻿using ERP.Client.WindowsForms.Controls.Base;
+﻿using ERP.Client.WindowsForms.Binding;
+using ERP.Client.WindowsForms.Controls.Base;
+using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Exceptions.ErpExceptions;
 using System;
 using System.Collections.Generic;
@@ -14,27 +16,29 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 {
     public partial class BaseWindow : UserControl
     {
-        public ContentPanel? ContentPanel { 
-            get => ContentsPanel.Controls.Cast<Control>().FirstOrDefault(o => o is ContentPanel) as ContentPanel; 
-            protected set 
-            { 
-                if (value is null) 
-                { 
-                    ContentsPanel.Controls.Clear(); 
-                } 
-                else 
+        public ContentPanel? ContentPanel
+        {
+            get => ContentsPanel.Controls.Cast<Control>().FirstOrDefault(o => o is ContentPanel) as ContentPanel;
+            protected set
+            {
+                if (value is null)
+                {
+                    ContentsPanel.Controls.Clear();
+                }
+                else
                 {
                     if (value is Control Control)
                     {
                         ContentsPanel.Controls.Clear();
                         ContentsPanel.Controls.Add(Control);
+                        this.Size = new Size(this.Width - ContentsPanel.Width + Control.Width, this.Height - ContentsPanel.Height + Control.Height);
                         Control.Dock = DockStyle.Fill;
                     }
                     else
                     {
                         throw new ErpException("Invalid Type");
                     }
-                } 
+                }
             }
         }
 
@@ -59,32 +63,43 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         }
 
         [Category("Darstellung")]
-        public Color StatusColor { get => this.TitleBar.StatusColor; set => this.TitleBar.StatusColor = value; }
+        public Color StatusColor { get => this.TitleBar.StatusColor; protected set => this.TitleBar.StatusColor = value; }
 
         [Category("Darstellung")]
         public Image Icon { get => this.TitleBar.Icon; set { this.TitleBar.Icon = value; } }
+
+        public BindingStatus Status { get => status; protected set { status = value; this.StatusColor = IBindable.GetBindingStatusColor(value); OnStatusChanged(value); } }
+
+        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+
+        protected void OnStatusChanged(BindingStatus Status)
+        {
+            StatusChanged?.Invoke(this, new StatusChangedEventArgs(Status));
+        }
 
         public override string Text { get => this.TitleBar.Text; set => this.TitleBar.Text = value; }
 
         public BaseForm ParentForm { get { if (parentForm == null) { throw new ErpException("Cannot access ParentForm without setting it"); } return parentForm; } set => parentForm = value; }
 
         private BaseForm parentForm;
+        private BindingStatus status;
 
         public BaseWindow(ContentPanel ContentPanel)
         {
             InitializeComponent();
             this.ContentPanel = ContentPanel;
+            this.ContentPanel.StatusChanged += (s, e) => { this.Status = e.Status; };
             CreateEvents(this);
         }
 
-        public void SetParent(BaseForm ParentForm) 
+        public void SetParent(BaseForm ParentForm)
         {
             this.ParentForm = ParentForm;
         }
 
-        private void CreateEvents(Control Parent) 
+        private void CreateEvents(Control Parent)
         {
-            Parent.MouseDown += (s, e) => 
+            Parent.MouseDown += (s, e) =>
             {
                 HasFocus = true;
             };
@@ -92,11 +107,11 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             {
                 HasFocus = true;
             };
-            Parent.ControlAdded += (s, e) => 
+            Parent.ControlAdded += (s, e) =>
             {
                 CreateEvents(e.Control);
             };
-            foreach(Control Control in Parent.Controls) 
+            foreach (Control Control in Parent.Controls)
             {
                 CreateEvents(Control);
             }
@@ -107,7 +122,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             Close();
         }
 
-        public void Close() 
+        public void Close()
         {
             ParentForm.Close(this);
             ContentPanel.Closed();
@@ -118,7 +133,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             SwitchMaximize();
         }
 
-        public void SwitchMaximize() 
+        public void SwitchMaximize()
         {
             this.Dock = Dock == DockStyle.Fill ? DockStyle.None : DockStyle.Fill;
         }
@@ -133,7 +148,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         protected override void OnDockChanged(EventArgs e)
         {
             base.OnDockChanged(e);
-            btn_maximize.Image = Dock == DockStyle.Fill ? ERP.Client.WindowsForms.Base.Resources.No_Maximize : ERP.Client.WindowsForms.Base.Resources.Maximize; 
+            btn_maximize.Image = Dock == DockStyle.Fill ? ERP.Client.WindowsForms.Base.Resources.No_Maximize : ERP.Client.WindowsForms.Base.Resources.Maximize;
             ContentPanel.Maximized(Dock == DockStyle.Fill);
         }
 

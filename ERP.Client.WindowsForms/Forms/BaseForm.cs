@@ -1,4 +1,5 @@
 using ERP.Client.WindowsForms.Base;
+using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Controls.Base;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Exceptions.ErpExceptions;
@@ -55,17 +56,7 @@ namespace ERP.Client.WindowsForms
 
         public IEnumerable<BaseWindow> Windows { get => WindowPanel.Controls.Cast<Control>().Where(o => o is BaseWindow).Select(o => o as BaseWindow); }
 
-        public BaseWindow OpenWindow(ContentPanel ContentPanel) 
-        {
-            BaseWindow BaseWindow = new BaseWindow(ContentPanel);
-            ContentPanel.Open(BaseWindow);
-            
-            OpenWindow(BaseWindow);
-
-            return BaseWindow;
-        }
-
-        public void OpenWindow(BaseWindow BaseWindow) 
+        public void OpenWindow(BaseWindow BaseWindow)
         {
             BaseWindow.SetParent(this);
             WindowPanel.Controls.Add(BaseWindow);
@@ -73,8 +64,8 @@ namespace ERP.Client.WindowsForms
 
             BaseWindowTitleBar BWTB = new BaseWindowTitleBar(BaseWindow) { Dock = DockStyle.Top };
             BWTB.Icon = BaseWindow.Icon;
-            BWTB.StatusColor = BaseWindow.StatusColor;
             BWTB.Text = BaseWindow.Text;
+            BaseWindow.StatusChanged += (s, e) => { BWTB.StatusColor = IBindable.GetBindingStatusColor(e.Status); };
             BWTB.SetTaskBar();
             WindowListPanel.Controls.Add(BWTB);
             BaseWindow.ContentPanel.Open(BaseWindow);

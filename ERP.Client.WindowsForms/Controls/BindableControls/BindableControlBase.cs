@@ -13,64 +13,51 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     public partial class BindableControlBase : UserControl
     {
+        private static double factor = -1;
+
+        public Type TargetType { get; set; }
+
+        private bool Error = false;
+
         public BindableControlBase()
         {
             InitializeComponent();
+            if (factor == -1)
+            {
+                factor = (double)StatusPanel.Height / (double)StatusPanel.Width;
+            }
             OnSizeChanged(null);
+            lbl_Description_TextChanged(null, null);
+            Status = BindingStatus.Unsaved;
         }
 
-        protected void SetBindingStatus(BindingStatus Status) 
+        private void SetBindingStatus(BindingStatus Status)
         {
-            Color Color = Color.FromArgb(80, 80, 80);
-
-            switch (Status)
-            {
-                case BindingStatus.Unbound:
-                    Color = Color.FromArgb(80, 80, 80);
-                    break;
-                case BindingStatus.NullOrDefault:
-                    Color = Color.FromArgb(130, 130, 130);
-                    break;
-                case BindingStatus.Unsaved:
-                    Color = Color.FromArgb(230, 200, 0);
-                    break;
-                case BindingStatus.Saved:
-                    Color = Color.FromArgb(0, 230, 0);
-                    break;
-                case BindingStatus.Error:
-                    Color = Color.FromArgb(230, 0, 0);
-                    break;
-                default:
-                    Color = Color.Black;
-                    break;
-            }
+            Color Color = IBindable.GetBindingStatusColor(Status);
 
             this.Enabled = Status != BindingStatus.Unbound;
             StatusLed.ForeColor = Color;
         }
 
-        private BindingStatus status = BindingStatus.Unbound;
-
-        protected enum BindingStatus 
-        {
-            Unbound,
-            NullOrDefault,
-            Unsaved,
-            Saved,
-            Error
+        public BindingStatus Status 
+        { 
+            get => Error ? BindingStatus.Error : status; 
+            set { status = value; OnStatusChanged(Status); SetBindingStatus(Status); } 
         }
 
-        public void Sync() 
+        public void Sync()
         {
-            if(this is IBindable Bindable) 
+            if (this is IBindable Bindable)
             {
                 Bindable.LoadData();
             }
         }
 
         bool load = true;
+        private BindingStatus status;
+        private string description;
 
-        public void SaveData() 
+        public void SaveData()
         {
             load = false;
             OnSaveData();
@@ -79,9 +66,9 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         protected virtual void OnSaveData() { }
 
-        public void LoadData() 
+        public void LoadData()
         {
-            if(load) 
+            if (load)
             {
                 OnLoadData();
             }
@@ -92,7 +79,73 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            StatusPanel.Width = StatusPanel.Height;
+            if (factor > -1)
+            {
+                StatusPanel.Width = (int)((double)StatusPanel.Height / factor);
+            }
         }
+
+        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+
+        protected void OnStatusChanged(BindingStatus Status)
+        {
+            StatusChanged?.Invoke(this, new StatusChangedEventArgs(Status));
+        }
+
+        [Category("Darstellung")]
+        public string Description { get => description; set { description = value; lbl_Description.Text = $"{description}:"; } }
+
+        private void lbl_Description_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Description))
+            {
+                lbl_Description.Visible = false;
+                lbl_Description.Size = new Size(0, 0);
+            }
+            else
+            {
+                lbl_Description.Visible = true;
+                lbl_Description.Size = new Size((int)lbl_Description.CreateGraphics().MeasureString(lbl_Description.Text, lbl_Description.Font).Width + 5, 0);
+            }
+        }
+
+        public Object ParseFromObject(Object Value) 
+        {
+            try
+            {
+                return OnParseFromObject(Value);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Object ParseToObject(Object Value) 
+        {
+            try
+            {
+                try
+                {
+                    Object Result = OnParseToObject(Value);
+                    Error = false;
+                    Status = Status;
+                    return Result;
+                }
+                catch
+                {
+                    Error = true;
+                    Status = BindingStatus.Error;
+                    return OnParseToObject(null);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        protected virtual Object OnParseFromObject(Object Value) { return Value; }
+        protected virtual Object OnParseToObject(Object Value) { return Value; }
     }
 }

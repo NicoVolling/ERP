@@ -23,6 +23,7 @@ namespace ERP.Server.WebServer
         /// </summary>
         public HttpServer()
         {
+            this.ConsoleOutput = false;
             CommandMaster.Reload();
         }
 
@@ -55,11 +56,15 @@ namespace ERP.Server.WebServer
                         {
                             DataInput Input = Json.Deserialize<DataInput>(datastring);
                             Result = CommandMaster.ExecuteCommand(Input);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Executed Command: {Input.Command}");
                         }
                         catch (Exception ex)
                         {
                             Result.Error = true;
                             Result.ErrorMessage = ex.Message;
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Received an Error: {ex.GetType().Name}");
                         }
                     }
                     else
