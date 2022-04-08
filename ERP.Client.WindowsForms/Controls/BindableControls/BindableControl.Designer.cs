@@ -1,6 +1,6 @@
 ﻿namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
-    partial class BindableControlBase
+    partial class BindableControl
     {
         /// <summary> 
         /// Erforderliche Designervariable.

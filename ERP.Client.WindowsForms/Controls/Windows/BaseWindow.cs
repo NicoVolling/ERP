@@ -68,13 +68,13 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         [Category("Darstellung")]
         public Image Icon { get => this.TitleBar.Icon; set { this.TitleBar.Icon = value; } }
 
-        public BindingStatus Status { get => status; protected set { status = value; this.StatusColor = IBindable.GetBindingStatusColor(value); OnStatusChanged(value); } }
+        public BindingStatus Status { get => status; protected set { status = value; this.StatusColor = BindableControl.GetBindingStatusColor(value); OnStatusChanged(value); } }
 
-        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+        public event EventHandler<BindingStatusChangedEventArgs>? StatusChanged;
 
         protected void OnStatusChanged(BindingStatus Status)
         {
-            StatusChanged?.Invoke(this, new StatusChangedEventArgs(Status));
+            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status));
         }
 
         public override string Text { get => this.TitleBar.Text; set => this.TitleBar.Text = value; }

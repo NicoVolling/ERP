@@ -43,15 +43,11 @@ namespace ERP.Test.Client.Library.GUI
             // b_TextBox1
             // 
             this.b_TextBox1.Description = "ID";
-            this.b_TextBox1.Get = null;
             this.b_TextBox1.Location = new System.Drawing.Point(38, 31);
             this.b_TextBox1.Name = "b_TextBox1";
-            this.b_TextBox1.Set = null;
             this.b_TextBox1.Size = new System.Drawing.Size(296, 29);
-            this.b_TextBox1.Status = ERP.Client.WindowsForms.Controls.BindableControls.BindingStatus.Unbound;
             this.b_TextBox1.TabIndex = 0;
             this.b_TextBox1.Tag = "Person.ID";
-            this.b_TextBox1.TargetType = null;
             // 
             // btn_save
             // 
@@ -89,28 +85,20 @@ namespace ERP.Test.Client.Library.GUI
             // b_TextBox2
             // 
             this.b_TextBox2.Description = "Firstname";
-            this.b_TextBox2.Get = null;
             this.b_TextBox2.Location = new System.Drawing.Point(38, 66);
             this.b_TextBox2.Name = "b_TextBox2";
-            this.b_TextBox2.Set = null;
             this.b_TextBox2.Size = new System.Drawing.Size(296, 29);
-            this.b_TextBox2.Status = ERP.Client.WindowsForms.Controls.BindableControls.BindingStatus.Unbound;
             this.b_TextBox2.TabIndex = 0;
             this.b_TextBox2.Tag = "Person.Firstname";
-            this.b_TextBox2.TargetType = null;
             // 
             // b_TextBox3
             // 
             this.b_TextBox3.Description = "Name";
-            this.b_TextBox3.Get = null;
             this.b_TextBox3.Location = new System.Drawing.Point(38, 101);
             this.b_TextBox3.Name = "b_TextBox3";
-            this.b_TextBox3.Set = null;
             this.b_TextBox3.Size = new System.Drawing.Size(296, 29);
-            this.b_TextBox3.Status = ERP.Client.WindowsForms.Controls.BindableControls.BindingStatus.Unbound;
             this.b_TextBox3.TabIndex = 0;
             this.b_TextBox3.Tag = "Person.Name";
-            this.b_TextBox3.TargetType = null;
             // 
             // btn_create
             // 

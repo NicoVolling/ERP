@@ -14,23 +14,20 @@ using System.Windows.Forms;
 
 namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
-    public partial class B_TextBox : BindableControlBase, IBindable
+    public partial class B_TextBox : BindableControl
     {
-        public Func<object> Get { get; set; }
-        public Action<object> Set { get; set; }
 
         public B_TextBox()
         {
             InitializeComponent();
         }
 
-        public void Bind(Func<object> Get, Action<object> Set, PropertyChangedNotifier PropertyChangedNotifier, string PropertyName, Type TargetType)
+        protected override void OnBound()
         {
-            IBindable.Bind(this, Get, Set, PropertyChangedNotifier, PropertyName, TargetType);
-            textBox1.TextChanged += (s, e) => 
+            textBox1.TextChanged += (s, e) =>
             {
                 Status = BindingStatus.Unsaved;
-                SaveData(); 
+                SaveData();
             };
         }
 

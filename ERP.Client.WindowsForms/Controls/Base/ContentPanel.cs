@@ -89,7 +89,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                 int saved = 0;
                 int unbound = 0;
 
-                foreach(IBindable Bindable in Bindables) 
+                foreach(BindableControl Bindable in Bindables) 
                 {
                     if(Bindable.Status == BindingStatus.Error) 
                     {
@@ -114,7 +114,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             } 
         }
 
-        protected List<IBindable> Bindables { get; } = new List<IBindable>();
+        private List<BindableControl> Bindables { get; } = new List<BindableControl>();
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
@@ -122,7 +122,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             {
                 base.OnControlAdded(e);
                 Control Control = e.Control;
-                if (Control is IBindable Bindable)
+                if (Control is BindableControl Bindable)
                 {
                     if (Control.Tag is string Tag)
                     {
@@ -141,13 +141,13 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         public void SyncAll() 
         {
-            foreach(IBindable Bindable in Bindables) 
+            foreach(BindableControl Bindable in Bindables) 
             {
                 Bindable.Sync();
             }
         }
 
-        private void Bind(IBindable Bindable, IEnumerable<string> ObjectName)
+        private void Bind(BindableControl Bindable, IEnumerable<string> ObjectName)
         {
             var tmp = ObjectName.ToList();
             tmp.Insert(0, nameof(DataContext));
@@ -176,11 +176,11 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+        public event EventHandler<BindingStatusChangedEventArgs>? StatusChanged;
 
         protected void OnStatusChanged(BindingStatus Status)
         {
-            StatusChanged?.Invoke(this, new StatusChangedEventArgs(Status));
+            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status));
         }
 
         protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType)

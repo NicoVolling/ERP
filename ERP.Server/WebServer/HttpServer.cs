@@ -9,6 +9,7 @@ using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Commands.Base;
 using ERP.Exceptions.ErpExceptions;
+using ERP.BaseLib.Output;
 
 namespace ERP.Server.WebServer
 {
@@ -24,6 +25,9 @@ namespace ERP.Server.WebServer
         public HttpServer()
         {
             this.ConsoleOutput = false;
+
+
+
             CommandMaster.Reload();
         }
 
@@ -56,15 +60,13 @@ namespace ERP.Server.WebServer
                         {
                             DataInput Input = Json.Deserialize<DataInput>(datastring);
                             Result = CommandMaster.ExecuteCommand(Input);
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"Executed Command: {Input.Command}");
+                            Log.WriteLine($"Executed Command: {Input.Command}", ConsoleColor.Green);
                         }
                         catch (Exception ex)
                         {
                             Result.Error = true;
                             Result.ErrorMessage = ex.Message;
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine($"Received an Error: {ex.GetType().Name}");
+                            Log.WriteLine($"Received an Error: {ex.GetType().Name}", ConsoleColor.Red);
                         }
                     }
                     else
@@ -76,14 +78,6 @@ namespace ERP.Server.WebServer
             }
 
             string resultObject = Json.Serialize(Result);
-            if (Result.Error)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-            }
 
             return resultObject;
         }

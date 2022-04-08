@@ -1,4 +1,5 @@
-﻿using ERP.Client.WindowsForms;
+﻿using ERP.BaseLib.Output;
+using ERP.Client.WindowsForms;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Commands.Base;
 using ERP.Test.Client.Library.GUI;
@@ -16,7 +17,7 @@ namespace ERP.Test.Client.App
     {
         public static void Main(string[]? args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Log.Prefix = "Client";
 
             CommandCollection.ParentNamespace = "ERP.Test.Server.Library";
 
@@ -30,10 +31,9 @@ namespace ERP.Test.Client.App
                     Client.GetData(person1.ID);
                     person1 = Client.Data;
 
-                    Console.WriteLine(person1);
+                    Log.WriteLine(person1, ConsoleColor.Magenta);
 
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine("Test was successful");
+                    Log.WriteLine("Test was successful", ConsoleColor.Magenta);
                 }
             }
             catch

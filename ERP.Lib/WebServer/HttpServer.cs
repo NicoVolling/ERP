@@ -8,6 +8,7 @@ using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Exceptions.ErpExceptions;
+using ERP.BaseLib.Output;
 
 namespace ERP.BaseLib.WebServer
 {
@@ -47,15 +48,7 @@ namespace ERP.BaseLib.WebServer
 
                     if (ConsoleOutput)
                     {
-                        ConsoleColor cl = Console.ForegroundColor;
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"Request #{++reqCount}");
-                        Console.WriteLine("{");
-                        Console.ForegroundColor = cl;
-                        Console.WriteLine($"    [{req.HttpMethod}] " + req.Url.ToString());
-                        Console.WriteLine($"    \"{req.UserHostName}\" - " + req.UserHostAddress);
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("}" + Environment.NewLine); 
+                        Log.WriteLine($"Request #{++reqCount}", ConsoleColor.Yellow);
                     }
 
                     resp.ContentType = "text/html";
@@ -83,8 +76,7 @@ namespace ERP.BaseLib.WebServer
             listener.Start();
             if (ConsoleOutput)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Listening for connections on {Url}");
+                Log.WriteLine($"Listening for connections on {Url}", ConsoleColor.Green);
             }
             Task listenTask = HandleIncommingConnections();
             listenTask.GetAwaiter().GetResult();

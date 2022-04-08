@@ -1,6 +1,7 @@
 using ERP.Client.WindowsForms.Base;
 using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Controls.Base;
+using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Exceptions.ErpExceptions;
 
@@ -65,7 +66,7 @@ namespace ERP.Client.WindowsForms
             BaseWindowTitleBar BWTB = new BaseWindowTitleBar(BaseWindow) { Dock = DockStyle.Top };
             BWTB.Icon = BaseWindow.Icon;
             BWTB.Text = BaseWindow.Text;
-            BaseWindow.StatusChanged += (s, e) => { BWTB.StatusColor = IBindable.GetBindingStatusColor(e.Status); };
+            BaseWindow.StatusChanged += (s, e) => { BWTB.StatusColor = BindableControl.GetBindingStatusColor(e.Status); };
             BWTB.SetTaskBar();
             WindowListPanel.Controls.Add(BWTB);
             BaseWindow.ContentPanel.Open(BaseWindow);

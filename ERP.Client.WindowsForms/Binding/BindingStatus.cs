@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.Client.WindowsForms.Controls.BindableControls
+namespace ERP.Client.WindowsForms.Binding
 {
     public enum BindingStatus
     {

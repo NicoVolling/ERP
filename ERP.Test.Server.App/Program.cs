@@ -1,4 +1,5 @@
-﻿using ERP.Server.WebServer;
+﻿using ERP.BaseLib.Output;
+using ERP.Server.WebServer;
 using ERP.Test.Server.Library;
 using System.Diagnostics;
 using System.Net.Http;
@@ -10,7 +11,7 @@ namespace ERP.Test.Server.App
     {
         public static void Main(string[]? args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Log.Prefix = "Server";
 
             Startup.SetAssembly();
 
