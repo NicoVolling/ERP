@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Client.App", "ERP.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Server.App", "ERP.Test.Server.App\ERP.Test.Server.App.csproj", "{BD674041-46C0-4861-A632-3BC7687E2146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Client.WindowsForms.Controls", "ERP.Client.WindowsForms.Controls\ERP.Client.WindowsForms.Controls.csproj", "{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Client.WindowsForms.Controls.BindableControls", "ERP.Client.WindowsForms.Controls\ERP.Client.WindowsForms.Controls.BindableControls.csproj", "{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

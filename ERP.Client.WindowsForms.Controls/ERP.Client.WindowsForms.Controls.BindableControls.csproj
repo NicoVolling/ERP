@@ -8,16 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Base\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ERP.Client.WindowsForms\ERP.Client.WindowsForms.csproj" />
     <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="BindableControls\B_TextBox.cs">
+    <Compile Update="B_TextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
