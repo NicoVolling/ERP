@@ -17,7 +17,6 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     public partial class B_TextBox : BindableControl
     {
-
         public B_TextBox()
         {
             InitializeComponent();
@@ -28,14 +27,32 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             return IParser.GetParser(typeof(string), TargetType);
         }
 
+        bool textchanged = true;
+
         protected override void OnBound()
         {
             textBox1.TextChanged += (s, e) =>
             {
-                Status = BindingStatus.Unsaved;
-                SaveData();
+                if (textchanged)
+                {
+                    textchanged = false;
+
+                    if (!Parser.IsDefault(ParseToObject(textBox1.Text), TargetType) || textBox1.Text.Length == 0 || HasError)
+                    {
+                        Status = BindingStatus.Unsaved;
+                        SaveData();
+                    }
+                    else
+                    {
+                        textchanged = true;
+                        textBox1.Text = Parser.GetDefault(typeof(string)).ToString();
+                    }
+                    textchanged = true;
+                }
             };
         }
+
+        public TextBox TextBox { get => textBox1; }
 
         protected override void OnSaveData()
         {
@@ -45,7 +62,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected override void OnLoadData()
         {
             textBox1.Text = Get()?.ToString();
-            Status = string.IsNullOrEmpty(textBox1.Text) || textBox1.Text.Equals("-1") ? BindingStatus.NullOrDefault : BindingStatus.Saved;
+            Status = string.IsNullOrEmpty(textBox1.Text) ? BindingStatus.NullOrDefault : BindingStatus.Saved;
         }
     }
 }

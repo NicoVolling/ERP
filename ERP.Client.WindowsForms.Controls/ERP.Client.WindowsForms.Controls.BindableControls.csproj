@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ERP.Business\ERP.Business.csproj" />
     <ProjectReference Include="..\ERP.Client.WindowsForms\ERP.Client.WindowsForms.csproj" />
     <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
   </ItemGroup>

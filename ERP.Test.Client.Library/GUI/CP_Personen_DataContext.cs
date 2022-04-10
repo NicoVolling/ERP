@@ -17,6 +17,5 @@ namespace ERP.Test.Client.Library.GUI
             get { return person; }
             set { person = value; NotifyPropertyChanged(); }
         }
-
     }
 }

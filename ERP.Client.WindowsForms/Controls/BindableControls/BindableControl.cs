@@ -32,6 +32,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         private string description;
         private int? fixDescriptionWidth = null;
+        private bool isReadOnly;
 
         public IParser Parser { get; private set; }
 
@@ -178,6 +179,14 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         [Category("Darstellung")]
         public int? FixedDescriptionWidth { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
 
+        [Category("Verhalten")]
+        public bool IsReadOnly { get => isReadOnly; set { isReadOnly = value; OnIsReadOnlyChanged(); } }
+
+        protected virtual void OnIsReadOnlyChanged() 
+        {
+            this.ControlPanel.Enabled = !IsReadOnly;
+        }
+
         private void lbl_Description_TextChanged(object sender, EventArgs e)
         {
 
@@ -236,7 +245,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             }
         }
 
-        public void Clear() 
+        public void Clear()
         {
             Set(Parser.GetDefault(OrigingType));
         }

@@ -31,6 +31,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         public Object GetDefault(Type TargeType);
 
+        public bool IsDefault(Object Object, Type TargetType);
+
         private static void FillParsers()
         {
             Func<string, bool> IsStringDefault = (s) =>

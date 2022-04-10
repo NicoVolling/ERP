@@ -38,6 +38,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
         {
             base.OnLoad(e);
             if (DataContext == null && !IsInDesignMode()) { throw new ErpException("DataContext is null"); }
+            if (!IsInDesignMode()) { DataContext.PropertyChanged += (s, e) => { OnDataContextChanged(e.PropertyName); }; }
         }
 
         public void Open(BaseWindow BaseWindow)
@@ -149,6 +150,11 @@ namespace ERP.Client.WindowsForms.Controls.Base
                     ControllAddedHandling(e.Control);
                 };
             }
+        }
+
+        protected virtual void OnDataContextChanged(string PropertyName) 
+        {
+            
         }
 
         public void SyncAll() 

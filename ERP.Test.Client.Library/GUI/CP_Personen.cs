@@ -23,7 +23,7 @@ namespace ERP.Test.Client.Library.GUI
         private BindableCollectionPanel bindableCollectionPanel1;
         private B_TextBox b_TextBox4;
         private Button btn_clear;
-        private ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox b_TextBox1;
+        private B_TextBox b_TextBox5;
 
         public new CP_Personen_DataContext DataContext { get => base.DataContext as CP_Personen_DataContext; set => base.DataContext = value; }
 
@@ -35,7 +35,6 @@ namespace ERP.Test.Client.Library.GUI
 
         private void InitializeComponent()
         {
-            this.b_TextBox1 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
             this.btn_save = new System.Windows.Forms.Button();
             this.btn_load = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
@@ -43,23 +42,11 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox3 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
             this.btn_create = new System.Windows.Forms.Button();
             this.bindableCollectionPanel1 = new ERP.Client.WindowsForms.Controls.BindableControls.BindableCollectionPanel();
+            this.b_TextBox5 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
             this.b_TextBox4 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
             this.btn_clear = new System.Windows.Forms.Button();
             this.bindableCollectionPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // b_TextBox1
-            // 
-            this.b_TextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.b_TextBox1.BindingDestination = "Person.ID";
-            this.b_TextBox1.Description = "ID";
-            this.b_TextBox1.FixedDescriptionWidth = 80;
-            this.b_TextBox1.Location = new System.Drawing.Point(13, 15);
-            this.b_TextBox1.Name = "b_TextBox1";
-            this.b_TextBox1.Size = new System.Drawing.Size(365, 29);
-            this.b_TextBox1.TabIndex = 0;
-            this.b_TextBox1.Tag = "Person.ID";
             // 
             // btn_save
             // 
@@ -101,7 +88,8 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox2.BindingDestination = "Person.Firstname";
             this.b_TextBox2.Description = "Firstname";
             this.b_TextBox2.FixedDescriptionWidth = 80;
-            this.b_TextBox2.Location = new System.Drawing.Point(13, 50);
+            this.b_TextBox2.IsReadOnly = false;
+            this.b_TextBox2.Location = new System.Drawing.Point(17, 47);
             this.b_TextBox2.Name = "b_TextBox2";
             this.b_TextBox2.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox2.TabIndex = 0;
@@ -114,7 +102,8 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox3.BindingDestination = "Person.Name";
             this.b_TextBox3.Description = "Name";
             this.b_TextBox3.FixedDescriptionWidth = 80;
-            this.b_TextBox3.Location = new System.Drawing.Point(13, 85);
+            this.b_TextBox3.IsReadOnly = false;
+            this.b_TextBox3.Location = new System.Drawing.Point(17, 82);
             this.b_TextBox3.Name = "b_TextBox3";
             this.b_TextBox3.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox3.TabIndex = 0;
@@ -133,7 +122,7 @@ namespace ERP.Test.Client.Library.GUI
             // 
             // bindableCollectionPanel1
             // 
-            this.bindableCollectionPanel1.Controls.Add(this.b_TextBox1);
+            this.bindableCollectionPanel1.Controls.Add(this.b_TextBox5);
             this.bindableCollectionPanel1.Controls.Add(this.b_TextBox2);
             this.bindableCollectionPanel1.Controls.Add(this.b_TextBox4);
             this.bindableCollectionPanel1.Controls.Add(this.b_TextBox3);
@@ -143,6 +132,20 @@ namespace ERP.Test.Client.Library.GUI
             this.bindableCollectionPanel1.Size = new System.Drawing.Size(399, 210);
             this.bindableCollectionPanel1.TabIndex = 3;
             // 
+            // b_TextBox5
+            // 
+            this.b_TextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.b_TextBox5.BindingDestination = "Person.ID";
+            this.b_TextBox5.Description = "ID";
+            this.b_TextBox5.FixedDescriptionWidth = 80;
+            this.b_TextBox5.IsReadOnly = false;
+            this.b_TextBox5.Location = new System.Drawing.Point(17, 12);
+            this.b_TextBox5.Name = "b_TextBox5";
+            this.b_TextBox5.Size = new System.Drawing.Size(365, 29);
+            this.b_TextBox5.TabIndex = 0;
+            this.b_TextBox5.Tag = "Person.ID";
+            // 
             // b_TextBox4
             // 
             this.b_TextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -150,17 +153,18 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox4.BindingDestination = "Person.Birthday";
             this.b_TextBox4.Description = "Birthday";
             this.b_TextBox4.FixedDescriptionWidth = 80;
-            this.b_TextBox4.Location = new System.Drawing.Point(13, 120);
+            this.b_TextBox4.IsReadOnly = false;
+            this.b_TextBox4.Location = new System.Drawing.Point(17, 117);
             this.b_TextBox4.Name = "b_TextBox4";
             this.b_TextBox4.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox4.TabIndex = 0;
             this.b_TextBox4.Tag = "Person.Birthday";
             // 
-            // button1
+            // btn_clear
             // 
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_clear.Location = new System.Drawing.Point(3, 219);
-            this.btn_clear.Name = "button1";
+            this.btn_clear.Name = "btn_clear";
             this.btn_clear.Size = new System.Drawing.Size(75, 23);
             this.btn_clear.TabIndex = 2;
             this.btn_clear.Text = "Clear";
@@ -184,11 +188,23 @@ namespace ERP.Test.Client.Library.GUI
         protected override void OnOpened()
         {
             base.OnOpened();
-            BaseWindow.Text = "Test-Fenster";
+            BaseWindow.Text = "Personen";
 
             DataContext.Person = new Person();
+            PersonClient Client = new PersonClient();
 
             Loaded(false);
+        }
+
+        protected override void OnDataContextChanged(string PropertyName)
+        {
+            base.OnDataContextChanged(PropertyName);
+            if (PropertyName.Equals("Person"))
+            {
+                PersonClient Client = new PersonClient();
+                //TODO: Liste ziehen
+                SyncAll();
+            }
         }
 
         protected override void OnErrorChanged()
@@ -247,13 +263,13 @@ namespace ERP.Test.Client.Library.GUI
                 Client.GetData(DataContext.Person.ID);
                 DataContext.Person = Client.Data;
                 Loaded(true);
+                DataContext.Person = DataContext.Person;
+                SyncAll();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            DataContext.Person = DataContext.Person;
-            SyncAll();
         }
 
         private void btn_delete_Click(object sender, EventArgs e)

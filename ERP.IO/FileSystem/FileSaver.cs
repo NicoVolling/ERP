@@ -70,7 +70,7 @@ namespace ERP.IO.FileSystem
             if (!Target.CanLoad()) { return; }
             try
             {
-                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data"))))
+                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename))))
                 {
                     Target.Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", (Target.Filename))));
                 }

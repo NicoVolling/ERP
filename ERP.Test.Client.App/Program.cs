@@ -15,6 +15,7 @@ namespace ERP.Test.Client.App
 {
     public static class Program
     {
+        [STAThread]
         public static void Main(string[]? args)
         {
             Log.Prefix = "Client";
@@ -43,10 +44,10 @@ namespace ERP.Test.Client.App
 
             var WindowList = new Dictionary<string, Dictionary<string, Func<BaseWindow>>>()
             {
-                { "Test",
+                { "Menschen",
                     new Dictionary<string, Func<BaseWindow>>()
                     {
-                        { "Moin",() =>  new BaseWindow(new CP_Personen()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } } 
+                        { "Personen", () =>  new BaseWindow(new CP_Personen()) { Text = "Personen", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } } 
                     } 
                 } 
             };

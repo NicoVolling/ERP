@@ -319,5 +319,18 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
             return canParse;
         }
+
+        public bool IsDefault(Object Object, Type TargetType) 
+        {
+            if(Object is T1) 
+            {
+                return IsDefault1((T1)Object);
+            }
+            if (Object is T2)
+            {
+                return IsDefault2((T2)Object);
+            }
+            return false;
+        }
     }
 }
