@@ -8,15 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ERP.Business\ERP.Business.csproj" />
-    <ProjectReference Include="..\ERP.Client.WindowsForms.Controls\ERP.Client.WindowsForms.Controls.csproj" />
-    <ProjectReference Include="..\ERP.Client.WindowsForms\ERP.Client.WindowsForms.csproj" />
-    <ProjectReference Include="..\ERP.Test.Public.Library\ERP.Test.Public.Library.csproj" />
-    <ProjectReference Include="..\ERP.Test.Server.Library\ERP.Test.Server.Library.csproj" />
+    <Folder Include="Base\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="GUI\CP_Personen.cs" />
+    <ProjectReference Include="..\ERP.Client.WindowsForms\ERP.Client.WindowsForms.csproj" />
+    <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="BindableControls\B_TextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

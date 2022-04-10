@@ -17,26 +17,26 @@ namespace ERP.Business.Objects
     /// </summary>
     public abstract class BusinessObject : PropertyChangedNotifier
     {
+        private int iD = -1;
 
         /// <summary>
         /// Identifier should be unique
         /// </summary>
-        public int ID { get; set; } = -1;
-
-        public virtual string Serialize() 
+        public int ID { get => iD; set { iD = value; NotifyPropertyChanged(); } }
+        public virtual string Serialize()
         {
             return Json.Serialize(this);
         }
 
-        public void Deserialize(string Raw) 
+        public void Deserialize(string Raw)
         {
             BusinessObject BO = (BusinessObject)Json.Deserialize(Raw, this.GetType());
             Deserialize(BO);
         }
 
-        public void Deserialize(BusinessObject Object) 
+        public void Deserialize(BusinessObject Object)
         {
-            if(Object.GetType() != this.GetType()) 
+            if (Object.GetType() != this.GetType())
             {
                 throw new TypeMismatchErpException(this.GetType(), Object.GetType());
             }

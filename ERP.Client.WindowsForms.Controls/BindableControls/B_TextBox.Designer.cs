@@ -1,4 +1,6 @@
-﻿namespace ERP.Client.WindowsForms.Controls.BindableControls
+﻿using System.Windows.Forms;
+
+namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     partial class B_TextBox
     {

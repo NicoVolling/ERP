@@ -46,7 +46,7 @@ namespace ERP.Test.Client.App
                 { "Test",
                     new Dictionary<string, Func<BaseWindow>>()
                     {
-                        { "Moin",() =>  new BaseWindow(new CP_Test()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } } 
+                        { "Moin",() =>  new BaseWindow(new CP_Personen()) { Text = "Mooooin", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } } 
                     } 
                 } 
             };

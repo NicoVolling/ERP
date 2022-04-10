@@ -22,7 +22,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public Type TargetType { get; private set; }
 
-        private bool error = false; 
+        private bool error = false;
 
         public bool HasError { get => error; }
 
@@ -31,6 +31,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         private BindingStatus status;
 
         private string description;
+        private int? fixDescriptionWidth = null;
 
         public IParser Parser { get; private set; }
 
@@ -64,12 +65,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             return color;
         }
 
-        public void Bind(Func<Object> Get, Action<Object> Set, PropertyChangedNotifier PropertyChangedNotifier, string PropertyName, Type TargetType)
+        public void Bind(Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType)
         {
             this.TargetType = TargetType;
             this.Parser = OnGetParser();
-            if(Parser.Type1 == TargetType) { OrigingType = Parser.Type2; }
-            if(Parser.Type2 == TargetType) { OrigingType = Parser.Type1; }
+            if (Parser.Type1 == TargetType) { OrigingType = Parser.Type2; }
+            if (Parser.Type2 == TargetType) { OrigingType = Parser.Type1; }
             this.Set = (Object) =>
             {
                 try
@@ -119,10 +120,10 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             StatusLed.ForeColor = Color;
         }
 
-        public BindingStatus Status 
-        { 
-            get => error ? BindingStatus.Error : status; 
-            protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); } 
+        public BindingStatus Status
+        {
+            get => error ? BindingStatus.Error : status;
+            protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
         }
 
         public void Sync()
@@ -171,8 +172,15 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         [Category("Darstellung")]
         public string Description { get => description; set { description = value; lbl_Description.Text = $"{description}:"; } }
 
+        [Category("Binding")]
+        public string? BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
+
+        [Category("Darstellung")]
+        public int? FixedDescriptionWidth { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
+
         private void lbl_Description_TextChanged(object sender, EventArgs e)
         {
+
             if (string.IsNullOrEmpty(Description))
             {
                 lbl_Description.Visible = false;
@@ -181,11 +189,18 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             else
             {
                 lbl_Description.Visible = true;
-                lbl_Description.Size = new Size((int)lbl_Description.CreateGraphics().MeasureString(lbl_Description.Text, lbl_Description.Font).Width + 5, 0);
+                if (FixedDescriptionWidth.HasValue)
+                {
+                    lbl_Description.Size = new Size(FixedDescriptionWidth.Value, 0);
+                }
+                else
+                {
+                    lbl_Description.Size = new Size((int)lbl_Description.CreateGraphics().MeasureString(lbl_Description.Text, lbl_Description.Font).Width + 5, 0);
+                }
             }
         }
 
-        protected Object ParseFromObject(Object Value) 
+        protected Object ParseFromObject(Object Value)
         {
             try
             {
@@ -197,7 +212,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             }
         }
 
-        protected Object ParseToObject(Object Value) 
+        protected Object ParseToObject(Object Value)
         {
             try
             {
@@ -219,6 +234,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             {
                 throw;
             }
+        }
+
+        public void Clear() 
+        {
+            Set(Parser.GetDefault(OrigingType));
         }
     }
 }

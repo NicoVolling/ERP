@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ERP.Test.Client.Library.GUI
 {
-    public class CP_Test_DataContext : DataContext
+    public class CP_Personen_DataContext : DataContext
     {
         private Person person;
 

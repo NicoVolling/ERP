@@ -118,24 +118,36 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
+            base.OnControlAdded(e);
+            ControllAddedHandling(e.Control);
+        }
+
+        protected void ControllAddedHandling(Control Control) 
+        {
             if (!IsInDesignMode())
             {
-                base.OnControlAdded(e);
-                Control Control = e.Control;
                 if (Control is BindableControl Bindable)
                 {
-                    if (Control.Tag is string Tag)
+                    if (Bindable.BindingDestination is string BindingDestination)
                     {
-                        if (Tag.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Any())
+                        if (BindingDestination.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Any())
                         {
                             Bind(Bindable, str);
-                            if (!Bindables.Contains(Bindable)) 
-                            { 
+                            if (!Bindables.Contains(Bindable))
+                            {
                                 Bindables.Add(Bindable);
                             }
                         }
                     }
                 }
+                foreach(Control Control1 in Control.Controls) 
+                {
+                    ControllAddedHandling(Control1);
+                }
+                Control.ControlAdded += (s, e) =>
+                {
+                    ControllAddedHandling(e.Control);
+                };
             }
         }
 
@@ -153,7 +165,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             tmp.Insert(0, nameof(DataContext));
             ObjectName = tmp;
 
-            GetAccessors(this, ObjectName, out Action<object> Set, out Func<object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType);
+            GetAccessors(this, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType);
 
             if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
@@ -184,7 +196,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             ProofError();
         }
 
-        protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out PropertyChangedNotifier PropertyChangedNotifier, out string PropertyName, out Type TargetType)
+        protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType)
         {
             if (Parent.GetType().GetProperties().Where(o => o.Name.Equals(ObjectName.First())).FirstOrDefault(o => o.DeclaringType != typeof(ContentPanel)) is PropertyInfo PI)
             {
@@ -193,11 +205,11 @@ namespace ERP.Client.WindowsForms.Controls.Base
                     if (ObjectName.Count() > 1)
                     {
                         Object? obj = PI.GetValue(Parent);
-                        if (obj is PropertyChangedNotifier NewParent)
+                        if (obj is INotifyPropertyChanged NewParent)
                         {
                             GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType);
                         }
-                        else if (obj is null && Parent is PropertyChangedNotifier PCN)
+                        else if (obj is null && Parent is INotifyPropertyChanged PCN)
                         {
                             Set = null;
                             Get = null;
@@ -255,6 +267,14 @@ namespace ERP.Client.WindowsForms.Controls.Base
             {
                 error = err; 
                 OnErrorChanged(); 
+            }
+        }
+
+        public void ClearAllBinables() 
+        {
+            foreach(BindableControl Bindable in Bindables) 
+            {
+                Bindable.Clear();
             }
         }
 

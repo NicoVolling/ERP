@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ERP.BaseLib.Serialization;
 
 namespace ERP.Client.WindowsForms.Binding.Parser
 {
@@ -28,10 +29,47 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         private static List<IParser> parsers { get; } = new List<IParser>();
 
+        public Object GetDefault(Type TargeType);
+
         private static void FillParsers()
         {
-            parsers.Add(new Parser<string, int>(o => int.Parse(o), o => o.ToString()));
-            parsers.Add(new Parser<string, string>(o => o, o => o));
+            Func<string, bool> IsStringDefault = (s) =>
+            {
+                return (s is string str && str.Length == 0) || s is null;
+            };
+            Func<Object> GetStringDefault = () => string.Empty;
+
+            Func<int, bool> IsInt32Default = (i) => 
+            {
+                return i == -1;
+            };
+            Func<Object> GetInt32Default = () => -1;
+
+            Func<DateTime, DateTime, bool> DateTimeComparer = (a, b) => a.CompareTo(b) == 0;
+            Func<Object> GetDateTimeDefault = () => new DateTime();
+
+            parsers.Add(new Parser<string, int>(
+                o => int.Parse(o), 
+                o => o.ToString(), 
+                IsStringDefault,
+                IsInt32Default,
+                GetStringDefault,
+                GetInt32Default));
+
+            parsers.Add(new Parser<string, string>(
+                o => o, 
+                o => o,
+                IsStringDefault,
+                IsStringDefault,
+                GetStringDefault,
+                GetStringDefault));
+
+            parsers.Add(new Parser<string, DateTime>(
+                o => DateTime.Parse(o), 
+                o => o.ToString("dd.MM.yyyy"),
+                DateTimeComparer,
+                IsStringDefault,
+                GetStringDefault));
         }
 
         public static IParser GetParser(Type Type1, Type Type2) 
