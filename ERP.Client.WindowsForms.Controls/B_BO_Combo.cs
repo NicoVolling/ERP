@@ -13,6 +13,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
     public class B_BO_Combo : BindableControl
     {
         private System.Windows.Forms.ComboBox comboBox1;
+        private bool isloading = false;
         private List<BusinessObject> objectList;
 
         public B_BO_Combo()
@@ -23,7 +24,10 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         public event EventHandler IDChanged;
 
         public List<BusinessObject> ObjectList
-        { get => objectList; private set { objectList = value; RefreshList(); } }
+        {
+            get => objectList;
+            set { objectList = value; RefreshList(); }
+        }
 
         public BusinessObject SelectedObject { get => ObjectList.FirstOrDefault(o => o.ID == SelectedObjectID); }
 
@@ -35,8 +39,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         {
             comboBox1.SelectedIndexChanged += (s, e) =>
             {
-                SelectedObjectID = ((BusinessObject)comboBox1.SelectedItem).ID;
-                SaveData();
+                if (!isloading)
+                {
+                    SelectedObjectID = ((BusinessObject)comboBox1.SelectedItem).ID;
+                    SaveData();
+                }
             };
         }
 
@@ -102,6 +109,8 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         private void RefreshList()
         {
+            isloading = true;
+
             int ID = SelectedObjectID;
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(ObjectList.ToArray());
@@ -110,6 +119,8 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             {
                 comboBox1.SelectedItem = BO;
             }
+
+            isloading = false;
         }
     }
 }

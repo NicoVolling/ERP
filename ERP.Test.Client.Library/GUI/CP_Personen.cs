@@ -18,8 +18,9 @@ namespace ERP.Test.Client.Library.GUI
         private Button btn_clear;
         private Button btn_create;
         private Button btn_delete;
-        private Button btn_load;
         private Button btn_save;
+
+        private bool gettinglist = false;
 
         public CP_Personen()
         {
@@ -34,21 +35,27 @@ namespace ERP.Test.Client.Library.GUI
             base.OnDataContextChanged(PropertyName);
             if (PropertyName.Equals("Person"))
             {
-                PersonClient Client = new();
-                DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
+                if (!gettinglist)
+                {
+                    gettinglist = true;
+
+                    PersonClient Client = new();
+                    DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
+                    b_ComboBox1.ObjectList = DataContext.BusinessObjectList;
+
+                    gettinglist = false;
+                }
 
                 if (!DataContext.Person.IsEmpty())
                 {
                     btn_delete.Enabled = true;
                     btn_save.Enabled = true;
-                    btn_load.Enabled = true;
                     btn_create.Enabled = false;
                 }
                 else
                 {
                     btn_delete.Enabled = false;
                     btn_save.Enabled = false;
-                    btn_load.Enabled = false;
                     btn_create.Enabled = true;
                 }
                 SyncAll();
@@ -78,18 +85,19 @@ namespace ERP.Test.Client.Library.GUI
             BaseWindow.Text = "Personen";
 
             DataContext.Person = new Person();
-            PersonClient Client = new();
-            DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
 
             b_ComboBox1.IDChanged += (s, e) =>
             {
-                if (b_ComboBox1.SelectedObjectID != -1)
+                if (!gettinglist)
                 {
-                    DataContext.Person = DataContext.PersonList.FirstOrDefault(o => o.ID == b_ComboBox1.SelectedObjectID);
-                }
-                else
-                {
-                    DataContext.Person = new Person();
+                    if (b_ComboBox1.SelectedObjectID != -1)
+                    {
+                        DataContext.Person = DataContext.PersonList.FirstOrDefault(o => o.ID == b_ComboBox1.SelectedObjectID);
+                    }
+                    else
+                    {
+                        DataContext.Person = new Person();
+                    }
                 }
             };
         }
@@ -105,6 +113,7 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.Create(DataContext.Person);
+                DataContext.Person = Client.Data;
             }
             catch (Exception ex)
             {
@@ -118,6 +127,7 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.Delete(DataContext.Person.ID);
+                DataContext.Person = Client.Data;
             }
             catch (Exception ex)
             {
@@ -131,6 +141,7 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.GetData(DataContext.Person.ID);
+                DataContext.Person = Client.Data;
             }
             catch (Exception ex)
             {
@@ -144,6 +155,7 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.Change(DataContext.Person.ID, DataContext.Person);
+                DataContext.Person = Client.Data;
             }
             catch (Exception ex)
             {
@@ -154,7 +166,6 @@ namespace ERP.Test.Client.Library.GUI
         private void InitializeComponent()
         {
             this.btn_save = new System.Windows.Forms.Button();
-            this.btn_load = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
             this.b_TextBox2 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
             this.b_TextBox3 = new ERP.Client.WindowsForms.Controls.BindableControls.B_TextBox();
@@ -178,21 +189,10 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_save.UseVisualStyleBackColor = true;
             this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
             //
-            // btn_load
-            //
-            this.btn_load.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_load.Location = new System.Drawing.Point(243, 219);
-            this.btn_load.Name = "btn_load";
-            this.btn_load.Size = new System.Drawing.Size(75, 23);
-            this.btn_load.TabIndex = 1;
-            this.btn_load.Text = "Load";
-            this.btn_load.UseVisualStyleBackColor = true;
-            this.btn_load.Click += new System.EventHandler(this.btn_load_Click);
-            //
             // btn_delete
             //
             this.btn_delete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_delete.Location = new System.Drawing.Point(162, 219);
+            this.btn_delete.Location = new System.Drawing.Point(243, 219);
             this.btn_delete.Name = "btn_delete";
             this.btn_delete.Size = new System.Drawing.Size(75, 23);
             this.btn_delete.TabIndex = 1;
@@ -233,7 +233,7 @@ namespace ERP.Test.Client.Library.GUI
             // btn_create
             //
             this.btn_create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_create.Location = new System.Drawing.Point(81, 219);
+            this.btn_create.Location = new System.Drawing.Point(162, 219);
             this.btn_create.Name = "btn_create";
             this.btn_create.Size = new System.Drawing.Size(75, 23);
             this.btn_create.TabIndex = 2;
@@ -300,7 +300,7 @@ namespace ERP.Test.Client.Library.GUI
             // btn_clear
             //
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_clear.Location = new System.Drawing.Point(3, 219);
+            this.btn_clear.Location = new System.Drawing.Point(84, 219);
             this.btn_clear.Name = "btn_clear";
             this.btn_clear.Size = new System.Drawing.Size(75, 23);
             this.btn_clear.TabIndex = 2;
@@ -314,7 +314,6 @@ namespace ERP.Test.Client.Library.GUI
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_create);
             this.Controls.Add(this.btn_delete);
-            this.Controls.Add(this.btn_load);
             this.Controls.Add(this.btn_save);
             this.Name = "CP_Personen";
             this.bindableCollectionPanel1.ResumeLayout(false);

@@ -12,13 +12,13 @@ namespace ERP.Test.Client.Library.GUI
         public List<BusinessObject> BusinessObjectList
         {
             get => businessObjectList;
-            set { businessObjectList = value; NotifyPropertyChanged(); }
+            set { businessObjectList = value; NotifyPropertyChanged(nameof(BusinessObjectList)); }
         }
 
         public Person Person
         {
             get { return person; }
-            set { person = value; NotifyPropertyChanged(); }
+            set { person = value; NotifyPropertyChanged(nameof(Person)); }
         }
 
         public IEnumerable<Person> PersonList { get => businessObjectList.Select(o => o as Person); }
