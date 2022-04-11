@@ -4,29 +4,22 @@ using ERP.Business.Objects;
 using ERP.Business.Server;
 using ERP.Commands.Base;
 using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Business.Client
 {
     /// <summary>
     /// This class contains all ClientFunctionalities
     /// </summary>
-    public abstract class BusinessObjectClient<T_CommandCollection, T_BusinessObject> 
-        where T_CommandCollection : BusinessObjectServer<T_BusinessObject>, new() 
+    public abstract class BusinessObjectClient<T_CommandCollection, T_BusinessObject>
+        where T_CommandCollection : BusinessObjectServer<T_BusinessObject>, new()
         where T_BusinessObject : BusinessObject, new()
     {
-
-        protected virtual bool BeforeGetData() { return true; }
-        
-        protected virtual bool BeforeCreate() { return true; }
-        
-        protected virtual bool BeforeDelete() { return true; }
-        
-        protected virtual bool BeforeChange() { return true; }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BusinessObjectClient()
+        {
+        }
 
         /// <summary>
         /// Current context. This is the BusinessObject containing all the Data.
@@ -34,20 +27,22 @@ namespace ERP.Business.Client
         public T_BusinessObject Data { get; private set; } = new T_BusinessObject();
 
         /// <summary>
-        /// Gets the data from server.
+        /// Updates data on the server.
         /// </summary>
         /// <param name="ID"></param>
+        /// <param name="Data"></param>
         /// <exception cref="Exception"></exception>
-        public void GetData(int ID)
+        public void Change(int ID, T_BusinessObject Data)
         {
-            if (BeforeGetData())
+            if (BeforeChange())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetData(ID);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(Data);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);
+                    this.Data = Data;
                 }
-                else 
+                else
                 {
                     throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
@@ -61,7 +56,7 @@ namespace ERP.Business.Client
         /// <exception cref="Exception"></exception>
         public void Create(T_BusinessObject Data)
         {
-            if (BeforeCreate()) 
+            if (BeforeCreate())
             {
                 Result Result = CommandCollection.GetInstance<T_CommandCollection>().Create(Data);
                 if (!Result.Error)
@@ -98,20 +93,18 @@ namespace ERP.Business.Client
         }
 
         /// <summary>
-        /// Updates data on the server.
+        /// Gets the data from server.
         /// </summary>
         /// <param name="ID"></param>
-        /// <param name="Data"></param>
         /// <exception cref="Exception"></exception>
-        public void Change(int ID, T_BusinessObject Data)
+        public void GetData(int ID)
         {
-            if (BeforeChange())
+            if (BeforeGetData())
             {
-                Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(Data);
+                Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetData(ID);
                 if (!Result.Error)
                 {
                     Data.Deserialize(Result.ReturnValue);
-                    this.Data = Data;
                 }
                 else
                 {
@@ -138,11 +131,16 @@ namespace ERP.Business.Client
             }
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public BusinessObjectClient() 
-        {
-        }
+        protected virtual bool BeforeChange()
+        { return true; }
+
+        protected virtual bool BeforeCreate()
+        { return true; }
+
+        protected virtual bool BeforeDelete()
+        { return true; }
+
+        protected virtual bool BeforeGetData()
+        { return true; }
     }
 }

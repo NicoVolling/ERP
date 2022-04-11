@@ -1,35 +1,9 @@
 ﻿using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Client.WindowsForms.Binding.Parser
 {
     public class Parser<T1, T2> : IParser
     {
-
-        public Type Type1 { get => typeof(T1); }
-
-        public Type Type2 { get => typeof(T2); }
-
-        public Func<T1, T2> OnParse1To2 { get; private set; }
-
-        public Func<T2, T1> OnParse2To1 { get; private set; }
-
-        Func<Object, Object, bool> Compare1 { get; set; }
-
-        Func<Object, Object, bool> Compare2 { get; set; }
-
-        Func<Object, bool> IsDefault1 { get; set; }
-
-        Func<Object, bool> IsDefault2 { get; set; }
-
-        Func<Object> GetDefault1 { get; set; }
-
-        Func<Object> GetDefault2 { get; set; }
-
         public Parser(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1)
         {
             Func<T1, T1, bool> Compare1;
@@ -234,60 +208,50 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 GetDefault2);
         }
 
-        private static Func<Object, bool> PrepareIsDefault<T>(Func<T, bool> IsDefault)
+        public Func<T1, T2> OnParse1To2 { get; private set; }
+        public Func<T2, T1> OnParse2To1 { get; private set; }
+        public Type Type1 { get => typeof(T1); }
+
+        public Type Type2 { get => typeof(T2); }
+        private Func<Object, Object, bool> Compare1 { get; set; }
+
+        private Func<Object, Object, bool> Compare2 { get; set; }
+
+        private Func<Object> GetDefault1 { get; set; }
+        private Func<Object> GetDefault2 { get; set; }
+        private Func<Object, bool> IsDefault1 { get; set; }
+
+        private Func<Object, bool> IsDefault2 { get; set; }
+
+        public bool CanParse(Object Object, Type TargetType)
         {
-            return o => (o is T Obj && IsDefault(Obj)) || o is null;
+            bool canParse = false;
+
+            canParse = canParse || (TargetType == typeof(T2) && (Object is T1 || IsDefault1(Object)));
+
+            canParse = canParse || (TargetType == typeof(T1) && (Object is T2 || IsDefault2(Object)));
+
+            return canParse;
         }
 
-        private static void DefaultComparer(out Func<T1, T1, bool> Compare1, out Func<T2, T2, bool> Compare2)
+        public Object GetDefault(Type TargeType)
         {
-
-            Compare1 = (a, b) =>
-            {
-                if (a is T1 O1 && b is T1 O2) { return O1.Equals(O2); }
-                return b == null && a == null;
-            };
-
-            Compare2 = (a, b) =>
-            {
-                if (a is T2 O1 && b is T2 O2) { return O1.Equals(O2); }
-                return b == null && a == null;
-            };
-        }
-
-        private void DefaultDefaultFunc(out Func<T1, bool> IsDefault1, out Func<T2, bool> IsDefault2)
-        {
-
-            IsDefault1 = o => o is T1 T1 && Compare1(T1, GetDefault1());
-
-            IsDefault2 = o => o is T2 T2 && Compare2(T2, GetDefault2());
-        }
-
-        public Object GetDefault(Type TargeType) 
-        {
-            if(TargeType == Type1) { return GetDefault1(); }
-            if(TargeType == Type2) { return GetDefault2(); }
+            if (TargeType == Type1) { return GetDefault1(); }
+            if (TargeType == Type2) { return GetDefault2(); }
             return null;
         }
 
-        private void Ctor(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<Object, bool> IsDefault1, Func<Object, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        public bool IsDefault(Object Object, Type TargetType)
         {
-            this.OnParse1To2 = OnParse1To2;
-            this.OnParse2To1 = OnParse2To1;
-            this.IsDefault1 = IsDefault1;
-            this.IsDefault2 = IsDefault2;
-            this.GetDefault1 = GetDefault1;
-            this.GetDefault2 = GetDefault2;
-            this.Compare1 = (a, b) =>
+            if (Object is T1 t1)
             {
-                if (a is T1 O1 && b is T1 O2) { return Compare1(O1, O2); }
-                return b == null && a == null;
-            };
-            this.Compare2 = (a, b) =>
+                return IsDefault1(t1);
+            }
+            if (Object is T2 t2)
             {
-                if (a is T2 O1 && b is T2 O2) { return Compare2(O1, O2); }
-                return b == null && a == null;
-            };
+                return IsDefault2(t2);
+            }
+            return false;
         }
 
         public Object Parse(Object Object, Type TargetType)
@@ -315,28 +279,51 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             throw new ErpException("Parser incompatible");
         }
 
-        public bool CanParse(Object Object, Type TargetType)
+        private static void DefaultComparer(out Func<T1, T1, bool> Compare1, out Func<T2, T2, bool> Compare2)
         {
-            bool canParse = false;
+            Compare1 = (a, b) =>
+            {
+                if (a is T1 O1 && b is T1 O2) { return O1.Equals(O2); }
+                return b == null && a == null;
+            };
 
-            canParse = canParse || (TargetType == typeof(T2) && (Object is T1 || IsDefault1(Object)));
-
-            canParse = canParse || (TargetType == typeof(T1) && (Object is T2 || IsDefault2(Object)));
-
-            return canParse;
+            Compare2 = (a, b) =>
+            {
+                if (a is T2 O1 && b is T2 O2) { return O1.Equals(O2); }
+                return b == null && a == null;
+            };
         }
 
-        public bool IsDefault(Object Object, Type TargetType) 
+        private static Func<Object, bool> PrepareIsDefault<T>(Func<T, bool> IsDefault)
         {
-            if(Object is T1 t1) 
+            return o => (o is T Obj && IsDefault(Obj)) || o is null;
+        }
+
+        private void Ctor(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<Object, bool> IsDefault1, Func<Object, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        {
+            this.OnParse1To2 = OnParse1To2;
+            this.OnParse2To1 = OnParse2To1;
+            this.IsDefault1 = IsDefault1;
+            this.IsDefault2 = IsDefault2;
+            this.GetDefault1 = GetDefault1;
+            this.GetDefault2 = GetDefault2;
+            this.Compare1 = (a, b) =>
             {
-                return IsDefault1(t1);
-            }
-            if (Object is T2 t2)
+                if (a is T1 O1 && b is T1 O2) { return Compare1(O1, O2); }
+                return b == null && a == null;
+            };
+            this.Compare2 = (a, b) =>
             {
-                return IsDefault2(t2);
-            }
-            return false;
+                if (a is T2 O1 && b is T2 O2) { return Compare2(O1, O2); }
+                return b == null && a == null;
+            };
+        }
+
+        private void DefaultDefaultFunc(out Func<T1, bool> IsDefault1, out Func<T2, bool> IsDefault2)
+        {
+            IsDefault1 = o => o is T1 T1 && Compare1(T1, GetDefault1());
+
+            IsDefault2 = o => o is T2 T2 && Compare2(T2, GetDefault2());
         }
     }
 }

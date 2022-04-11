@@ -1,21 +1,23 @@
 ﻿using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ERP.BaseLib.Serialization;
 
 namespace ERP.Client.WindowsForms.Binding.Parser
 {
     public interface IParser
-    { 
+    {
         public Type Type1 { get; }
         public Type Type2 { get; }
 
-        public bool CanParse(Object Object, Type TargetType);
+        private static List<IParser> parsers { get; } = new List<IParser>();
 
-        public Object Parse(Object Object, Type TargetType);
+        public static IParser GetParser(Type Type1, Type Type2)
+        {
+            if (!parsers.Any()) { FillParsers(); }
+            if (parsers.FirstOrDefault(o => (o.Type1 == Type1 && o.Type2 == Type2) || o.Type2 == Type1 && o.Type1 == Type2) is IParser Parser)
+            {
+                return Parser;
+            }
+            return null;
+        }
 
         public static Object ParseAny(Object Object, Type TargetType)
         {
@@ -27,11 +29,13 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             throw new ErpException("No parser found");
         }
 
-        private static List<IParser> parsers { get; } = new List<IParser>();
+        public bool CanParse(Object Object, Type TargetType);
 
         public Object GetDefault(Type TargeType);
 
         public bool IsDefault(Object Object, Type TargetType);
+
+        public Object Parse(Object Object, Type TargetType);
 
         private static void FillParsers()
         {
@@ -41,7 +45,7 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             };
             Func<Object> GetStringDefault = () => string.Empty;
 
-            Func<int, bool> IsInt32Default = (i) => 
+            Func<int, bool> IsInt32Default = (i) =>
             {
                 return i == -1;
             };
@@ -51,15 +55,15 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             Func<Object> GetDateTimeDefault = () => new DateTime();
 
             parsers.Add(new Parser<string, int>(
-                o => int.Parse(o), 
-                o => o.ToString(), 
+                o => int.Parse(o),
+                o => o.ToString(),
                 IsStringDefault,
                 IsInt32Default,
                 GetStringDefault,
                 GetInt32Default));
 
             parsers.Add(new Parser<string, string>(
-                o => o, 
+                o => o,
                 o => o,
                 IsStringDefault,
                 IsStringDefault,
@@ -67,22 +71,11 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 GetStringDefault));
 
             parsers.Add(new Parser<string, DateTime>(
-                o => DateTime.Parse(o), 
+                o => DateTime.Parse(o),
                 o => o.ToString("dd.MM.yyyy"),
                 DateTimeComparer,
                 IsStringDefault,
                 GetStringDefault));
         }
-
-        public static IParser GetParser(Type Type1, Type Type2) 
-        {
-            if (!parsers.Any()) { FillParsers(); }
-            if (parsers.FirstOrDefault(o => (o.Type1 == Type1 && o.Type2 == Type2) || o.Type2 == Type1 && o.Type1 == Type2) is IParser Parser)
-            {
-                return Parser;
-            }
-            return null;
-        }
-
     }
 }

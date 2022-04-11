@@ -1,11 +1,4 @@
-﻿using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.Exceptions.ErpExceptions
+﻿namespace ERP.Exceptions.ErpExceptions
 {
     public class ParameterNotSupportedErpException : CommandErpException
     {
@@ -13,7 +6,7 @@ namespace ERP.Exceptions.ErpExceptions
         {
         }
 
-        public ParameterNotSupportedErpException() : base("Parametertype is not supported") 
+        public ParameterNotSupportedErpException() : base("Parametertype is not supported")
         {
         }
     }

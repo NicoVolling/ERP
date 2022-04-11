@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Client.WindowsForms.Controls.Base
 {
     public class ResizePanel : Panel
     {
-        [Category("Steuerung")]
-        public Control Resizeable { get; set; }
+        private Size endSize = new Size(0, 0);
 
         private bool mouseDown = false;
 
@@ -20,22 +13,13 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         private Size startSize = new Size(0, 0);
 
-        private Size endSize = new Size(0, 0);
-
-        protected override void OnPaintBackground(PaintEventArgs e)
+        public ResizePanel()
         {
-            Graphics gfx = e.Graphics;
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            Color DrawBackColor = this.BackColor;
-
-            gfx.Clear(Color.FromArgb(40, 40, 40));
-            GraphicsPath grPath1 = new GraphicsPath();
-
-            grPath1.AddPolygon(new Point[] { new Point(this.Width, 0), new Point(this.Width, this.Height), new Point(0, this.Height) });
-
-            gfx.FillPath(new SolidBrush(DrawBackColor), grPath1);
+            this.Cursor = Cursors.SizeNWSE;
         }
+
+        [Category("Steuerung")]
+        public Control Resizeable { get; set; }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -45,17 +29,10 @@ namespace ERP.Client.WindowsForms.Controls.Base
             startSize = Resizeable.Size;
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            mouseDown = false;
-            Resizeable.Size = endSize;
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
-        { 
+        {
             base.OnMouseMove(e);
-            if (mouseDown && Resizeable != null) 
+            if (mouseDown && Resizeable != null)
             {
                 Size Destination = new Size(startSize.Width + (e.X - mousePosition.X), startSize.Height + (e.Y - mousePosition.Y));
                 if (Destination.Width < 402)
@@ -78,9 +55,26 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        public ResizePanel() 
+        protected override void OnMouseUp(MouseEventArgs e)
         {
-            this.Cursor = Cursors.SizeNWSE;
+            base.OnMouseUp(e);
+            mouseDown = false;
+            Resizeable.Size = endSize;
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            Graphics gfx = e.Graphics;
+            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            Color DrawBackColor = this.BackColor;
+
+            gfx.Clear(Color.FromArgb(40, 40, 40));
+            GraphicsPath grPath1 = new GraphicsPath();
+
+            grPath1.AddPolygon(new Point[] { new Point(this.Width, 0), new Point(this.Width, this.Height), new Point(0, this.Height) });
+
+            gfx.FillPath(new SolidBrush(DrawBackColor), grPath1);
         }
     }
 }

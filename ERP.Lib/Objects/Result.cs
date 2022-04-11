@@ -1,9 +1,4 @@
 ﻿using ERP.BaseLib.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.BaseLib.Objects
 {
@@ -74,31 +69,48 @@ namespace ERP.BaseLib.Objects
         }
 
         /// <summary>
+        /// Result for False-Answer
+        /// </summary>
+        public static Result False { get => new("False"); }
+
+        /// <summary>
         /// Everything worked well.
         /// </summary>
         public static Result OK { get => new("OK"); }
-
-        /// <summary>
-        /// Result for False-Answer
-        /// </summary>
-        public static Result False { get => new ("False");}
 
         /// <summary>
         /// Result for True-Answer
         /// </summary>
         public static Result True { get => new("True"); }
 
-        public static bool operator== (Result Result1, Result Result2) 
+        public static implicit operator Result(string String)
         {
-            return 
-                Result1.Error == Result2.Error && 
-                Result1.ErrorMessage == Result2.ErrorMessage && 
-                Result1.ReturnValue == Result2.ReturnValue;
+            try
+            {
+                return Json.Deserialize<Result>(String);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public static bool operator!= (Result Result1, Result Result2) 
+        public static implicit operator string(Result Result)
+        {
+            return Result.ToString();
+        }
+
+        public static bool operator !=(Result Result1, Result Result2)
         {
             return !(Result1 == Result2);
+        }
+
+        public static bool operator ==(Result Result1, Result Result2)
+        {
+            return
+                Result1.Error == Result2.Error &&
+                Result1.ErrorMessage == Result2.ErrorMessage &&
+                Result1.ReturnValue == Result2.ReturnValue;
         }
 
         public override bool Equals(object obj)
@@ -107,7 +119,7 @@ namespace ERP.BaseLib.Objects
             {
                 return this == Result1;
             }
-            else 
+            else
             {
                 return base.Equals(obj);
             }
@@ -121,23 +133,6 @@ namespace ERP.BaseLib.Objects
         public override string ToString()
         {
             return Json.Serialize(this);
-        }
-
-        public static implicit operator string(Result Result) 
-        {
-            return Result.ToString();
-        }
-
-        public static implicit operator Result(string String) 
-        {
-            try
-            {
-                return Json.Deserialize<Result>(String);
-            }
-            catch
-            {
-                throw;
-            }
         }
     }
 }

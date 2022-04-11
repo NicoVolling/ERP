@@ -1,10 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.BaseLib.Serialization
 {
@@ -13,16 +7,6 @@ namespace ERP.BaseLib.Serialization
     /// </summary>
     public static class Json
     {
-        /// <summary>
-        /// Converts the object to a string.
-        /// </summary>
-        /// <param name="Object">Object.</param>
-        /// <returns>String.</returns>
-        public static string Serialize(Object Object) 
-        {
-            return JsonConvert.SerializeObject(Object);
-        }
-
         /// <summary>
         /// Converts the string to a object.
         /// </summary>
@@ -40,9 +24,19 @@ namespace ERP.BaseLib.Serialization
         /// <param name="Raw">String.</param>
         /// <param name="Type">Type of Targetobject.</param>
         /// <returns>Targetobject.</returns>
-        public static Object Deserialize(string Raw, Type Type) 
+        public static Object Deserialize(string Raw, Type Type)
         {
             return JsonConvert.DeserializeObject(Raw, Type);
+        }
+
+        /// <summary>
+        /// Converts the object to a string.
+        /// </summary>
+        /// <param name="Object">Object.</param>
+        /// <returns>String.</returns>
+        public static string Serialize(Object Object)
+        {
+            return JsonConvert.SerializeObject(Object);
         }
     }
 }

@@ -1,29 +1,61 @@
 ﻿using ERP.BaseLib.Objecs;
-using ERP.Client.WindowsForms.Base;
 using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Client.WindowsForms.Controls.Base
 {
     public class ContentPanel : UserControl
     {
-        protected BaseWindow BaseWindow { get; private set; }
-
-        public DataContext DataContext { get; set; }
-
         public ContentPanel()
         {
             InitializeComponent();
         }
+
+        public event EventHandler ErrorChanged;
+
+        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
+
+        public DataContext DataContext { get; set; }
+        public bool HasError { get; private set; }
+
+        public BindingStatus Status
+        {
+            get
+            {
+                int saved = 0;
+                int unbound = 0;
+
+                foreach (BindableControl Bindable in Bindables)
+                {
+                    if (Bindable.Status == BindingStatus.Error)
+                    {
+                        return BindingStatus.Error;
+                    }
+                    else if (Bindable.Status == BindingStatus.Unsaved)
+                    {
+                        return BindingStatus.Unsaved;
+                    }
+                    saved += Bindable.Status == BindingStatus.Saved ? 1 : 0;
+                    unbound += Bindable.Status == BindingStatus.Unbound ? 1 : 0;
+                }
+                if (saved == Bindables.Count - unbound)
+                {
+                    return BindingStatus.Saved;
+                }
+                else if (unbound == Bindables.Count)
+                {
+                    return BindingStatus.Unbound;
+                }
+                return BindingStatus.NullOrDefault;
+            }
+        }
+
+        protected BaseWindow BaseWindow { get; private set; }
+        private List<BindableControl> Bindables { get; } = new List<BindableControl>();
 
         public static bool IsInDesignMode()
         {
@@ -34,11 +66,27 @@ namespace ERP.Client.WindowsForms.Controls.Base
             return false;
         }
 
-        protected override void OnLoad(EventArgs e)
+        public void ClearAllBinables()
         {
-            base.OnLoad(e);
-            if (DataContext == null && !IsInDesignMode()) { throw new ErpException("DataContext is null"); }
-            if (!IsInDesignMode()) { DataContext.PropertyChanged += (s, e) => { OnDataContextChanged(e.PropertyName); }; }
+            foreach (BindableControl Bindable in Bindables)
+            {
+                Bindable.Clear();
+            }
+        }
+
+        public void Closed()
+        {
+            OnClosed();
+        }
+
+        public void Maximized(bool Maximize)
+        {
+            OnMaximized(Maximize);
+        }
+
+        public void Minimized(bool Minimize)
+        {
+            OnMinimized(Minimize);
         }
 
         public void Open(BaseWindow BaseWindow)
@@ -47,83 +95,20 @@ namespace ERP.Client.WindowsForms.Controls.Base
             Opened();
         }
 
-        public void Closed()
-        {
-            OnClosed();
-        }
-
-        protected virtual void OnClosed()
-        {
-        }
-
-        public void Minimized(bool Minimize)
-        {
-            OnMinimized(Minimize);
-        }
-
-        protected virtual void OnMinimized(bool Minimize)
-        {
-        }
-
-        public void Maximized(bool Maximize)
-        {
-            OnMaximized(Maximize);
-        }
-
-        protected virtual void OnMaximized(bool Maximize)
-        {
-        }
-
         public void Opened()
         {
             OnOpened();
         }
 
-        protected virtual void OnOpened()
+        public void SyncAll()
         {
-        }
-
-        public BindingStatus Status 
-        { 
-            get 
+            foreach (BindableControl Bindable in Bindables)
             {
-                int saved = 0;
-                int unbound = 0;
-
-                foreach(BindableControl Bindable in Bindables) 
-                {
-                    if(Bindable.Status == BindingStatus.Error) 
-                    {
-                        return BindingStatus.Error;
-                    } 
-                    else if(Bindable.Status == BindingStatus.Unsaved) 
-                    {
-                        return BindingStatus.Unsaved;    
-                    }
-                    saved += Bindable.Status == BindingStatus.Saved ? 1 : 0;
-                    unbound += Bindable.Status == BindingStatus.Unbound ? 1 : 0;
-                }
-                if(saved == Bindables.Count - unbound) 
-                {
-                    return BindingStatus.Saved;
-                }
-                else if (unbound == Bindables.Count)
-                {
-                    return BindingStatus.Unbound;
-                }
-                return BindingStatus.NullOrDefault;
-            } 
+                Bindable.Sync();
+            }
         }
 
-        private List<BindableControl> Bindables { get; } = new List<BindableControl>();
-
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            base.OnControlAdded(e);
-            ControllAddedHandling(e.Control);
-        }
-
-        protected void ControllAddedHandling(Control Control) 
+        protected void ControllAddedHandling(Control Control)
         {
             if (!IsInDesignMode())
             {
@@ -141,7 +126,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                         }
                     }
                 }
-                foreach(Control Control1 in Control.Controls) 
+                foreach (Control Control1 in Control.Controls)
                 {
                     ControllAddedHandling(Control1);
                 }
@@ -150,56 +135,6 @@ namespace ERP.Client.WindowsForms.Controls.Base
                     ControllAddedHandling(e.Control);
                 };
             }
-        }
-
-        protected virtual void OnDataContextChanged(string PropertyName) 
-        {
-            
-        }
-
-        public void SyncAll() 
-        {
-            foreach(BindableControl Bindable in Bindables) 
-            {
-                Bindable.Sync();
-            }
-        }
-
-        private void Bind(BindableControl Bindable, IEnumerable<string> ObjectName)
-        {
-            List<string> tmp = ObjectName.ToList();
-            tmp.Insert(0, nameof(DataContext));
-            ObjectName = tmp;
-
-            GetAccessors(this, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType);
-
-            if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
-            {
-                PropertyChangedNotifier.PropertyChanged += (s, e) =>
-                {
-                    if (e.PropertyName == PropertyName)
-                    {
-                        Bind(Bindable, ObjectName.Skip(1));
-                    }
-                };
-            }
-            else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
-            {
-                Bindable.Bind(Get, Set, PropertyChangedNotifier, PropertyName, TargetType);
-                Bindable.StatusChanged += (s, e) => { OnStatusChanged(this.Status); };
-            }
-            else
-            {
-                throw new ErpException("Binding failed");
-            }
-        }
-
-        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
-
-        protected void OnStatusChanged(BindingStatus Status)
-        {
-            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status)); 
-            ProofError();
         }
 
         protected void GetAccessors(Object Parent, IEnumerable<string> ObjectName, out Action<Object> Set, out Func<Object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType)
@@ -262,46 +197,101 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        public bool HasError { get; private set; }
-
-        private void ProofError() 
+        protected virtual void OnClosed()
         {
-            bool err = Bindables.Any(o => o.HasError);
-            if (HasError != err)
-            {
-                HasError = err; 
-                OnErrorChanged(); 
-            }
         }
 
-        public void ClearAllBinables() 
+        protected override void OnControlAdded(ControlEventArgs e)
         {
-            foreach(BindableControl Bindable in Bindables) 
-            {
-                Bindable.Clear();
-            }
+            base.OnControlAdded(e);
+            ControllAddedHandling(e.Control);
         }
 
-        public event EventHandler ErrorChanged;
+        protected virtual void OnDataContextChanged(string PropertyName)
+        {
+        }
 
-        protected virtual void OnErrorChanged() 
+        protected virtual void OnErrorChanged()
         {
             ErrorChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DataContext == null && !IsInDesignMode()) { throw new ErpException("DataContext is null"); }
+            if (!IsInDesignMode()) { DataContext.PropertyChanged += (s, e) => { OnDataContextChanged(e.PropertyName); }; }
+        }
+
+        protected virtual void OnMaximized(bool Maximize)
+        {
+        }
+
+        protected virtual void OnMinimized(bool Minimize)
+        {
+        }
+
+        protected virtual void OnOpened()
+        {
+        }
+
+        protected void OnStatusChanged(BindingStatus Status)
+        {
+            StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status));
+            ProofError();
+        }
+
+        private void Bind(BindableControl Bindable, IEnumerable<string> ObjectName)
+        {
+            List<string> tmp = ObjectName.ToList();
+            tmp.Insert(0, nameof(DataContext));
+            ObjectName = tmp;
+
+            GetAccessors(this, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType);
+
+            if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
+            {
+                PropertyChangedNotifier.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == PropertyName)
+                    {
+                        Bind(Bindable, ObjectName.Skip(1));
+                    }
+                };
+            }
+            else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
+            {
+                Bindable.Bind(Get, Set, PropertyChangedNotifier, PropertyName, TargetType);
+                Bindable.StatusChanged += (s, e) => { OnStatusChanged(this.Status); };
+            }
+            else
+            {
+                throw new ErpException("Binding failed");
+            }
         }
 
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
+            //
             // ContentPanel
-            // 
+            //
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.ForeColor = System.Drawing.Color.White;
             this.MinimumSize = new System.Drawing.Size(402, 245);
             this.Name = "ContentPanel";
             this.Size = new System.Drawing.Size(402, 245);
             this.ResumeLayout(false);
+        }
 
+        private void ProofError()
+        {
+            bool err = Bindables.Any(o => o.HasError);
+            if (HasError != err)
+            {
+                HasError = err;
+                OnErrorChanged();
+            }
         }
     }
 }

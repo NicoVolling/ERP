@@ -4,11 +4,6 @@ using ERP.Business.Objects;
 using ERP.Commands.Base;
 using ERP.Exceptions.ErpExceptions;
 using ERP.IO.FileSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Business.Server
 {
@@ -16,46 +11,34 @@ namespace ERP.Business.Server
     /// A version of <see cref="CommandCollection"/> wich is more specified for storing data.
     /// </summary>
     /// <typeparam name="T_BusinessObject">Type of BusinessObject</typeparam>
-    public abstract class BusinessObjectServer<T_BusinessObject> : CommandCollection, IFileSaver 
+    public abstract class BusinessObjectServer<T_BusinessObject> : CommandCollection, IFileSaver
         where T_BusinessObject : BusinessObject, new()
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BusinessObjectServer()
+        {
+            Filename = $"{Namespace}.{this.GetType().Name}";
+        }
+
+        public bool DataLoaded { get; private set; } = false;
+
+        public string Filename { get; }
 
         /// <summary>
         /// Contains all objects that will be saved.
         /// </summary>
         protected List<T_BusinessObject> ObjectList { get; private set; } = new List<T_BusinessObject>();
 
-        public string Filename { get; }
-
-        /// <summary>
-        /// Creates the Object.
-        /// </summary>
-        /// <param name="User"></param>
-        /// <param name="Data"></param>
-        /// <returns></returns>
-        protected virtual T_BusinessObject OnCreate(T_BusinessObject Data) 
+        bool IFileSaver.CanLoad()
         {
-            try 
-            { 
-                AddObject(Data);
-                return Data;
-            }
-            catch 
-            { 
-                throw; 
-            }
+            return !DataLoaded;
         }
 
-        /// <summary>
-        /// Creates the Object.
-        /// </summary>
-        /// <param name="User"></param>
-        /// <param name="Data"></param>
-        /// <returns></returns>
-        public Result Create(T_BusinessObject Data) 
+        bool IFileSaver.CanSave()
         {
-            if(!ServerSide) { return GetClientResult(Data); }
-            return new Result(OnCreate(Data));
+            return DataLoaded;
         }
 
         /// <summary>
@@ -64,49 +47,22 @@ namespace ERP.Business.Server
         /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnChange(T_BusinessObject Data) 
+        public Result Change(T_BusinessObject Data)
         {
-            try 
-            { 
-                T_BusinessObject Object = GetObjectByID(Data.ID);
-                Object.Deserialize(Data);
-                return Object;
-            }
-            catch 
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Changes the Object.
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <param name="Data"></param>
-        /// <returns></returns>
-        public Result Change(T_BusinessObject Data) 
-        {
-            if(!ServerSide) { return GetClientResult(Data); }
+            if (!ServerSide) { return GetClientResult(Data); }
             return new Result(OnChange(Data));
         }
 
         /// <summary>
-        /// Delete Object.
+        /// Creates the Object.
         /// </summary>
-        /// <param name="ID"></param>
+        /// <param name="User"></param>
+        /// <param name="Data"></param>
         /// <returns></returns>
-        public virtual bool OnDelete(int ID) 
+        public Result Create(T_BusinessObject Data)
         {
-            try
-            {
-                T_BusinessObject Object = GetObjectByID(ID);
-                RemoveObject(ID);
-                return true;
-            }
-            catch
-            {
-                throw;
-            }
+            if (!ServerSide) { return GetClientResult(Data); }
+            return new Result(OnCreate(Data));
         }
 
         /// <summary>
@@ -120,20 +76,16 @@ namespace ERP.Business.Server
             return new Result(OnDelete(ID));
         }
 
-        /// <summary>
-        /// Gets Object by ID.
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <returns></returns>
-        public virtual T_BusinessObject OnGetData(int ID) 
+        void IFileSaver.Deserialize(string Raw)
         {
-            try
+            List<T_BusinessObject> ObjectList = Json.Deserialize<List<T_BusinessObject>>(Raw);
+            if (ObjectList != null)
             {
-                return GetObjectByID(ID);
+                this.ObjectList = ObjectList;
             }
-            catch
+            else
             {
-                throw;
+                this.ObjectList = new List<T_BusinessObject>();
             }
         }
 
@@ -152,7 +104,59 @@ namespace ERP.Business.Server
         /// Gets a list of all Objects.
         /// </summary>
         /// <returns></returns>
-        public virtual List<T_BusinessObject> OnGetList() 
+        public Result GetList()
+        {
+            if (!ServerSide) { return GetClientResult(); }
+            return new Result(OnGetList());
+        }
+
+        public void Load()
+        {
+            IFileSaver.Load(this);
+            DataLoaded = true;
+        }
+
+        /// <summary>
+        /// Delete Object.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public virtual bool OnDelete(int ID)
+        {
+            try
+            {
+                T_BusinessObject Object = GetObjectByID(ID);
+                RemoveObject(ID);
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets Object by ID.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public virtual T_BusinessObject OnGetData(int ID)
+        {
+            try
+            {
+                return GetObjectByID(ID);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of all Objects.
+        /// </summary>
+        /// <returns></returns>
+        public virtual List<T_BusinessObject> OnGetList()
         {
             try
             {
@@ -165,48 +169,9 @@ namespace ERP.Business.Server
             }
         }
 
-        /// <summary>
-        /// Gets a list of all Objects.
-        /// </summary>
-        /// <returns></returns>
-        public Result GetList( )
+        public void RemoveObject(int ID)
         {
-            if (!ServerSide) { return GetClientResult(); }
-            return new Result(OnGetList());
-        }
-
-        public bool DataLoaded { get; private set; } = false;
-
-        /// <summary>
-        /// Gets Object by ID or throws Exception if not found.
-        /// </summary>
-        /// <param name="ObjectList"></param>
-        /// <param name="ID"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        protected T_BusinessObject GetObjectByID(int ID) 
-        {
-            Load();
-            if(ObjectList.FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
-            throw new MissingObjectErpException(typeof(T_BusinessObject), ID);
-        }
-
-        string IFileSaver.Serialize()
-        {
-            return Json.Serialize(ObjectList);
-        }
-
-        void IFileSaver.Deserialize(string Raw)
-        {
-            List<T_BusinessObject> ObjectList = Json.Deserialize<List<T_BusinessObject>>(Raw);
-            if (ObjectList != null)
-            {
-                this.ObjectList = ObjectList;
-            }
-            else 
-            {
-                this.ObjectList = new List<T_BusinessObject>();
-            }
+            ObjectList.RemoveAll(o => o.ID == ID);
         }
 
         public void Save()
@@ -214,10 +179,9 @@ namespace ERP.Business.Server
             IFileSaver.Save(this);
         }
 
-        public void Load()
+        string IFileSaver.Serialize()
         {
-            IFileSaver.Load(this);
-            DataLoaded = true;
+            return Json.Serialize(ObjectList);
         }
 
         /// <summary>
@@ -225,13 +189,13 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="Object">Will be added to the list</param>
         /// <returns>ID that the object will retrieve</returns>
-        protected int AddObject(T_BusinessObject Object) 
+        protected int AddObject(T_BusinessObject Object)
         {
             int ID = -1;
             if (ObjectList.Any())
             {
                 int previous = -1;
-                foreach(T_BusinessObject obj in ObjectList.OrderBy(o => o.ID))
+                foreach (T_BusinessObject obj in ObjectList.OrderBy(o => o.ID))
                 {
                     if (previous != -1)
                     {
@@ -243,12 +207,12 @@ namespace ERP.Business.Server
                     }
                     previous = obj.ID;
                 }
-                if(ID < 0) 
+                if (ID < 0)
                 {
                     ID = previous + 1;
                 }
             }
-            else 
+            else
             {
                 ID = 0;
             }
@@ -259,27 +223,57 @@ namespace ERP.Business.Server
             return ID;
         }
 
-        public void RemoveObject(int ID) 
+        /// <summary>
+        /// Gets Object by ID or throws Exception if not found.
+        /// </summary>
+        /// <param name="ObjectList"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        protected T_BusinessObject GetObjectByID(int ID)
         {
-            ObjectList.RemoveAll(o => o.ID == ID);
-        }
-
-        bool IFileSaver.CanSave()
-        {
-            return DataLoaded;
-        }
-
-        bool IFileSaver.CanLoad()
-        {
-            return !DataLoaded;
+            Load();
+            if (ObjectList.FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
+            throw new MissingObjectErpException(typeof(T_BusinessObject), ID);
         }
 
         /// <summary>
-        /// Constructor
+        /// Changes the Object.
         /// </summary>
-        public BusinessObjectServer() 
+        /// <param name="ID"></param>
+        /// <param name="Data"></param>
+        /// <returns></returns>
+        protected virtual T_BusinessObject OnChange(T_BusinessObject Data)
         {
-            Filename = $"{Namespace}.{this.GetType().Name}";
+            try
+            {
+                T_BusinessObject Object = GetObjectByID(Data.ID);
+                Object.Deserialize(Data);
+                return Object;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates the Object.
+        /// </summary>
+        /// <param name="User"></param>
+        /// <param name="Data"></param>
+        /// <returns></returns>
+        protected virtual T_BusinessObject OnCreate(T_BusinessObject Data)
+        {
+            try
+            {
+                AddObject(Data);
+                return Data;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

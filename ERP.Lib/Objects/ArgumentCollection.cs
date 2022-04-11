@@ -2,12 +2,7 @@
 using ERP.BaseLib.Serialization.Converters;
 using ERP.Exceptions.ErpExceptions;
 using Newtonsoft.Json;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.BaseLib.Objects
 {
@@ -17,27 +12,18 @@ namespace ERP.BaseLib.Objects
     [JsonConverter(typeof(ArgumentCollectionConverter))]
     public class ArgumentCollection : IEnumerable<Argument>
     {
-
-        public override string ToString()
-        {
-            return Json.Serialize(_arguments);
-        }
-
         private List<Argument> _arguments = new List<Argument>();
 
-        public IEnumerator<Argument> GetEnumerator()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public ArgumentCollection()
         {
-            return _arguments.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        internal ArgumentCollection(IEnumerable<Argument> ArgumentList)
         {
-            return GetEnumerator();
-        }
-
-        public static explicit operator Dictionary<string, string>(ArgumentCollection ArgumentCollection)
-        {
-            return ArgumentCollection.ToDictionary(o => o.Name, o => o.Value);
+            _arguments = ArgumentList.ToList();
         }
 
         public static explicit operator ArgumentCollection(Dictionary<string, string> Dictionary)
@@ -45,22 +31,14 @@ namespace ERP.BaseLib.Objects
             return Dictionary.Select(o => new Argument(o.Key, o.Value)).ToArray();
         }
 
-        public static implicit operator ArgumentCollection(Argument[] ArgumentArray) 
+        public static explicit operator Dictionary<string, string>(ArgumentCollection ArgumentCollection)
+        {
+            return ArgumentCollection.ToDictionary(o => o.Name, o => o.Value);
+        }
+
+        public static implicit operator ArgumentCollection(Argument[] ArgumentArray)
         {
             return new ArgumentCollection(ArgumentArray);
-        }
-
-        internal ArgumentCollection(IEnumerable<Argument> ArgumentList) 
-        {
-            _arguments = ArgumentList.ToList();
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public ArgumentCollection() 
-        {
-        
         }
 
         /// <summary>
@@ -68,9 +46,9 @@ namespace ERP.BaseLib.Objects
         /// </summary>
         /// <param name="Argument"></param>
         /// <exception cref="Exception">Thrown when the Argument already exists</exception>
-        public void Add(Argument Argument) 
+        public void Add(Argument Argument)
         {
-            if(_arguments.Contains(Argument)) 
+            if (_arguments.Contains(Argument))
             {
                 throw new ArgumentAlreadyExistsErpException(Argument.Name);
             }
@@ -88,6 +66,16 @@ namespace ERP.BaseLib.Objects
         /// <returns>Returns true if names of any argument matches.</returns>
         public bool Contains(Argument Argument) => _arguments.Any(o => o.Name == Argument.Name);
 
+        public IEnumerator<Argument> GetEnumerator()
+        {
+            return _arguments.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         /// <summary>
         /// Remove all arguments that matches the name of the given argument from the list.
         /// </summary>
@@ -98,9 +86,14 @@ namespace ERP.BaseLib.Objects
         /// Converts to a Dictionary
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string> ToDictionary() 
+        public Dictionary<string, string> ToDictionary()
         {
             return (Dictionary<string, string>)this;
+        }
+
+        public override string ToString()
+        {
+            return Json.Serialize(_arguments);
         }
     }
 }

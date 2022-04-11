@@ -1,40 +1,17 @@
-﻿using ERP.BaseLib.Objecs;
-using ERP.Client.WindowsForms.Binding;
+﻿using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Binding.Parser;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     public partial class BindableControl : UserControl
     {
-        public Func<Object> Get { get; private set; }
-        public Action<Object> Set { get; private set; }
-
         private static double factor = -1;
-
-        public Type TargetType { get; private set; }
-
-        public bool HasError { get; private set; } = false;
-
-        private bool load = true;
-
-        private BindingStatus status;
-
         private string description;
         private int? fixDescriptionWidth = null;
         private bool isReadOnly;
-
-        public IParser Parser { get; private set; }
-
-        private Type OrigingType { get; set; }
+        private bool load = true;
+        private BindingStatus status;
 
         public BindableControl()
         {
@@ -48,7 +25,37 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             Status = BindingStatus.Unsaved;
         }
 
-        protected virtual IParser OnGetParser() { return new Parser<Object, Object>(o => o, o => o); }
+        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
+
+        [Category("Binding")]
+        public string BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
+
+        [Category("Darstellung")]
+        public string Description
+        { get => description; set { description = value; lbl_Description.Text = $"{description}:"; } }
+
+        [Category("Darstellung")]
+        public int? FixedDescriptionWidth
+        { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
+
+        public Func<Object> Get { get; private set; }
+        public bool HasError { get; private set; } = false;
+
+        [Category("Verhalten")]
+        public bool IsReadOnly
+        { get => isReadOnly; set { isReadOnly = value; OnIsReadOnlyChanged(); } }
+
+        public IParser Parser { get; private set; }
+        public Action<Object> Set { get; private set; }
+
+        public BindingStatus Status
+        {
+            get => HasError ? BindingStatus.Error : status;
+            protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
+        }
+
+        public Type TargetType { get; private set; }
+        private Type OrigingType { get; set; }
 
         public static Color GetBindingStatusColor(BindingStatus Status)
         {
@@ -107,29 +114,16 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.OnBound();
         }
 
-        protected virtual void OnBound()
+        public void Clear()
         {
+            Set(Parser.GetDefault(OrigingType));
         }
 
-        private void SetBindingStatus(BindingStatus Status)
+        public void LoadData()
         {
-            Color Color = BindableControl.GetBindingStatusColor(Status);
-
-            this.Enabled = Status != BindingStatus.Unbound;
-            StatusLed.ForeColor = Color;
-        }
-
-        public BindingStatus Status
-        {
-            get => HasError ? BindingStatus.Error : status;
-            protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
-        }
-
-        public void Sync()
-        {
-            if (this is BindableControl Bindable)
+            if (load)
             {
-                Bindable.LoadData();
+                OnLoadData();
             }
         }
 
@@ -140,17 +134,31 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             load = true;
         }
 
-        protected virtual void OnSaveData() { }
-
-        public void LoadData()
+        public void Sync()
         {
-            if (load)
+            if (this is BindableControl Bindable)
             {
-                OnLoadData();
+                Bindable.LoadData();
             }
         }
 
-        protected virtual void OnLoadData() { }
+        protected virtual void OnBound()
+        {
+        }
+
+        protected virtual IParser OnGetParser()
+        { return new Parser<Object, Object>(o => o, o => o); }
+
+        protected virtual void OnIsReadOnlyChanged()
+        {
+            this.ControlPanel.Enabled = !IsReadOnly;
+        }
+
+        protected virtual void OnLoadData()
+        { }
+
+        protected virtual void OnSaveData()
+        { }
 
         protected override void OnSizeChanged(EventArgs e)
         {
@@ -161,50 +169,9 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             }
         }
 
-        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
-
         protected void OnStatusChanged(BindingStatus Status)
         {
             StatusChanged?.Invoke(this, new BindingStatusChangedEventArgs(Status));
-        }
-
-        [Category("Darstellung")]
-        public string Description { get => description; set { description = value; lbl_Description.Text = $"{description}:"; } }
-
-        [Category("Binding")]
-        public string BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
-
-        [Category("Darstellung")]
-        public int? FixedDescriptionWidth { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
-
-        [Category("Verhalten")]
-        public bool IsReadOnly { get => isReadOnly; set { isReadOnly = value; OnIsReadOnlyChanged(); } }
-
-        protected virtual void OnIsReadOnlyChanged() 
-        {
-            this.ControlPanel.Enabled = !IsReadOnly;
-        }
-
-        private void lbl_Description_TextChanged(object sender, EventArgs e)
-        {
-
-            if (string.IsNullOrEmpty(Description))
-            {
-                lbl_Description.Visible = false;
-                lbl_Description.Size = new Size(0, 0);
-            }
-            else
-            {
-                lbl_Description.Visible = true;
-                if (FixedDescriptionWidth.HasValue)
-                {
-                    lbl_Description.Size = new Size(FixedDescriptionWidth.Value, 0);
-                }
-                else
-                {
-                    lbl_Description.Size = new Size((int)lbl_Description.CreateGraphics().MeasureString(lbl_Description.Text, lbl_Description.Font).Width + 5, 0);
-                }
-            }
         }
 
         protected Object ParseFromObject(Object Value)
@@ -243,9 +210,33 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             }
         }
 
-        public void Clear()
+        private void lbl_Description_TextChanged(object sender, EventArgs e)
         {
-            Set(Parser.GetDefault(OrigingType));
+            if (string.IsNullOrEmpty(Description))
+            {
+                lbl_Description.Visible = false;
+                lbl_Description.Size = new Size(0, 0);
+            }
+            else
+            {
+                lbl_Description.Visible = true;
+                if (FixedDescriptionWidth.HasValue)
+                {
+                    lbl_Description.Size = new Size(FixedDescriptionWidth.Value, 0);
+                }
+                else
+                {
+                    lbl_Description.Size = new Size((int)lbl_Description.CreateGraphics().MeasureString(lbl_Description.Text, lbl_Description.Font).Width + 5, 0);
+                }
+            }
+        }
+
+        private void SetBindingStatus(BindingStatus Status)
+        {
+            Color Color = BindableControl.GetBindingStatusColor(Status);
+
+            this.Enabled = Status != BindingStatus.Unbound;
+            StatusLed.ForeColor = Color;
         }
     }
 }

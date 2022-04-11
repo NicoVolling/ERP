@@ -1,24 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Client.WindowsForms.Controls.Base
 {
     public class RoundImageButton : Control
     {
-
-        [Category("Darstellung")]
-        public Image Image { get => _Image; set { _Image = value; this.Refresh(); } }
-
         private Image _Image;
 
         private bool IsMouseDown;
 
         private bool IsMouseInBounds;
+
+        [Category("Darstellung")]
+        public Image Image
+        { get => _Image; set { _Image = value; this.Refresh(); } }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            IsMouseDown = true;
+            this.Refresh();
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            IsMouseInBounds = true;
+            this.Refresh();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            IsMouseInBounds = false;
+            this.Refresh();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            IsMouseDown = false;
+            this.Refresh();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            float X = this.Width * 0.15f;
+            float Y = this.Height * 0.15f;
+            float Height = this.Height * 0.7f;
+            float Width = this.Width * 0.7f;
+            Graphics gfx = e.Graphics;
+            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            if (Image != null)
+            {
+                gfx.DrawImage(Image, X, Y, Width, Height);
+            }
+            else
+            {
+                PointF StringPoint = AlignContent(ContentAlignment.MiddleCenter, Size, Padding, gfx.MeasureString(Text, Font));
+                gfx.DrawString(Text, Font, new SolidBrush(ForeColor), StringPoint);
+            }
+        }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -58,29 +106,9 @@ namespace ERP.Client.WindowsForms.Controls.Base
             gfx.FillPath(new SolidBrush(DrawBackColor), grPath1);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            float X = this.Width * 0.15f;
-            float Y = this.Height * 0.15f;
-            float Height = this.Height * 0.7f;
-            float Width = this.Width * 0.7f;
-            Graphics gfx = e.Graphics;
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            if (Image != null)
-            {
-                gfx.DrawImage(Image, X, Y, Width, Height);
-            }
-            else
-            {
-                PointF StringPoint = AlignContent(ContentAlignment.MiddleCenter, Size, Padding, gfx.MeasureString(Text, Font));
-                gfx.DrawString(Text, Font, new SolidBrush(ForeColor), StringPoint);
-            }
-        }
-
         private PointF AlignContent(ContentAlignment Align, Size Size, Padding Padding, SizeF ContentSize)
         {
-            PointF Location = new PointF(Padding.Left, Padding.Top);
+            PointF Location;
 
             switch (Align)
             {
@@ -115,41 +143,16 @@ namespace ERP.Client.WindowsForms.Controls.Base
                 case ContentAlignment.BottomRight:
                     Location = new PointF(Size.Width - Padding.Right - ContentSize.Width, Size.Height - Padding.Bottom - ContentSize.Height);
                     break;
+
+                case ContentAlignment.TopLeft:
+                    Location = new PointF(Padding.Left, Padding.Top);
+                    break;
+
+                default:
+                    Location = new PointF(0, 0);
+                    break;
             }
             return Location;
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            IsMouseDown = true;
-            this.Refresh();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            IsMouseDown = false;
-            this.Refresh();
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            IsMouseInBounds = true;
-            this.Refresh();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            IsMouseInBounds = false;
-            this.Refresh();
-        }
-
-        protected override void OnLocationChanged(EventArgs e)
-        {
-            base.OnLocationChanged(e);
         }
     }
 }

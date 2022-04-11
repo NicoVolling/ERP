@@ -4,13 +4,8 @@ using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Exceptions.ErpExceptions;
 using ERP.Exceptions.ErpExceptions.CommandExceptions;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Commands.Base
 {
@@ -42,7 +37,101 @@ namespace ERP.Commands.Base
         /// <summary>
         /// A list containing all commandcollections for caching.
         /// </summary>
-        static List<CommandCollection> CommandCollectionList { get; set; } = new List<CommandCollection>();
+        private static List<CommandCollection> CommandCollectionList { get; set; } = new List<CommandCollection>();
+
+        /// <summary>
+        /// Returns if an instance of the given type exists.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection</typeparam>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists<T>() where T : CommandCollection, new()
+        {
+            return CommandCollectionList.Any(o => o is T);
+        }
+
+        /// <summary>
+        /// Returns if an instance of the given type exists.
+        /// </summary>
+        /// <param name="Type">Type of CommandCollection</param>
+        /// <returns>Instance of the given Type.</returns>
+        public static bool DoesInstanceExists(Type Type)
+        {
+            return CommandCollectionList.Any(o => o.GetType() == Type);
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <typeparam name="T">Type of CommandCollection.</typeparam>
+        /// <returns>Instance of the given Type.</returns>
+        public static T GetInstance<T>() where T : CommandCollection, new()
+        {
+            if (CommandCollectionList.FirstOrDefault(o => o is T) is T CoCo)
+            {
+                return CoCo;
+            }
+            else
+            {
+                T Obj = new();
+                CommandCollectionList.Add(Obj);
+                return Obj;
+            }
+        }
+
+        /// <summary>
+        /// Return an Instance of the given Type.
+        /// </summary>
+        /// <param name="Type">Type of CommandCollection.</param>
+        /// <returns>Instance of the given Type.</returns>
+        internal static CommandCollection GetInstance(Type Type)
+        {
+            if (CommandCollectionList.FirstOrDefault(o => o.GetType() == Type) is CommandCollection CoCo)
+            {
+                return CoCo;
+            }
+            else
+            {
+                try
+                {
+                    Object obj = Activator.CreateInstance(Type);
+                    if (obj is CommandCollection CommandCollection)
+                    {
+                        CommandCollectionList.Add(CommandCollection);
+                        return CommandCollection;
+                    }
+                    else
+                    {
+                        throw new ReflectionErpException($"Couldn't create instance of {Type.Name}");
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute-Method. It automatically differenciate client-side and server-side.
+        /// </summary>
+        /// <param name="Input">Data.</param>
+        /// <returns>Result wich comes from or will be handed to server.</returns>
+        internal Result ExecuteCommand(DataInput Input)
+        {
+            if (new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType == typeof(CommandMaster))
+            {
+                ServerSide = true;
+                Result Result = ExecuteCommandServer(Input);
+                ServerSide = false;
+                return Result;
+            }
+            else
+            {
+                ServerSide = false;
+                Result Result = ExecuteCommandClient(Input);
+                return Result;
+            }
+        }
 
         /// <summary>
         /// Ensures that the argument does exist and throws an exception if argument, that must exist does not exist.
@@ -69,12 +158,53 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
+        /// This Method makes a request on the server and returns the handed result.
+        /// </summary>
+        /// <param name="Arguments">Arguments must be in the correct order.</param>
+        /// <returns>The Result wich comes from the server.</returns>
+        protected Result GetClientResult(params object[] Arguments)
+        {
+            Result Result = new(new ErpException("Client: Unknown Error"));
+
+            if (new StackTrace().GetFrame(1) is StackFrame frame && frame.GetMethod() is MethodBase MB && this.GetType() is Type Type)
+            {
+                string Namespace = this.Namespace;
+                string Class = Type.Name.Replace("CC_", "");
+                string Command = MB.Name;
+
+                return GetClientResult(new Command(Namespace, Class, Command), Type, MB, Arguments);
+            }
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Client-sideded Execute-Method.
+        /// </summary>
+        /// <param name="Input">Data.</param>
+        /// <returns>The Result wich comes from the server.</returns>
+        private static Result ExecuteCommandClient(DataInput Input)
+        {
+            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
+            string res = response.Result.Content.ReadAsStringAsync().Result;
+            try
+            {
+                Result result = Json.Deserialize<Result>(res);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new Result(ex);
+            }
+        }
+
+        /// <summary>
         /// Serversided Execute-Method.
         /// </summary>
         /// <param name="Input">Data.</param>
         /// <returns>The Result wich will be handed to the client.</returns>
         /// <exception cref="Exception"></exception>
-        private Result ExecuteCommandServer(DataInput Input) 
+        private Result ExecuteCommandServer(DataInput Input)
         {
             List<Object> Params = new();
 
@@ -144,83 +274,18 @@ namespace ERP.Commands.Base
         }
 
         /// <summary>
-        /// Client-sideded Execute-Method.
-        /// </summary>
-        /// <param name="Input">Data.</param>
-        /// <returns>The Result wich comes from the server.</returns>
-        private static Result ExecuteCommandClient(DataInput Input) 
-        {
-            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
-            string res = response.Result.Content.ReadAsStringAsync().Result;
-            try
-            {
-                Result result = Json.Deserialize<Result>(res);
-                return result;
-            }
-            catch(Exception ex)
-            {
-                return new Result(ex);
-            }
-        }
-
-        /// <summary>
-        /// Execute-Method. It automatically differenciate client-side and server-side.
-        /// </summary>
-        /// <param name="Input">Data.</param>
-        /// <returns>Result wich comes from or will be handed to server.</returns>
-        internal Result ExecuteCommand(DataInput Input)
-        {
-            if (new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType == typeof(CommandMaster))
-            {
-                ServerSide = true;
-                Result Result = ExecuteCommandServer(Input);
-                ServerSide = false;
-                return Result;
-            }
-            else 
-            {
-                ServerSide = false;
-                Result Result = ExecuteCommandClient(Input);
-                return Result;
-            }
-        }
-
-        /// <summary>
-        /// This Method makes a request on the server and returns the handed result.
-        /// </summary>
-        /// <param name="Arguments">Arguments must be in the correct order.</param>
-        /// <returns>The Result wich comes from the server.</returns>
-        protected Result GetClientResult(params object[] Arguments) 
-        {
-            Result Result = new(new ErpException("Client: Unknown Error"));
-
-            if(new StackTrace().GetFrame(1) is StackFrame frame && frame.GetMethod() is MethodBase MB && this.GetType() is Type Type)
-            {
-                string Namespace = this.Namespace;
-                string Class = Type.Name.Replace("CC_", "");
-                string Command = MB.Name;
-
-                return GetClientResult(new Command(Namespace, Class, Command), Type, MB, Arguments);
-
-            }
-
-            return Result;
-        }
-
-        /// <summary>
         /// This Method makes a request on the server and returns the handed result.
         /// </summary>
         /// <param name="Command">The Command that should be executed</param>
         /// <param name="Type">The Type of the commandocllection</param>
         /// <param name="Arguments">Arguments must be in the correct order.</param>
         /// <returns>The Result wich comes from the server.</returns>
-        private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments) 
+        private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments)
         {
             Result Result = new(new ErpException("Client: Unknown Error"));
 
             if (Type.GetMethod(MethodBase.Name) is MethodInfo MI)
             {
-
                 Dictionary<string, string> Parameters = new();
 
                 int i = 0;
@@ -245,78 +310,6 @@ namespace ERP.Commands.Base
                 return ExecuteCommand(new DataInput(Command, (ArgumentCollection)Parameters));
             }
             return Result;
-        }
-
-        /// <summary>
-        /// Return an Instance of the given Type.
-        /// </summary>
-        /// <typeparam name="T">Type of CommandCollection.</typeparam>
-        /// <returns>Instance of the given Type.</returns>
-        public static T GetInstance<T>() where T : CommandCollection, new()
-        {
-            if (CommandCollectionList.FirstOrDefault(o => o is T) is T CoCo)
-            {
-                return CoCo;
-            }
-            else 
-            {
-                T Obj = new();
-                CommandCollectionList.Add(Obj);
-                return Obj;
-            }
-        }
-
-        /// <summary>
-        /// Returns if an instance of the given type exists.
-        /// </summary>
-        /// <typeparam name="T">Type of CommandCollection</typeparam>
-        /// <returns>Instance of the given Type.</returns>
-        public static bool DoesInstanceExists<T>() where T : CommandCollection, new()
-        {
-            return CommandCollectionList.Any(o => o is T);
-        }
-
-        /// <summary>
-        /// Returns if an instance of the given type exists.
-        /// </summary>
-        /// <param name="Type">Type of CommandCollection</param>
-        /// <returns>Instance of the given Type.</returns>
-        public static bool DoesInstanceExists(Type Type)
-        {
-            return CommandCollectionList.Any(o => o.GetType() == Type);
-        }
-
-        /// <summary>
-        /// Return an Instance of the given Type.
-        /// </summary>
-        /// <param name="Type">Type of CommandCollection.</param>
-        /// <returns>Instance of the given Type.</returns>
-        internal static CommandCollection GetInstance(Type Type) 
-        {
-            if (CommandCollectionList.FirstOrDefault(o => o.GetType() == Type) is CommandCollection CoCo)
-            {
-                return CoCo;
-            }
-            else
-            {
-                try
-                {
-                    Object obj = Activator.CreateInstance(Type);
-                    if (obj is CommandCollection CommandCollection)
-                    {
-                        CommandCollectionList.Add(CommandCollection);
-                        return CommandCollection;
-                    }
-                    else
-                    {
-                        throw new ReflectionErpException($"Couldn't create instance of {Type.Name}");
-                    }
-                }
-                catch
-                {
-                    throw;
-                }
-            }
         }
     }
 }

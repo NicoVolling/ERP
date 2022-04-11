@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using ERP.BaseLib.Objects;
+﻿using ERP.BaseLib.Objects;
+using ERP.BaseLib.Output;
 using ERP.BaseLib.Serialization;
-using ERP.BaseLib.Statics;
 using ERP.Commands.Base;
 using ERP.Exceptions.ErpExceptions;
-using ERP.BaseLib.Output;
+using System.Net;
 
 namespace ERP.Server.WebServer
 {
@@ -18,7 +12,6 @@ namespace ERP.Server.WebServer
     /// </summary>
     public sealed class HttpServer : ERP.BaseLib.WebServer.HttpServer
     {
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -32,7 +25,7 @@ namespace ERP.Server.WebServer
         {
             Result Result = new(new ErpException("UnknownError"));
 
-            if(Request == null) 
+            if (Request == null)
             {
                 Result = new(new ErpException("Request is null"));
             }

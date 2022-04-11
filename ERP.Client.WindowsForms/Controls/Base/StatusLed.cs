@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Drawing2D;
 
 namespace ERP.Client.WindowsForms.Controls.Base
 {
     public class StatusLed : Control
     {
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             float Height = this.Height;
             float Width = this.Width;
-            if(Width < Height) 
+            if (Width < Height)
             {
                 Height = Width;
             }
-            else if(Height < Width) 
+            else if (Height < Width)
             {
                 Width = Height;
             }

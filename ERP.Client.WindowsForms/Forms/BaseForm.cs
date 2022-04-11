@@ -1,5 +1,3 @@
-using ERP.Client.WindowsForms.Base;
-using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Controls.Base;
 using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
@@ -9,7 +7,6 @@ namespace ERP.Client.WindowsForms
 {
     public partial class BaseForm : Form
     {
-
         public BaseForm(string ApplicationTitle, Icon MainIcon, Dictionary<string, Dictionary<string, Func<BaseWindow>>> WindowMenus)
         {
             InitializeComponent();
@@ -17,24 +14,24 @@ namespace ERP.Client.WindowsForms
             this.Text = ApplicationTitle;
             this.Icon = MainIcon;
             this.DoubleBuffered = true;
-            this.WindowPanel.Click += (s, e) => 
+            this.WindowPanel.Click += (s, e) =>
             {
-                foreach (BaseWindow BW in Windows ) 
+                foreach (BaseWindow BW in Windows)
                 {
                     BW.HasFocus = false;
                 }
             };
 
-            foreach(var kvp in WindowMenus) 
+            foreach (var kvp in WindowMenus)
             {
                 ToolStripMenuItem TSMI = new ToolStripMenuItem();
                 TSMI.Text = kvp.Key;
                 TSMI.ForeColor = this.ForeColor;
                 MenuStrip.Items.Add(TSMI);
 
-                foreach(var kvp1 in kvp.Value) 
+                foreach (var kvp1 in kvp.Value)
                 {
-                    try 
+                    try
                     {
                         ToolStripMenuItem TSMI1 = new ToolStripMenuItem();
                         TSMI1.Text = kvp1.Key;
@@ -45,12 +42,11 @@ namespace ERP.Client.WindowsForms
                             OpenWindow(kvp1.Value());
                         };
                         TSMI.DropDownItems.Add(TSMI1);
-                    } 
-                    catch 
+                    }
+                    catch
                     {
                         throw new ErpException("Could not open Window");
                     }
-
                 }
             }
         }
@@ -72,7 +68,7 @@ namespace ERP.Client.WindowsForms
             BaseWindow.ContentPanel.Open(BaseWindow);
         }
 
-        internal void Close(BaseWindow Window) 
+        internal void Close(BaseWindow Window)
         {
             WindowPanel.Controls.Remove(Window);
             WindowListPanel.Controls.Remove(WindowListPanel.Controls.Cast<Control>().Where(o => o is BaseWindowTitleBar BWTB && BWTB.BaseWindow == Window).FirstOrDefault());

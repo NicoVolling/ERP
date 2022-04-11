@@ -2,12 +2,6 @@
 using ERP.BaseLib.Objects;
 using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using ERP.IO.FileSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Commands.Base
 {
@@ -19,7 +13,9 @@ namespace ERP.Commands.Base
         /// <summary>
         /// All CommandCollectionTypes founded in the Namespace.
         /// </summary>
-        static List<Type> CommandCollectionTypes = new();
+        private static List<Type> CommandCollectionTypes = new();
+
+        private static Timer timer;
 
         /// <summary>
         /// Executes the command. Can only be used on server-side
@@ -41,7 +37,7 @@ namespace ERP.Commands.Base
                     throw;
                 }
             }
-            else 
+            else
             {
                 throw new CommandNotFoundEroException(DataInput.Command.ToString());
             }
@@ -50,7 +46,7 @@ namespace ERP.Commands.Base
         /// <summary>
         /// Refreshes the list of CommandCollectionTypes if needed.
         /// </summary>
-        public static void Reload() 
+        public static void Reload()
         {
             if (CommandCollectionTypes.Count < 1)
             {
@@ -64,7 +60,7 @@ namespace ERP.Commands.Base
                     try
                     {
                         CommandCollection.GetInstance(Type);
-                    } 
+                    }
                     catch
                     {
                         throw;
@@ -72,9 +68,9 @@ namespace ERP.Commands.Base
                     CommandCollectionTypes.Add(Type);
                 }
             }
-            if(timer is null) 
+            if (timer is null)
             {
-                timer = new Timer(new TimerCallback((o) => 
+                timer = new Timer(new TimerCallback((o) =>
                 {
                     Save();
                 }), null, 0, 150000); //2:30 min.
@@ -97,7 +93,5 @@ namespace ERP.Commands.Base
                 }
             }
         }
-
-        private static Timer timer;
     }
 }

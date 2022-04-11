@@ -1,33 +1,19 @@
-﻿using ERP.BaseLib.Objecs;
-using ERP.BaseLib.Serialization;
-using ERP.Client.WindowsForms.Base;
-using ERP.Client.WindowsForms.Binding;
+﻿using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Binding.Parser;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     public partial class B_TextBox : BindableControl
     {
+        private bool textchanged = true;
+
         public B_TextBox()
         {
             InitializeComponent();
         }
 
-        protected override IParser OnGetParser()
-        {
-            return IParser.GetParser(typeof(string), TargetType);
-        }
-
-        bool textchanged = true;
+        public TextBox TextBox { get => textBox1; }
 
         protected override void OnBound()
         {
@@ -52,17 +38,20 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             };
         }
 
-        public TextBox TextBox { get => textBox1; }
-
-        protected override void OnSaveData()
+        protected override IParser OnGetParser()
         {
-            Set(textBox1.Text);
+            return IParser.GetParser(typeof(string), TargetType);
         }
 
         protected override void OnLoadData()
         {
             textBox1.Text = Get()?.ToString();
             Status = string.IsNullOrEmpty(textBox1.Text) ? BindingStatus.NullOrDefault : BindingStatus.Saved;
+        }
+
+        protected override void OnSaveData()
+        {
+            Set(textBox1.Text);
         }
     }
 }

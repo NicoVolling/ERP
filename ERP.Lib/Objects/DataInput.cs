@@ -1,27 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace ERP.BaseLib.Objects
+﻿namespace ERP.BaseLib.Objects
 {
     /// <summary>
     /// This class provides several Data needed to send commands to the server and executes them.
     /// </summary>
     public sealed class DataInput
     {
-        /// <summary>
-        /// Is used to identify a command.
-        /// </summary>
-        public Command Command { get; set; }
-
-        /// <summary>
-        /// This is a list of all Arguments (Parameters) that are needed for executing the command.
-        /// </summary>
-        public ArgumentCollection Arguments { get; set; }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -37,7 +20,7 @@ namespace ERP.BaseLib.Objects
         /// </summary>
         /// <param name="Command">Is used to identify a command.</param>
         /// <param name="Arguments">This is a list of all Arguments (Parameters) that are needed for executing the command.</param>
-        public DataInput(Command Command, ArgumentCollection Arguments) 
+        public DataInput(Command Command, ArgumentCollection Arguments)
         {
             this.Command = Command;
             this.Arguments = Arguments;
@@ -57,10 +40,20 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Constructor
         /// </summary>
-        public DataInput() 
+        public DataInput()
         {
             this.Command = default;
             this.Arguments = new ArgumentCollection();
         }
+
+        /// <summary>
+        /// This is a list of all Arguments (Parameters) that are needed for executing the command.
+        /// </summary>
+        public ArgumentCollection Arguments { get; set; }
+
+        /// <summary>
+        /// Is used to identify a command.
+        /// </summary>
+        public Command Command { get; set; }
     }
 }

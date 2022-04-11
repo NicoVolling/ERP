@@ -1,14 +1,7 @@
-﻿using ERP.BaseLib.Helpers;
+﻿using ERP.BaseLib.Objecs;
 using ERP.BaseLib.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
 using ERP.Exceptions.ErpExceptions;
-using ERP.BaseLib.Objecs;
+using System.Reflection;
 
 namespace ERP.Business.Objects
 {
@@ -22,11 +15,8 @@ namespace ERP.Business.Objects
         /// <summary>
         /// Identifier should be unique
         /// </summary>
-        public int ID { get => iD; set { iD = value; NotifyPropertyChanged(); } }
-        public virtual string Serialize()
-        {
-            return Json.Serialize(this);
-        }
+        public int ID
+        { get => iD; set { iD = value; NotifyPropertyChanged(); } }
 
         public void Deserialize(string Raw)
         {
@@ -50,6 +40,11 @@ namespace ERP.Business.Objects
             }
         }
 
-        public override abstract string ToString();
+        public virtual string Serialize()
+        {
+            return Json.Serialize(this);
+        }
+
+        public abstract override string ToString();
     }
 }

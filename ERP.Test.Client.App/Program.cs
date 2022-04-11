@@ -5,10 +5,6 @@ using ERP.Commands.Base;
 using ERP.Test.Client.Library.GUI;
 using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
-using System.Diagnostics;
-using System.Drawing;
-using System.Net.Http;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace ERP.Test.Client.App
@@ -44,12 +40,13 @@ namespace ERP.Test.Client.App
 
             Dictionary<string, Dictionary<string, Func<BaseWindow>>> WindowList = new()
             {
-                { "Menschen",
+                {
+                    "Menschen",
                     new Dictionary<string, Func<BaseWindow>>()
                     {
-                        { "Personen", () =>  new BaseWindow(new CP_Personen()) { Text = "Personen", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } } 
-                    } 
-                } 
+                        { "Personen", () =>  new BaseWindow(new CP_Personen()) { Text = "Personen", Icon = ERP.Client.WindowsForms.Base.Resources.Icon } }
+                    }
+                }
             };
 
             BaseForm BF;

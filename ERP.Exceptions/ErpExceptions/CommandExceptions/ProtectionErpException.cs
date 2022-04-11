@@ -1,11 +1,4 @@
-﻿using ERP.Exceptions.ErpExceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.Exceptions.ErpExceptions
+﻿namespace ERP.Exceptions.ErpExceptions
 {
     public class ProtectionErpException : CommandErpException
     {
@@ -13,7 +6,7 @@ namespace ERP.Exceptions.ErpExceptions
         {
         }
 
-        public ProtectionErpException() : base("Protected") 
+        public ProtectionErpException() : base("Protected")
         {
         }
     }

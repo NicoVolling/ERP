@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ERP.BaseLib.Output;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using ERP.BaseLib.Objects;
-using ERP.BaseLib.Serialization;
-using ERP.BaseLib.Statics;
-using ERP.Exceptions.ErpExceptions;
-using ERP.BaseLib.Output;
 
 namespace ERP.BaseLib.WebServer
 {
@@ -21,11 +13,6 @@ namespace ERP.BaseLib.WebServer
         private int reqCount = 0;
 
         /// <summary>
-        /// Determines if the server is currently running.
-        /// </summary>
-        public bool IsRunning { get; private set; }
-
-        /// <summary>
         /// Constructor
         /// </summary>
         public HttpServer()
@@ -33,9 +20,36 @@ namespace ERP.BaseLib.WebServer
             listener = new HttpListener();
         }
 
-        private async Task HandleIncommingConnections() 
+        public bool ConsoleOutput { get; set; } = true;
+
+        /// <summary>
+        /// Determines if the server is currently running.
+        /// </summary>
+        public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Starts the server.
+        /// </summary>
+        public void Start(string Url)
         {
-            while(IsRunning) 
+            IsRunning = true;
+            listener.Prefixes.Add(Url);
+            listener.Start();
+            if (ConsoleOutput)
+            {
+                Log.WriteLine($"Listening for connections on {Url}", ConsoleColor.Green);
+            }
+            Task listenTask = HandleIncommingConnections();
+            listenTask.GetAwaiter().GetResult();
+
+            listener.Close();
+        }
+
+        protected abstract string GetResultFromRequest(HttpListenerRequest Request);
+
+        private async Task HandleIncommingConnections()
+        {
+            while (IsRunning)
             {
                 HttpListenerContext ctx = await listener.GetContextAsync();
 
@@ -59,29 +73,6 @@ namespace ERP.BaseLib.WebServer
 
                 resp.Close();
             }
-        }
-
-        protected abstract string GetResultFromRequest(HttpListenerRequest Request);
-
-        public bool ConsoleOutput { get; set; } = true;
-
-
-        /// <summary>
-        /// Starts the server.
-        /// </summary>
-        public void Start(string Url)
-        {
-            IsRunning = true;
-            listener.Prefixes.Add(Url);
-            listener.Start();
-            if (ConsoleOutput)
-            {
-                Log.WriteLine($"Listening for connections on {Url}", ConsoleColor.Green);
-            }
-            Task listenTask = HandleIncommingConnections();
-            listenTask.GetAwaiter().GetResult();
-
-            listener.Close();
         }
     }
 }
