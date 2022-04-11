@@ -4,6 +4,7 @@ namespace ERP.BaseLib.Output
 {
     public static class Log
     {
+        public static bool SaveOutput = false;
         private static FileStream _stream;
 
         static Log()
@@ -17,20 +18,23 @@ namespace ERP.BaseLib.Output
 
         public static void WriteLine(string value, ConsoleColor Color = ConsoleColor.White)
         {
-            string pre = "";
-            if (Prefix != "")
+            if (SaveOutput)
             {
-                pre = $"[{Prefix}]";
-            }
-            string text = $"{DateTime.Now:dd.MM.yyyy HH:mm:ss:fff}>{pre}>>{value}\n";
+                string pre = "";
+                if (Prefix != "")
+                {
+                    pre = $"[{Prefix}]";
+                }
+                string text = $"{DateTime.Now:dd.MM.yyyy HH:mm:ss:fff}>{pre}>>{value}\n";
 
-            if (_stream == null) { CreateNewFileStream(); }
-            if (_stream is FileStream FS)
-            {
-                byte[] data = new UTF8Encoding(true).GetBytes(text);
+                if (_stream == null) { CreateNewFileStream(); }
+                if (_stream is FileStream FS)
+                {
+                    byte[] data = new UTF8Encoding(true).GetBytes(text);
 
-                FS.Write(data, 0, data.Length);
-                FS.FlushAsync();
+                    FS.Write(data, 0, data.Length);
+                    FS.FlushAsync();
+                }
             }
 
             System.Console.ForegroundColor = ConsoleColor.DarkGray;
