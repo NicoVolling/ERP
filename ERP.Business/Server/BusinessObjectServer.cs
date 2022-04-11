@@ -198,7 +198,7 @@ namespace ERP.Business.Server
 
         void IFileSaver.Deserialize(string Raw)
         {
-            List<T_BusinessObject>? ObjectList = Json.Deserialize<List<T_BusinessObject>>(Raw);
+            List<T_BusinessObject> ObjectList = Json.Deserialize<List<T_BusinessObject>>(Raw);
             if (ObjectList != null)
             {
                 this.ObjectList = ObjectList;

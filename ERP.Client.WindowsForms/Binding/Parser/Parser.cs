@@ -30,7 +30,6 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         Func<Object> GetDefault2 { get; set; }
 
-
         public Parser(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1)
         {
             Func<T1, T1, bool> Compare1;
@@ -43,8 +42,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 () => default(T2));
         }
@@ -58,8 +57,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 () => default(T2));
         }
@@ -76,8 +75,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 () => default(T2));
         }
@@ -94,8 +93,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 () => default(T2));
         }
@@ -109,8 +108,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 GetDefault1,
                 GetDefault2);
         }
@@ -127,8 +126,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 GetDefault1,
                 () => default(T2));
         }
@@ -145,8 +144,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 GetDefault2);
         }
@@ -163,8 +162,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 GetDefault1,
                 () => default(T2));
         }
@@ -181,8 +180,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 GetDefault2);
         }
@@ -199,8 +198,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 () => default(T1),
                 GetDefault2);
         }
@@ -217,8 +216,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 GetDefault1,
                 () => default(T2));
         }
@@ -229,18 +228,18 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 OnParse2To1,
                 Compare1,
                 Compare2,
-                PrepareIsDefault<T1>(IsDefault1),
-                PrepareIsDefault<T2>(IsDefault2),
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
                 GetDefault1,
                 GetDefault2);
         }
 
-        private Func<Object, bool> PrepareIsDefault<T>(Func<T, bool> IsDefault)
+        private static Func<Object, bool> PrepareIsDefault<T>(Func<T, bool> IsDefault)
         {
             return o => (o is T Obj && IsDefault(Obj)) || o is null;
         }
 
-        private void DefaultComparer(out Func<T1, T1, bool>? Compare1, out Func<T2, T2, bool>? Compare2)
+        private static void DefaultComparer(out Func<T1, T1, bool> Compare1, out Func<T2, T2, bool> Compare2)
         {
 
             Compare1 = (a, b) =>
@@ -303,8 +302,15 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 {
                     return GetDefault1();
                 }
-                if (Object is T1 T1) return OnParse1To2(T1);
-                if (Object is T2 T2) return OnParse2To1(T2);
+                if (Object is T1 T1)
+                {
+                    return OnParse1To2(T1);
+                }
+
+                if (Object is T2 T2)
+                {
+                    return OnParse2To1(T2);
+                }
             }
             throw new ErpException("Parser incompatible");
         }
@@ -322,13 +328,13 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         public bool IsDefault(Object Object, Type TargetType) 
         {
-            if(Object is T1) 
+            if(Object is T1 t1) 
             {
-                return IsDefault1((T1)Object);
+                return IsDefault1(t1);
             }
-            if (Object is T2)
+            if (Object is T2 t2)
             {
-                return IsDefault2((T2)Object);
+                return IsDefault2(t2);
             }
             return false;
         }

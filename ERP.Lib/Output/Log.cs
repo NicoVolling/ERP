@@ -11,7 +11,7 @@ namespace ERP.BaseLib.Output
 
         public static string Prefix { get; set; } = "";
 
-        private static FileStream? _stream;
+        private static FileStream _stream;
 
         static Log()
         {
@@ -31,7 +31,7 @@ namespace ERP.BaseLib.Output
                 }
                 _stream = System.IO.File.OpenWrite(System.IO.Path.Combine(basedir, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff") + ".txt"));
             }
-            catch (Exception ex)
+            catch
             {
                 _stream = null;
             }
@@ -39,14 +39,14 @@ namespace ERP.BaseLib.Output
 
         public static void WriteLine(Object value, ConsoleColor Color = ConsoleColor.White) => WriteLine(value.ToString(), Color);
 
-        public static void WriteLine(string? value, ConsoleColor Color = ConsoleColor.White) 
+        public static void WriteLine(string value, ConsoleColor Color = ConsoleColor.White) 
         {
             string pre = "";
             if(Prefix != "") 
             {
                 pre = $"[{Prefix}]";
             }
-            string text = $"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss:fff")}>{Prefix}>>{value}\n";
+            string text = $"{DateTime.Now:dd.MM.yyyy HH:mm:ss:fff}>{pre}>>{value}\n";
 
             if(_stream == null) { CreateNewFileStream(); }
             if (_stream is FileStream FS)
@@ -58,7 +58,7 @@ namespace ERP.BaseLib.Output
             }
 
             System.Console.ForegroundColor = ConsoleColor.DarkGray;
-            System.Console.Write($"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss:fff")}");
+            System.Console.Write($"{DateTime.Now:dd.MM.yyyy HH:mm:ss:fff}");
 
             System.Console.ForegroundColor = ConsoleColor.Gray;
             System.Console.Write(">");

@@ -83,7 +83,7 @@ namespace ERP.Test.Client.Library.GUI
             // 
             // b_TextBox2
             // 
-            this.b_TextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.b_TextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox2.BindingDestination = "Person.Firstname";
             this.b_TextBox2.Description = "Firstname";
@@ -97,7 +97,7 @@ namespace ERP.Test.Client.Library.GUI
             // 
             // b_TextBox3
             // 
-            this.b_TextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.b_TextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox3.BindingDestination = "Person.Name";
             this.b_TextBox3.Description = "Name";
@@ -134,7 +134,7 @@ namespace ERP.Test.Client.Library.GUI
             // 
             // b_TextBox5
             // 
-            this.b_TextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.b_TextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox5.BindingDestination = "Person.ID";
             this.b_TextBox5.Description = "ID";
@@ -148,7 +148,7 @@ namespace ERP.Test.Client.Library.GUI
             // 
             // b_TextBox4
             // 
-            this.b_TextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.b_TextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox4.BindingDestination = "Person.Birthday";
             this.b_TextBox4.Description = "Birthday";
@@ -191,7 +191,7 @@ namespace ERP.Test.Client.Library.GUI
             BaseWindow.Text = "Personen";
 
             DataContext.Person = new Person();
-            PersonClient Client = new PersonClient();
+            PersonClient Client = new();
 
             Loaded(false);
         }
@@ -201,7 +201,7 @@ namespace ERP.Test.Client.Library.GUI
             base.OnDataContextChanged(PropertyName);
             if (PropertyName.Equals("Person"))
             {
-                PersonClient Client = new PersonClient();
+                PersonClient Client = new();
                 //TODO: Liste ziehen
                 SyncAll();
             }
@@ -226,7 +226,7 @@ namespace ERP.Test.Client.Library.GUI
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-            PersonClient Client = new PersonClient();
+            PersonClient Client = new();
             try
             {
                 Client.Change(DataContext.Person.ID, DataContext.Person);
@@ -239,7 +239,6 @@ namespace ERP.Test.Client.Library.GUI
             DataContext.Person = DataContext.Person;
             SyncAll();
         }
-
 
         private void Loaded(bool loaded) 
         {
@@ -257,7 +256,7 @@ namespace ERP.Test.Client.Library.GUI
 
         private void btn_load_Click(object sender, EventArgs e)
         {
-            PersonClient Client = new PersonClient();
+            PersonClient Client = new();
             try
             {
                 Client.GetData(DataContext.Person.ID);
@@ -274,7 +273,7 @@ namespace ERP.Test.Client.Library.GUI
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
-            PersonClient Client = new PersonClient();
+            PersonClient Client = new();
             try
             {
                 Client.Delete(DataContext.Person.ID);
@@ -291,7 +290,7 @@ namespace ERP.Test.Client.Library.GUI
 
         private void btn_create_Click(object sender, EventArgs e)
         {
-            PersonClient Client = new PersonClient();
+            PersonClient Client = new();
             try
             {
                 Client.Create(DataContext.Person);

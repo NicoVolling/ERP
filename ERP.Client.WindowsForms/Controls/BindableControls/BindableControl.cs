@@ -22,9 +22,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public Type TargetType { get; private set; }
 
-        private bool error = false;
-
-        public bool HasError { get => error; }
+        public bool HasError { get; private set; } = false;
 
         private bool load = true;
 
@@ -54,7 +52,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public static Color GetBindingStatusColor(BindingStatus Status)
         {
-            var color = Status switch
+            Color color = Status switch
             {
                 BindingStatus.Unbound => Color.FromArgb(80, 80, 80),
                 BindingStatus.NullOrDefault => Color.FromArgb(200, 200, 200),
@@ -123,7 +121,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public BindingStatus Status
         {
-            get => error ? BindingStatus.Error : status;
+            get => HasError ? BindingStatus.Error : status;
             protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
         }
 
@@ -163,7 +161,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             }
         }
 
-        public event EventHandler<BindingStatusChangedEventArgs>? StatusChanged;
+        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         protected void OnStatusChanged(BindingStatus Status)
         {
@@ -174,7 +172,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         public string Description { get => description; set { description = value; lbl_Description.Text = $"{description}:"; } }
 
         [Category("Binding")]
-        public string? BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
+        public string BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
 
         [Category("Darstellung")]
         public int? FixedDescriptionWidth { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
@@ -228,13 +226,13 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
                 try
                 {
                     Object Result = Parser.Parse(Value, TargetType);
-                    error = false;
+                    HasError = false;
                     Status = Status;
                     return Result;
                 }
                 catch
                 {
-                    error = true;
+                    HasError = true;
                     Status = BindingStatus.Error;
                     return Parser.Parse(null, TargetType);
                 }

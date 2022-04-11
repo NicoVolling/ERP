@@ -25,19 +25,16 @@ namespace ERP.Server.WebServer
         public HttpServer()
         {
             this.ConsoleOutput = false;
-
-
-
             CommandMaster.Reload();
         }
 
         protected override string GetResultFromRequest(HttpListenerRequest Request)
         {
-            Result Result = new Result(new ErpException("UnknownError"));
+            Result Result = new(new ErpException("UnknownError"));
 
             if(Request == null) 
             {
-                Result = new Result(new ErpException("Request is null"));
+                Result = new(new ErpException("Request is null"));
             }
             else
             {
@@ -49,10 +46,8 @@ namespace ERP.Server.WebServer
                 }
                 else
                 {
-                    using (var Reader = new StreamReader(Request.InputStream))
-                    {
-                        datastring = Reader.ReadToEnd();
-                    }
+                    using StreamReader Reader = new(Request.InputStream);
+                    datastring = Reader.ReadToEnd();
 
                     if (!string.IsNullOrEmpty(datastring))
                     {

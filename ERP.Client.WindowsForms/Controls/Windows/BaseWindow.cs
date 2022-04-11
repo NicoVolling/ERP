@@ -16,7 +16,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 {
     public partial class BaseWindow : UserControl
     {
-        public ContentPanel? ContentPanel
+        public ContentPanel ContentPanel
         {
             get => ContentsPanel.Controls.Cast<Control>().FirstOrDefault(o => o is ContentPanel) as ContentPanel;
             protected set
@@ -54,7 +54,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             {
                 if (value)
                 {
-                    foreach (BaseWindow BW in ParentForm.Windows)
+                    foreach (BaseWindow BW in ParentBaseForm.Windows)
                     {
                         BW.HasFocus = false;
                     }
@@ -72,7 +72,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public BindingStatus Status { get => status; protected set { status = value; this.StatusColor = BindableControl.GetBindingStatusColor(value); OnStatusChanged(value); } }
 
-        public event EventHandler<BindingStatusChangedEventArgs>? StatusChanged;
+        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         protected void OnStatusChanged(BindingStatus Status)
         {
@@ -81,9 +81,9 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public override string Text { get => this.TitleBar.Text; set => this.TitleBar.Text = value; }
 
-        public BaseForm ParentForm { get { if (parentForm == null) { throw new ErpException("Cannot access ParentForm without setting it"); } return parentForm; } set => parentForm = value; }
+        public BaseForm ParentBaseForm { get { if (parentBaseForm == null) { throw new ErpException("Cannot access ParentForm without setting it"); } return parentBaseForm; } set => parentBaseForm = value; }
 
-        private BaseForm parentForm;
+        private BaseForm parentBaseForm;
         private BindingStatus status;
 
         public BaseWindow(ContentPanel ContentPanel)
@@ -96,7 +96,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public void SetParent(BaseForm ParentForm)
         {
-            this.ParentForm = ParentForm;
+            this.ParentBaseForm = ParentForm;
         }
 
         private void CreateEvents(Control Parent)
@@ -126,7 +126,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public void Close()
         {
-            ParentForm.Close(this);
+            ParentBaseForm.Close(this);
             ContentPanel.Closed();
         }
 
@@ -153,6 +153,5 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             btn_maximize.Image = Dock == DockStyle.Fill ? ERP.Client.WindowsForms.Base.Resources.No_Maximize : ERP.Client.WindowsForms.Base.Resources.Maximize;
             ContentPanel.Maximized(Dock == DockStyle.Fill);
         }
-
     }
 }

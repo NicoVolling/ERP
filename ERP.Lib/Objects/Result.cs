@@ -35,7 +35,7 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Constructor
         /// </summary>
-        public Result() 
+        public Result()
         {
             this.ReturnValue = String.Empty;
             this.ErrorMessage = String.Empty;
@@ -45,7 +45,7 @@ namespace ERP.BaseLib.Objects
         /// Constructor for answer on a successful request
         /// </summary>
         /// <param name="ReturnValue">All data wich server sends to client.</param>
-        public Result(string ReturnValue) 
+        public Result(string ReturnValue)
         {
             this.ReturnValue = ReturnValue;
             this.ErrorMessage = String.Empty;
@@ -65,7 +65,7 @@ namespace ERP.BaseLib.Objects
         /// Constructor for answer on a failed request
         /// </summary>
         /// <param name="Exception">The Exception that has been thrown</param>
-        public Result(Exception Exception) 
+        public Result(Exception Exception)
         {
             this.ReturnValue = String.Empty;
             this.Error = true;
@@ -76,17 +76,17 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Everything worked well.
         /// </summary>
-        public static Result OK = new Result("OK");
+        public static Result OK { get => new("OK"); }
 
         /// <summary>
         /// Result for False-Answer
         /// </summary>
-        public static Result False = new Result("False");
+        public static Result False { get => new ("False");}
 
         /// <summary>
         /// Result for True-Answer
         /// </summary>
-        public static Result True = new Result("True");
+        public static Result True { get => new("True"); }
 
         public static bool operator== (Result Result1, Result Result2) 
         {
@@ -101,7 +101,7 @@ namespace ERP.BaseLib.Objects
             return !(Result1 == Result2);
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj is Result Result1)
             {

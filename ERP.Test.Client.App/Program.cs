@@ -16,7 +16,7 @@ namespace ERP.Test.Client.App
     public static class Program
     {
         [STAThread]
-        public static void Main(string[]? args)
+        public static void Main(string[] args)
         {
             Log.Prefix = "Client";
 
@@ -25,8 +25,8 @@ namespace ERP.Test.Client.App
             try
             {
                 {
-                    PersonClient Client = new PersonClient();
-                    Person person1 = new Person() { Firstname = "Nico", Name = "Volling", Birthday = DateTime.Now };
+                    PersonClient Client = new();
+                    Person person1 = new() { Firstname = "Nico", Name = "Volling", Birthday = DateTime.Now };
 
                     Client.Create(person1);
                     Client.GetData(person1.ID);
@@ -42,7 +42,7 @@ namespace ERP.Test.Client.App
                 throw;
             }
 
-            var WindowList = new Dictionary<string, Dictionary<string, Func<BaseWindow>>>()
+            Dictionary<string, Dictionary<string, Func<BaseWindow>>> WindowList = new()
             {
                 { "Menschen",
                     new Dictionary<string, Func<BaseWindow>>()

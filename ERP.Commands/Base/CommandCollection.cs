@@ -3,7 +3,6 @@ using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.BaseLib.Statics;
 using ERP.Exceptions.ErpExceptions;
-using ERP.Exceptions.ErpExceptions;
 using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using System;
 using System.Collections.Generic;
@@ -77,7 +76,7 @@ namespace ERP.Commands.Base
         /// <exception cref="Exception"></exception>
         private Result ExecuteCommandServer(DataInput Input) 
         {
-            List<Object> Params = new List<object>();
+            List<Object> Params = new();
 
             if (this.GetType().GetMethod(Input.Command.Action) is MethodInfo MI)
             {
@@ -149,9 +148,9 @@ namespace ERP.Commands.Base
         /// </summary>
         /// <param name="Input">Data.</param>
         /// <returns>The Result wich comes from the server.</returns>
-        private Result ExecuteCommandClient(DataInput Input) 
+        private static Result ExecuteCommandClient(DataInput Input) 
         {
-            var response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
+            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
             string res = response.Result.Content.ReadAsStringAsync().Result;
             try
             {
@@ -193,13 +192,13 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         protected Result GetClientResult(params object[] Arguments) 
         {
-            Result Result = new Result(new ErpException("Client: Unknown Error"));
+            Result Result = new(new ErpException("Client: Unknown Error"));
 
             if(new StackTrace().GetFrame(1) is StackFrame frame && frame.GetMethod() is MethodBase MB && this.GetType() is Type Type)
             {
-                string? Namespace = this.Namespace;
-                string? Class = Type.Name.Replace("CC_", "");
-                string? Command = MB.Name;
+                string Namespace = this.Namespace;
+                string Class = Type.Name.Replace("CC_", "");
+                string Command = MB.Name;
 
                 return GetClientResult(new Command(Namespace, Class, Command), Type, MB, Arguments);
 
@@ -217,12 +216,12 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private Result GetClientResult(Command Command, Type Type, MethodBase MethodBase, params object[] Arguments) 
         {
-            Result Result = new Result(new ErpException("Client: Unknown Error"));
+            Result Result = new(new ErpException("Client: Unknown Error"));
 
             if (Type.GetMethod(MethodBase.Name) is MethodInfo MI)
             {
 
-                Dictionary<string, string> Parameters = new Dictionary<string, string>();
+                Dictionary<string, string> Parameters = new();
 
                 int i = 0;
                 foreach (ParameterInfo PI in MI.GetParameters())
@@ -231,11 +230,11 @@ namespace ERP.Commands.Base
                     {
                         if (Arguments.Length <= i)
                         {
-                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}"));
+                            return new(new CommandErpException($"Client: Cannot process Parameters, because of Argumentcount: {Type.Name}.{MethodBase.Name}"));
                         }
                         if (Arguments[i].GetType() != PI.ParameterType && !ReflectionHelper.DoesInheritFrom(Arguments[i].GetType(), PI.ParameterType))
                         {
-                            return new Result(new CommandErpException($"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}"));
+                            return new(new CommandErpException($"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}"));
                         }
                         Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
                     }
@@ -302,7 +301,7 @@ namespace ERP.Commands.Base
             {
                 try
                 {
-                    Object? obj = Activator.CreateInstance(Type);
+                    Object obj = Activator.CreateInstance(Type);
                     if (obj is CommandCollection CommandCollection)
                     {
                         CommandCollectionList.Add(CommandCollection);

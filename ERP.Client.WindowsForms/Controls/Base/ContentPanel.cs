@@ -167,7 +167,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         private void Bind(BindableControl Bindable, IEnumerable<string> ObjectName)
         {
-            var tmp = ObjectName.ToList();
+            List<string> tmp = ObjectName.ToList();
             tmp.Insert(0, nameof(DataContext));
             ObjectName = tmp;
 
@@ -194,7 +194,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        public event EventHandler<BindingStatusChangedEventArgs>? StatusChanged;
+        public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         protected void OnStatusChanged(BindingStatus Status)
         {
@@ -210,7 +210,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
                 {
                     if (ObjectName.Count() > 1)
                     {
-                        Object? obj = PI.GetValue(Parent);
+                        Object obj = PI.GetValue(Parent);
                         if (obj is INotifyPropertyChanged NewParent)
                         {
                             GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType);
@@ -262,16 +262,14 @@ namespace ERP.Client.WindowsForms.Controls.Base
             }
         }
 
-        private bool error = false;
-
-        public bool HasError { get => error; }
+        public bool HasError { get; private set; }
 
         private void ProofError() 
         {
             bool err = Bindables.Any(o => o.HasError);
-            if (error != err)
+            if (HasError != err)
             {
-                error = err; 
+                HasError = err; 
                 OnErrorChanged(); 
             }
         }

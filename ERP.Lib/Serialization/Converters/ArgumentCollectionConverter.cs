@@ -18,12 +18,12 @@ namespace ERP.BaseLib.Serialization.Converters
             return objectType == typeof(ArgumentCollection);
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             return new ArgumentCollection(Json.Deserialize<List<Argument>>(reader.Value.ToString()));
         }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             ArgumentCollection AC = (ArgumentCollection)value;
 

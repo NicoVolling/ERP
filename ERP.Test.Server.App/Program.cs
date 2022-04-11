@@ -9,13 +9,13 @@ namespace ERP.Test.Server.App
 {
     public static class Program
     {
-        public static void Main(string[]? args)
+        public static void Main(string[] args)
         {
             Log.Prefix = "Server";
 
             Startup.SetAssembly();
 
-            HttpServer Server = new HttpServer();
+            HttpServer Server = new();
             Server.Start(ERP.BaseLib.Statics.Http.ServerUrl);
         }
     }

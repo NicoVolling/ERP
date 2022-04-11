@@ -29,7 +29,7 @@ namespace ERP.BaseLib.Serialization
         /// <typeparam name="T">Type of Targetobject.</typeparam>
         /// <param name="Raw">String.</param>
         /// <returns>Targetobject.</returns>
-        public static T? Deserialize<T>(string Raw) where T : new()
+        public static T Deserialize<T>(string Raw) where T : new()
         {
             return JsonConvert.DeserializeObject<T>(Raw);
         }
@@ -40,7 +40,7 @@ namespace ERP.BaseLib.Serialization
         /// <param name="Raw">String.</param>
         /// <param name="Type">Type of Targetobject.</param>
         /// <returns>Targetobject.</returns>
-        public static Object? Deserialize(string Raw, Type Type) 
+        public static Object Deserialize(string Raw, Type Type) 
         {
             return JsonConvert.DeserializeObject(Raw, Type);
         }

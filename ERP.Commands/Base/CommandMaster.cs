@@ -19,7 +19,7 @@ namespace ERP.Commands.Base
         /// <summary>
         /// All CommandCollectionTypes founded in the Namespace.
         /// </summary>
-        static List<Type> CommandCollectionTypes = new List<Type>();
+        static List<Type> CommandCollectionTypes = new();
 
         /// <summary>
         /// Executes the command. Can only be used on server-side
