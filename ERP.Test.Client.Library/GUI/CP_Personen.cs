@@ -34,11 +34,11 @@ namespace ERP.Test.Client.Library.GUI
             base.OnDataContextChanged(PropertyName);
             if (PropertyName.Equals("Person"))
             {
+                PersonClient Client = new();
+                DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
+
                 if (!DataContext.Person.IsEmpty())
                 {
-                    PersonClient Client = new();
-                    DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
-
                     btn_delete.Enabled = true;
                     btn_save.Enabled = true;
                     btn_load.Enabled = true;
@@ -51,7 +51,6 @@ namespace ERP.Test.Client.Library.GUI
                     btn_load.Enabled = false;
                     btn_create.Enabled = true;
                 }
-
                 SyncAll();
             }
         }
@@ -111,9 +110,6 @@ namespace ERP.Test.Client.Library.GUI
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            DataContext.Person = DataContext.Person;
-            DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
-            SyncAll();
         }
 
         private void btn_delete_Click(object sender, EventArgs e)
@@ -122,15 +118,11 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.Delete(DataContext.Person.ID);
-                DataContext.Person = Client.Data;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            DataContext.Person = DataContext.Person;
-            DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
-            SyncAll();
         }
 
         private void btn_load_Click(object sender, EventArgs e)
@@ -139,8 +131,6 @@ namespace ERP.Test.Client.Library.GUI
             try
             {
                 Client.GetData(DataContext.Person.ID);
-                DataContext.Person = Client.Data;
-                SyncAll();
             }
             catch (Exception ex)
             {
@@ -159,9 +149,6 @@ namespace ERP.Test.Client.Library.GUI
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            DataContext.Person = DataContext.Person;
-            DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
-            SyncAll();
         }
 
         private void InitializeComponent()

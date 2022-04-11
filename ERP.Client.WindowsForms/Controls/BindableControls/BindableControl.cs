@@ -63,18 +63,34 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         public Type TargetType { get; private set; }
         private Type OrigingType { get; set; }
 
-        public static Color GetBindingStatusColor(BindingStatus Status)
+        public static Color GetBindingStatusColor(BindingStatus Status, bool ReadOnly = false)
         {
-            Color color = Status switch
+            if (ReadOnly)
             {
-                BindingStatus.Unbound => Color.FromArgb(80, 80, 80),
-                BindingStatus.NullOrDefault => Color.FromArgb(200, 200, 200),
-                BindingStatus.Unsaved => Color.FromArgb(230, 200, 0),
-                BindingStatus.Saved => Color.FromArgb(0, 230, 0),
-                BindingStatus.Error => Color.FromArgb(230, 0, 0),
-                _ => Color.Black,
-            };
-            return color;
+                Color color = Status switch
+                {
+                    BindingStatus.Unbound => Color.FromArgb(50, 50, 50),
+                    BindingStatus.NullOrDefault => Color.FromArgb(150, 150, 150),
+                    BindingStatus.Unsaved => Color.FromArgb(190, 170, 0),
+                    BindingStatus.Saved => Color.FromArgb(0, 190, 0),
+                    BindingStatus.Error => Color.FromArgb(190, 0, 0),
+                    _ => Color.Black,
+                };
+                return color;
+            }
+            else
+            {
+                Color color = Status switch
+                {
+                    BindingStatus.Unbound => Color.FromArgb(80, 80, 80),
+                    BindingStatus.NullOrDefault => Color.FromArgb(200, 200, 200),
+                    BindingStatus.Unsaved => Color.FromArgb(230, 200, 0),
+                    BindingStatus.Saved => Color.FromArgb(0, 230, 0),
+                    BindingStatus.Error => Color.FromArgb(230, 0, 0),
+                    _ => Color.Black,
+                };
+                return color;
+            }
         }
 
         public void Bind(Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType)
@@ -122,7 +138,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public void Clear()
         {
-            Set(Parser.GetDefault(OrigingType));
+            OnClear();
         }
 
         public void LoadData()
@@ -150,6 +166,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         protected virtual void OnBound()
         {
+        }
+
+        protected virtual void OnClear()
+        {
+            Set(Parser.GetDefault(OrigingType));
         }
 
         protected virtual IParser OnGetParser()
@@ -239,7 +260,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         private void SetBindingStatus(BindingStatus Status)
         {
-            Color Color = BindableControl.GetBindingStatusColor(Status);
+            Color Color = BindableControl.GetBindingStatusColor(Status, IsReadOnly);
 
             this.Enabled = Status != BindingStatus.Unbound;
             StatusLed.ForeColor = Color;

@@ -40,6 +40,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             };
         }
 
+        protected override void OnClear()
+        {
+            SelectedObjectID = -1;
+            RefreshList();
+        }
+
         protected override IParser OnGetParser()
         {
             return IParser.GetParser(typeof(List<BusinessObject>), TargetType);
