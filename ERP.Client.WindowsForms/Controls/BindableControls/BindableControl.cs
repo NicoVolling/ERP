@@ -27,7 +27,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
-        [Category("Binding")]
+        [Category("Bindung")]
         public string BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
 
         [Category("Darstellung")]
@@ -39,6 +39,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         { get => fixDescriptionWidth; set { fixDescriptionWidth = value; lbl_Description_TextChanged(null, null); } }
 
         public Func<Object> Get { get; private set; }
+
         public bool HasError { get; private set; } = false;
 
         [Category("Verhalten")]
@@ -46,13 +47,18 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         { get => isReadOnly; set { isReadOnly = value; OnIsReadOnlyChanged(); } }
 
         public IParser Parser { get; private set; }
+
         public Action<Object> Set { get; private set; }
 
+        [Category("Bindung")]
         public BindingStatus Status
         {
             get => HasError ? BindingStatus.Error : status;
             protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
         }
+
+        [Category("Darstellung")]
+        public bool StatusVisible { get => StatusPanel.Visible; set => StatusPanel.Visible = value; }
 
         public Type TargetType { get; private set; }
         private Type OrigingType { get; set; }

@@ -12,6 +12,8 @@ namespace ERP.Business.Objects
     {
         private int iD = -1;
 
+        public static BusinessObject Empty { get => new BusinessObjectEmpty(); }
+
         /// <summary>
         /// Identifier should be unique
         /// </summary>
@@ -40,11 +42,34 @@ namespace ERP.Business.Objects
             }
         }
 
+        public bool IsEmpty()
+        {
+            return ID == Empty.ID;
+        }
+
+        public abstract string OnToString();
+
         public virtual string Serialize()
         {
             return Json.Serialize(this);
         }
 
-        public abstract override string ToString();
+        public override string ToString()
+        {
+            return $"[{ID}] {OnToString()}";
+        }
+
+        private class BusinessObjectEmpty : BusinessObject
+        {
+            public BusinessObjectEmpty()
+            {
+                ID = -1;
+            }
+
+            public override string OnToString()
+            {
+                return $"No Selection";
+            }
+        }
     }
 }

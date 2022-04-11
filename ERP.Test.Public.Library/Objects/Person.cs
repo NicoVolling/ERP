@@ -17,7 +17,7 @@ namespace ERP.Test.Public.Library.Objects
         public string Name
         { get => name; set { name = value; NotifyPropertyChanged(); } }
 
-        public override string ToString()
+        public override string OnToString()
         {
             return $"{Firstname} {Name}";
         }

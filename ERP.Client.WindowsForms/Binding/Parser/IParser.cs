@@ -1,4 +1,5 @@
-﻿using ERP.Exceptions.ErpExceptions;
+﻿using ERP.Business.Objects;
+using ERP.Exceptions.ErpExceptions;
 
 namespace ERP.Client.WindowsForms.Binding.Parser
 {
@@ -76,6 +77,11 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 DateTimeComparer,
                 IsStringDefault,
                 GetStringDefault));
+
+            parsers.Add(new Parser<List<BusinessObject>, List<BusinessObject>>(
+                o => o,
+                o => o
+                ));
         }
     }
 }
