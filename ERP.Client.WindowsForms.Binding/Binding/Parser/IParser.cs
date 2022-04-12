@@ -10,6 +10,11 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         private static List<IParser> parsers { get; } = new List<IParser>();
 
+        public static void AddParser(IParser Parser)
+        {
+            parsers.Add(Parser);
+        }
+
         public static IParser GetParser(Type Type1, Type Type2)
         {
             if (!parsers.Any()) { FillParsers(); }
@@ -47,47 +52,47 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             Func<TimeOnly, TimeOnly, bool> TimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
             Func<DateTime, DateTime, bool> DateTimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
 
-            parsers.Add(new StringParser<int>(
+            AddParser(new StringParser<int>(
                 o => int.Parse(o),
                 IsInt32Default,
                 GetInt32Default
                 ));
 
-            parsers.Add(new StringParser<double>(
+            AddParser(new StringParser<double>(
                 o => double.Parse(o),
                 o => o.ToString("N2"),
                 IsDoubleDefault,
                 GetDoubleDefault
                 ));
 
-            parsers.Add(new StringParser());
+            AddParser(new StringParser());
 
-            parsers.Add(new StringParser<DateOnly>(
+            AddParser(new StringParser<DateOnly>(
                 o => DateOnly.Parse(o),
                 o => o.ToString("dd.MM.yyyy"),
                 DateOnlyComparer
                 ));
 
-            parsers.Add(new StringParser<bool>(
+            AddParser(new StringParser<bool>(
                 o => bool.Parse(o),
                 o => o.ToString(),
                 o => o == false,
                 () => false
                 ));
 
-            parsers.Add(new StringParser<TimeOnly>(
+            AddParser(new StringParser<TimeOnly>(
                 o => TimeOnly.Parse(o),
                 o => o.ToString("dd.MM.yyyy"),
                 TimeOnlyComparer
                 ));
 
-            parsers.Add(new StringParser<DateTime>(
+            AddParser(new StringParser<DateTime>(
                 o => DateTime.Parse(o),
                 o => o.ToString("dd.MM.yyyy"),
                 DateTimeOnlyComparer
             ));
 
-            parsers.Add(new SameObjectParser<BusinessObject>(
+            AddParser(new SameObjectParser<BusinessObject>(
                 o => o.IsEmpty(),
                 () => BusinessObject.Empty
             ));
