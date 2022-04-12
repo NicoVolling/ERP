@@ -36,8 +36,9 @@ namespace ERP.Test.Client.Library.GUI
             if (PropertyName.Equals("Person"))
             {
                 RefreshList();
-
                 RefreshButtons();
+
+                b_ComboBox1.SelectedObjectID = DataContext.Person.ID;
 
                 SyncAll();
             }

@@ -16,6 +16,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         private bool isloading = false;
         private bool loaded = false;
         private List<BusinessObjectIdentifier> objectList;
+        private int selectedObjectID = -1;
 
         public B_BO_Combo()
         {
@@ -30,7 +31,15 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             set { objectList = value; RefreshList(); }
         }
 
-        public int SelectedObjectID { get; private set; } = -1;
+        public int SelectedObjectID
+        {
+            get => selectedObjectID;
+            set
+            {
+                selectedObjectID = value;
+                RefreshList();
+            }
+        }
 
         public ComboBox TextBox { get => Combobox; }
 
@@ -136,7 +145,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
                                 ID = -1;
                             }
 
-                            SelectedObjectID = ID;
+                            selectedObjectID = ID;
 
                             if (Combobox.Items.Cast<Object>().FirstOrDefault(o => o is BusinessObjectIdentifier BO && BO.ID == ID) is BusinessObjectIdentifier BO)
                             {
