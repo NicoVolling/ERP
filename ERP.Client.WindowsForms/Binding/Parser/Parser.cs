@@ -196,6 +196,42 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 () => default(T2));
         }
 
+        public Parser(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        {
+            Func<T1, T1, bool> tmp1;
+            Func<T2, T2, bool> Compare2;
+            Func<T1, bool> tmp2;
+            Func<T2, bool> tmp;
+            DefaultComparer(out tmp1, out Compare2);
+            DefaultDefaultFunc(out tmp2, out tmp);
+            Ctor(OnParse1To2,
+                OnParse2To1,
+                Compare1,
+                Compare2,
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
+                GetDefault1,
+                GetDefault2);
+        }
+
+        public Parser(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        {
+            Func<T1, T1, bool> Compare1;
+            Func<T2, T2, bool> tmp1;
+            Func<T1, bool> tmp;
+            Func<T2, bool> tmp2;
+            DefaultComparer(out Compare1, out tmp1);
+            DefaultDefaultFunc(out tmp, out tmp2);
+            Ctor(OnParse1To2,
+                OnParse2To1,
+                Compare1,
+                Compare2,
+                PrepareIsDefault(IsDefault1),
+                PrepareIsDefault(IsDefault2),
+                GetDefault1,
+                GetDefault2);
+        }
+
         public Parser(Func<T1, T2> OnParse1To2, Func<T2, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             Ctor(OnParse1To2,
@@ -218,7 +254,9 @@ namespace ERP.Client.WindowsForms.Binding.Parser
         private Func<Object, Object, bool> Compare2 { get; set; }
 
         private Func<Object> GetDefault1 { get; set; }
+
         private Func<Object> GetDefault2 { get; set; }
+
         private Func<Object, bool> IsDefault1 { get; set; }
 
         private Func<Object, bool> IsDefault2 { get; set; }

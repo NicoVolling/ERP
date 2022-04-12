@@ -100,6 +100,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.Parser = OnGetParser();
             if (Parser.Type1 == TargetType) { OrigingType = Parser.Type2; }
             if (Parser.Type2 == TargetType) { OrigingType = Parser.Type1; }
+            if (OrigingType is null && Parser.Type1 == Parser.Type2) { OrigingType = Parser.Type1; }
             this.Set = (Object) =>
             {
                 try

@@ -17,17 +17,8 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             {
                 return Parser;
             }
+            if (Type1 == Type2) { return new SameObjectParser<Object>(); }
             return null;
-        }
-
-        public static Object ParseAny(Object Object, Type TargetType)
-        {
-            if (!parsers.Any()) { FillParsers(); }
-            if (parsers.FirstOrDefault(o => o.CanParse(Object, TargetType)) is IParser Parser)
-            {
-                return Parser.Parse(Object, TargetType);
-            }
-            throw new ErpException("No parser found");
         }
 
         public bool CanParse(Object Object, Type TargetType);
@@ -40,48 +31,66 @@ namespace ERP.Client.WindowsForms.Binding.Parser
 
         private static void FillParsers()
         {
-            Func<string, bool> IsStringDefault = (s) =>
-            {
-                return (s is string str && str.Length == 0) || s is null;
-            };
-            Func<Object> GetStringDefault = () => string.Empty;
-
             Func<int, bool> IsInt32Default = (i) =>
             {
                 return i == -1;
             };
             Func<Object> GetInt32Default = () => -1;
 
-            Func<DateTime, DateTime, bool> DateTimeComparer = (a, b) => a.CompareTo(b) == 0;
-            Func<Object> GetDateTimeDefault = () => new DateTime();
+            Func<double, bool> IsDoubleDefault = (i) =>
+            {
+                return i == -1;
+            };
+            Func<Object> GetDoubleDefault = () => -1;
 
-            parsers.Add(new Parser<string, int>(
+            Func<DateOnly, DateOnly, bool> DateOnlyComparer = (a, b) => a.CompareTo(b) == 0;
+            Func<TimeOnly, TimeOnly, bool> TimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
+            Func<DateTime, DateTime, bool> DateTimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
+
+            parsers.Add(new StringParser<int>(
                 o => int.Parse(o),
-                o => o.ToString(),
-                IsStringDefault,
                 IsInt32Default,
-                GetStringDefault,
-                GetInt32Default));
+                GetInt32Default
+                ));
 
-            parsers.Add(new Parser<string, string>(
-                o => o,
-                o => o,
-                IsStringDefault,
-                IsStringDefault,
-                GetStringDefault,
-                GetStringDefault));
+            parsers.Add(new StringParser<double>(
+                o => double.Parse(o),
+                o => o.ToString("N2"),
+                IsDoubleDefault,
+                GetDoubleDefault
+                ));
 
-            parsers.Add(new Parser<string, DateTime>(
+            parsers.Add(new StringParser());
+
+            parsers.Add(new StringParser<DateOnly>(
+                o => DateOnly.Parse(o),
+                o => o.ToString("dd.MM.yyyy"),
+                DateOnlyComparer
+                ));
+
+            parsers.Add(new StringParser<bool>(
+                o => bool.Parse(o),
+                o => o.ToString(),
+                o => o == false,
+                () => false
+                ));
+
+            parsers.Add(new StringParser<TimeOnly>(
+                o => TimeOnly.Parse(o),
+                o => o.ToString("dd.MM.yyyy"),
+                TimeOnlyComparer
+                ));
+
+            parsers.Add(new StringParser<DateTime>(
                 o => DateTime.Parse(o),
                 o => o.ToString("dd.MM.yyyy"),
-                DateTimeComparer,
-                IsStringDefault,
-                GetStringDefault));
+                DateTimeOnlyComparer
+            ));
 
-            parsers.Add(new Parser<List<BusinessObject>, List<BusinessObject>>(
-                o => o,
-                o => o
-                ));
+            parsers.Add(new SameObjectParser<BusinessObject>(
+                o => o.IsEmpty(),
+                () => BusinessObject.Empty
+            ));
         }
     }
 }
