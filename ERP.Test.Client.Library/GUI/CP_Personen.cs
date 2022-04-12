@@ -60,7 +60,17 @@ namespace ERP.Test.Client.Library.GUI
             {
                 if (b_ComboBox1.SelectedObjectID != -1)
                 {
-                    DataContext.Person = DataContext.PersonList.FirstOrDefault(o => o.ID == b_ComboBox1.SelectedObjectID);
+                    try
+                    {
+                        PersonClient PC = new PersonClient();
+                        PC.GetData(b_ComboBox1.SelectedObjectID);
+                        DataContext.Person = PC.Data;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        b_ComboBox1.Clear();
+                    }
                 }
                 else
                 {
@@ -68,10 +78,7 @@ namespace ERP.Test.Client.Library.GUI
                 }
             };
 
-            System.Threading.Timer t = new System.Threading.Timer((o) =>
-            {
-                RefreshList();
-            }, null, 0, 1000);
+            b_ComboBox1.Combobox.DropDown += Combobox_DropDown;
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
@@ -133,6 +140,11 @@ namespace ERP.Test.Client.Library.GUI
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void Combobox_DropDown(object sender, EventArgs e)
+        {
+            RefreshList();
         }
 
         private void InitializeComponent()
@@ -324,7 +336,7 @@ namespace ERP.Test.Client.Library.GUI
                 gettinglist = true;
 
                 PersonClient Client = new();
-                DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
+                DataContext.BusinessObjectList = Client.GetList().Select(o => o).ToList();
                 b_ComboBox1.ObjectList = DataContext.BusinessObjectList;
 
                 gettinglist = false;

@@ -12,10 +12,10 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
     public class B_BO_Combo : BindableControl
     {
-        private System.Windows.Forms.ComboBox comboBox1;
+        public ComboBox Combobox;
         private bool isloading = false;
         private bool loaded = false;
-        private List<BusinessObject> objectList;
+        private List<BusinessObjectIdentifier> objectList;
 
         public B_BO_Combo()
         {
@@ -24,39 +24,31 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         public event EventHandler IDChanged;
 
-        public List<BusinessObject> ObjectList
+        public List<BusinessObjectIdentifier> ObjectList
         {
             get => objectList;
             set { objectList = value; RefreshList(); }
         }
 
-        public BusinessObject SelectedObject { get => ObjectList.FirstOrDefault(o => o.ID == SelectedObjectID); }
-
         public int SelectedObjectID { get; private set; } = -1;
 
-        public ComboBox TextBox { get => comboBox1; }
+        public ComboBox TextBox { get => Combobox; }
 
         protected override void OnBound()
         {
-            comboBox1.SelectedIndexChanged += (s, e) =>
-            {
-                if (!isloading)
-                {
-                    SelectedObjectID = ((BusinessObject)comboBox1.SelectedItem).ID;
-                    SaveData();
-                }
-            };
+            Combobox.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
         }
 
         protected override void OnClear()
         {
             SelectedObjectID = -1;
+            Status = BindingStatus.NullOrDefault;
             RefreshList();
         }
 
         protected override IParser OnGetParser()
         {
-            return IParser.GetParser(typeof(List<BusinessObject>), TargetType);
+            return IParser.GetParser(typeof(List<BusinessObjectIdentifier>), TargetType);
         }
 
         protected virtual void OnIDChanged()
@@ -72,7 +64,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         protected override void OnLoadData()
         {
-            ObjectList = Get() as List<BusinessObject>;
+            ObjectList = Get() as List<BusinessObjectIdentifier>;
             Status = SelectedObjectID == -1 ? BindingStatus.NullOrDefault : BindingStatus.Saved;
         }
 
@@ -82,33 +74,42 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             OnIDChanged();
         }
 
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!isloading)
+            {
+                SelectedObjectID = ((BusinessObjectIdentifier)Combobox.SelectedItem).ID;
+                SaveData();
+            }
+        }
+
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.Combobox = new System.Windows.Forms.ComboBox();
             this.ControlPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // ControlPanel
             //
-            this.ControlPanel.Controls.Add(this.comboBox1);
+            this.ControlPanel.Controls.Add(this.Combobox);
             this.ControlPanel.Size = new System.Drawing.Size(351, 29);
             //
-            // comboBox1
+            // Combobox
             //
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.Combobox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(3, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(344, 23);
-            this.comboBox1.TabIndex = 0;
+            this.Combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Combobox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Combobox.FormattingEnabled = true;
+            this.Combobox.Location = new System.Drawing.Point(3, 3);
+            this.Combobox.Name = "Combobox";
+            this.Combobox.Size = new System.Drawing.Size(344, 23);
+            this.Combobox.TabIndex = 0;
             //
-            // B_ComboBox
+            // B_BO_Combo
             //
-            this.Name = "B_ComboBox";
+            this.Name = "B_BO_Combo";
             this.Size = new System.Drawing.Size(383, 29);
             this.ControlPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -120,22 +121,32 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             {
                 this.Invoke(() =>
                 {
-                    try
+                    if (!Combobox.DroppedDown)
                     {
-                        isloading = true;
-
-                        int ID = SelectedObjectID;
-                        comboBox1.Items.Clear();
-                        comboBox1.Items.AddRange(ObjectList.OrderBy(o => o.ID).ToArray());
-                        comboBox1.Items.Add(BusinessObject.Empty);
-                        if (comboBox1.Items.Cast<Object>().FirstOrDefault(o => o is BusinessObject BO && BO.ID == ID) is BusinessObject BO)
+                        try
                         {
-                            comboBox1.SelectedItem = BO;
-                        }
+                            isloading = true;
 
-                        isloading = false;
+                            int ID = SelectedObjectID;
+                            Combobox.Items.Clear();
+                            Combobox.Items.AddRange(ObjectList.OrderBy(o => o.ID).ToArray());
+                            Combobox.Items.Add(BusinessObjectIdentifier.Empty);
+                            if (!Combobox.Items.Cast<Object>().Any(o => o is BusinessObjectIdentifier BO && BO.ID == ID))
+                            {
+                                ID = -1;
+                            }
+
+                            SelectedObjectID = ID;
+
+                            if (Combobox.Items.Cast<Object>().FirstOrDefault(o => o is BusinessObjectIdentifier BO && BO.ID == ID) is BusinessObjectIdentifier BO)
+                            {
+                                Combobox.SelectedItem = BO;
+                            }
+
+                            isloading = false;
+                        }
+                        catch { }
                     }
-                    catch { }
                 });
             }
         }

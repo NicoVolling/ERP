@@ -107,7 +107,7 @@ namespace ERP.Business.Server
         public Result GetList()
         {
             if (!ServerSide) { return GetClientResult(); }
-            return new Result(OnGetList());
+            return new Result(OnGetList().Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
         }
 
         public void Load()

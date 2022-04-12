@@ -118,12 +118,12 @@ namespace ERP.Business.Client
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public List<T_BusinessObject> GetList()
+        public List<BusinessObjectIdentifier> GetList()
         {
             Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList();
             if (!Result.Error)
             {
-                return Json.Deserialize<List<T_BusinessObject>>(Result.ReturnValue);
+                return Json.Deserialize<List<BusinessObjectIdentifier>>(Result.ReturnValue);
             }
             else
             {
