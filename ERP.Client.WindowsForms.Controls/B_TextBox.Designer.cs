@@ -56,6 +56,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "B_TextBox";
             this.Size = new System.Drawing.Size(383, 29);
+            this.StatusVisible = false;
             this.ControlPanel.ResumeLayout(false);
             this.ControlPanel.PerformLayout();
             this.ResumeLayout(false);

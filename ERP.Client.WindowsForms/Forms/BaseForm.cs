@@ -22,14 +22,14 @@ namespace ERP.Client.WindowsForms
                 }
             };
 
-            foreach (var kvp in WindowMenus)
+            foreach (KeyValuePair<string, Dictionary<string, Func<BaseWindow>>> kvp in WindowMenus)
             {
                 ToolStripMenuItem TSMI = new ToolStripMenuItem();
                 TSMI.Text = kvp.Key;
                 TSMI.ForeColor = this.ForeColor;
                 MenuStrip.Items.Add(TSMI);
 
-                foreach (var kvp1 in kvp.Value)
+                foreach (KeyValuePair<string, Func<BaseWindow>> kvp1 in kvp.Value)
                 {
                     try
                     {
