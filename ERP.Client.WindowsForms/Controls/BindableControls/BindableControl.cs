@@ -61,6 +61,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         public bool StatusVisible { get => StatusPanel.Visible; set => StatusPanel.Visible = value; }
 
         public Type TargetType { get; private set; }
+
         private Type OrigingType { get; set; }
 
         public static Color GetBindingStatusColor(BindingStatus Status, bool ReadOnly = false)
@@ -179,6 +180,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected virtual void OnIsReadOnlyChanged()
         {
             this.ControlPanel.Enabled = !IsReadOnly;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            OnSizeChanged(null);
         }
 
         protected virtual void OnLoadData()

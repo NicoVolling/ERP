@@ -14,6 +14,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
     {
         private System.Windows.Forms.ComboBox comboBox1;
         private bool isloading = false;
+        private bool loaded = false;
         private List<BusinessObject> objectList;
 
         public B_BO_Combo()
@@ -63,6 +64,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             IDChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            loaded = true;
+        }
+
         protected override void OnLoadData()
         {
             ObjectList = Get() as List<BusinessObject>;
@@ -109,18 +116,28 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         private void RefreshList()
         {
-            isloading = true;
-
-            int ID = SelectedObjectID;
-            comboBox1.Items.Clear();
-            comboBox1.Items.AddRange(ObjectList.ToArray());
-            comboBox1.Items.Add(BusinessObject.Empty);
-            if (comboBox1.Items.Cast<Object>().FirstOrDefault(o => o is BusinessObject BO && BO.ID == ID) is BusinessObject BO)
+            if (loaded)
             {
-                comboBox1.SelectedItem = BO;
-            }
+                this.Invoke(() =>
+                {
+                    try
+                    {
+                        isloading = true;
 
-            isloading = false;
+                        int ID = SelectedObjectID;
+                        comboBox1.Items.Clear();
+                        comboBox1.Items.AddRange(ObjectList.OrderBy(o => o.ID).ToArray());
+                        comboBox1.Items.Add(BusinessObject.Empty);
+                        if (comboBox1.Items.Cast<Object>().FirstOrDefault(o => o is BusinessObject BO && BO.ID == ID) is BusinessObject BO)
+                        {
+                            comboBox1.SelectedItem = BO;
+                        }
+
+                        isloading = false;
+                    }
+                    catch { }
+                });
+            }
         }
     }
 }

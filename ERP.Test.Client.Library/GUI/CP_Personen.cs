@@ -35,29 +35,10 @@ namespace ERP.Test.Client.Library.GUI
             base.OnDataContextChanged(PropertyName);
             if (PropertyName.Equals("Person"))
             {
-                if (!gettinglist)
-                {
-                    gettinglist = true;
+                RefreshList();
 
-                    PersonClient Client = new();
-                    DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
-                    b_ComboBox1.ObjectList = DataContext.BusinessObjectList;
+                RefreshButtons();
 
-                    gettinglist = false;
-                }
-
-                if (!DataContext.Person.IsEmpty())
-                {
-                    btn_delete.Enabled = true;
-                    btn_save.Enabled = true;
-                    btn_create.Enabled = false;
-                }
-                else
-                {
-                    btn_delete.Enabled = false;
-                    btn_save.Enabled = false;
-                    btn_create.Enabled = true;
-                }
                 SyncAll();
             }
         }
@@ -65,18 +46,7 @@ namespace ERP.Test.Client.Library.GUI
         protected override void OnErrorChanged()
         {
             base.OnErrorChanged();
-            if (HasError)
-            {
-                btn_create.Enabled = false;
-                btn_delete.Enabled = false;
-                btn_save.Enabled = false;
-            }
-            else
-            {
-                btn_create.Enabled = true;
-                btn_delete.Enabled = true;
-                btn_save.Enabled = true;
-            }
+            RefreshButtons();
         }
 
         protected override void OnOpened()
@@ -88,18 +58,20 @@ namespace ERP.Test.Client.Library.GUI
 
             b_ComboBox1.IDChanged += (s, e) =>
             {
-                if (!gettinglist)
+                if (b_ComboBox1.SelectedObjectID != -1)
                 {
-                    if (b_ComboBox1.SelectedObjectID != -1)
-                    {
-                        DataContext.Person = DataContext.PersonList.FirstOrDefault(o => o.ID == b_ComboBox1.SelectedObjectID);
-                    }
-                    else
-                    {
-                        DataContext.Person = new Person();
-                    }
+                    DataContext.Person = DataContext.PersonList.FirstOrDefault(o => o.ID == b_ComboBox1.SelectedObjectID);
+                }
+                else
+                {
+                    DataContext.Person = new Person();
                 }
             };
+
+            System.Threading.Timer t = new System.Threading.Timer((o) =>
+            {
+                RefreshList();
+            }, null, 0, 1000);
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
@@ -318,6 +290,45 @@ namespace ERP.Test.Client.Library.GUI
             this.Name = "CP_Personen";
             this.bindableCollectionPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
+        }
+
+        private void RefreshButtons()
+        {
+            if (HasError)
+            {
+                btn_create.Enabled = false;
+                btn_delete.Enabled = false;
+                btn_save.Enabled = false;
+            }
+            else
+            {
+                if (!DataContext.Person.IsEmpty())
+                {
+                    btn_delete.Enabled = true;
+                    btn_save.Enabled = true;
+                    btn_create.Enabled = false;
+                }
+                else
+                {
+                    btn_delete.Enabled = false;
+                    btn_save.Enabled = false;
+                    btn_create.Enabled = true;
+                }
+            }
+        }
+
+        private void RefreshList()
+        {
+            if (!gettinglist)
+            {
+                gettinglist = true;
+
+                PersonClient Client = new();
+                DataContext.BusinessObjectList = Client.GetList().Select(o => o as BusinessObject).ToList();
+                b_ComboBox1.ObjectList = DataContext.BusinessObjectList;
+
+                gettinglist = false;
+            }
         }
     }
 }
