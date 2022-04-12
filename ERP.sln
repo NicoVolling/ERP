@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Server.App", "ERP.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Client.WindowsForms.Controls.BindableControls", "ERP.Client.WindowsForms.Controls\ERP.Client.WindowsForms.Controls.BindableControls.csproj", "{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Client.WindowsForms.Binding", "ERP.Client.WindowsForms.Binding\ERP.Client.WindowsForms.Binding.csproj", "{569A11B7-614A-4858-9D98-8A58D8CB074D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
