@@ -106,22 +106,15 @@ namespace ERP.Test.Client.Library.GUI
             PersonClient Client = new();
             try
             {
-                Client.Delete(DataContext.Person.ID);
-                DataContext.Person = Client.Data;
-            }
-            catch (Exception ex)
-            {
-                ShowMessage("Error", ex.Message);
-            }
-        }
-
-        private void btn_load_Click(object sender, EventArgs e)
-        {
-            PersonClient Client = new();
-            try
-            {
-                Client.GetData(DataContext.Person.ID);
-                DataContext.Person = Client.Data;
+                if (!Client.GetExistence(DataContext.Person.ID))
+                {
+                    DataContext.Person = new Person();
+                }
+                else
+                {
+                    Client.Delete(DataContext.Person.ID);
+                    DataContext.Person = Client.Data;
+                }
             }
             catch (Exception ex)
             {
@@ -134,8 +127,15 @@ namespace ERP.Test.Client.Library.GUI
             PersonClient Client = new();
             try
             {
-                Client.Change(DataContext.Person.ID, DataContext.Person);
-                DataContext.Person = Client.Data;
+                if (!Client.GetExistence(DataContext.Person.ID))
+                {
+                    DataContext.Person = new Person();
+                }
+                else
+                {
+                    Client.Change(DataContext.Person.ID, DataContext.Person);
+                    DataContext.Person = Client.Data;
+                }
             }
             catch (Exception ex)
             {

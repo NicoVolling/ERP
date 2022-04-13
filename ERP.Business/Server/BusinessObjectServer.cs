@@ -101,6 +101,17 @@ namespace ERP.Business.Server
         }
 
         /// <summary>
+        /// Returns true if an object with the given ID exists.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public Result GetExistence(Guid ID)
+        {
+            if (!ServerSide) { return GetClientResult(ID); }
+            return new Result(OnGetExistence(ID));
+        }
+
+        /// <summary>
         /// Gets a list of all Objects.
         /// </summary>
         /// <returns></returns>
@@ -114,66 +125,6 @@ namespace ERP.Business.Server
         {
             IFileSaver.Load(this);
             DataLoaded = true;
-        }
-
-        /// <summary>
-        /// Delete Object.
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <returns></returns>
-        public virtual bool OnDelete(Guid ID)
-        {
-            try
-            {
-                Load();
-                T_BusinessObject Object = GetObjectByID(ID);
-                RemoveObject(ID);
-                return true;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Gets Object by ID.
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <returns></returns>
-        public virtual T_BusinessObject OnGetData(Guid ID)
-        {
-            try
-            {
-                Load();
-                return GetObjectByID(ID);
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of all Objects.
-        /// </summary>
-        /// <returns></returns>
-        public virtual List<T_BusinessObject> OnGetList()
-        {
-            try
-            {
-                Load();
-                return ObjectList;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public void RemoveObject(Guid ID)
-        {
-            ObjectList.RemoveAll(o => o.ID == ID);
         }
 
         public void Save()
@@ -252,6 +203,77 @@ namespace ERP.Business.Server
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Delete Object.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        protected virtual bool OnDelete(Guid ID)
+        {
+            try
+            {
+                Load();
+                T_BusinessObject Object = GetObjectByID(ID);
+                RemoveObject(ID);
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets Object by ID.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        protected virtual T_BusinessObject OnGetData(Guid ID)
+        {
+            try
+            {
+                Load();
+                return GetObjectByID(ID);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if an object with the given ID exists.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        protected virtual bool OnGetExistence(Guid ID)
+        {
+            Load();
+            return ObjectList.Any(o => o.ID == ID);
+        }
+
+        /// <summary>
+        /// Gets a list of all Objects.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual List<T_BusinessObject> OnGetList()
+        {
+            try
+            {
+                Load();
+                return ObjectList;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        protected void RemoveObject(Guid ID)
+        {
+            ObjectList.RemoveAll(o => o.ID == ID);
         }
     }
 }

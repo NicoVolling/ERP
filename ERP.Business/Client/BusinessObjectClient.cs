@@ -113,6 +113,19 @@ namespace ERP.Business.Client
             }
         }
 
+        public bool GetExistence(Guid ID)
+        {
+            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetExistence(ID);
+            if (!Result.Error)
+            {
+                return Json.Deserialize<bool>(Result.ReturnValue);
+            }
+            else
+            {
+                throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
+            }
+        }
+
         /// <summary>
         /// Gets a list of all objects from the server.
         /// </summary>
