@@ -2,6 +2,7 @@
 using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
+using ERP.Client.WindowsForms.Messaging;
 using ERP.Exceptions.ErpExceptions;
 using System.ComponentModel;
 using System.Reflection;
@@ -98,6 +99,12 @@ namespace ERP.Client.WindowsForms.Controls.Base
         public void Opened()
         {
             OnOpened();
+        }
+
+        public void ShowMessage(string Title, string Message)
+        {
+            BaseWindow BW = new BaseWindow(new MessagingContentPanel() { Message = Message, DataContext = DataContext.Empty }) { Icon = ERP.Client.WindowsForms.Base.Resources.Icon, Text = Title };
+            this.BaseWindow.ParentBaseForm.OpenWindow(BW);
         }
 
         public void SyncAll()
