@@ -16,7 +16,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         private bool isloading = false;
         private bool loaded = false;
         private List<BusinessObjectIdentifier> objectList;
-        private int selectedObjectID = -1;
+        private Guid selectedObjectID = Guid.Empty;
 
         public B_BO_Combo()
         {
@@ -31,7 +31,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             set { objectList = value; RefreshList(); }
         }
 
-        public int SelectedObjectID
+        public Guid SelectedObjectID
         {
             get => selectedObjectID;
             set
@@ -50,7 +50,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
 
         protected override void OnClear()
         {
-            SelectedObjectID = -1;
+            SelectedObjectID = Guid.Empty;
             Status = BindingStatus.NullOrDefault;
             RefreshList();
         }
@@ -74,12 +74,12 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected override void OnLoadData()
         {
             ObjectList = Get() as List<BusinessObjectIdentifier>;
-            Status = SelectedObjectID == -1 ? BindingStatus.NullOrDefault : BindingStatus.Saved;
+            Status = SelectedObjectID == Guid.Empty ? BindingStatus.NullOrDefault : BindingStatus.Saved;
         }
 
         protected override void OnSaveData()
         {
-            Status = SelectedObjectID == -1 ? BindingStatus.NullOrDefault : BindingStatus.Saved;
+            Status = SelectedObjectID == Guid.Empty ? BindingStatus.NullOrDefault : BindingStatus.Saved;
             OnIDChanged();
         }
 
@@ -136,13 +136,13 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
                         {
                             isloading = true;
 
-                            int ID = SelectedObjectID;
+                            Guid ID = SelectedObjectID;
                             Combobox.Items.Clear();
                             Combobox.Items.AddRange(ObjectList.OrderBy(o => o.ID).ToArray());
                             Combobox.Items.Add(BusinessObjectIdentifier.Empty);
                             if (!Combobox.Items.Cast<Object>().Any(o => o is BusinessObjectIdentifier BO && BO.ID == ID))
                             {
-                                ID = -1;
+                                ID = Guid.Empty;
                             }
 
                             selectedObjectID = ID;

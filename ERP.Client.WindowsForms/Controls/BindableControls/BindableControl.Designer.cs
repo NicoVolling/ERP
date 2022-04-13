@@ -53,6 +53,7 @@
             this.StatusLed.Name = "StatusLed";
             this.StatusLed.Size = new System.Drawing.Size(28, 72);
             this.StatusLed.TabIndex = 0;
+            this.StatusLed.TabStop = false;
             this.StatusLed.Text = "statusLed1";
             // 
             // ControlPanel
@@ -74,13 +75,13 @@
             this.lbl_Description.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lbl_Description.TextChanged += new System.EventHandler(this.lbl_Description_TextChanged);
             // 
-            // BindableControlBase
+            // BindableControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.ControlPanel);
             this.Controls.Add(this.lbl_Description);
             this.Controls.Add(this.StatusPanel);
-            this.Name = "BindableControlBase";
+            this.Name = "BindableControl";
             this.Size = new System.Drawing.Size(383, 76);
             this.StatusPanel.ResumeLayout(false);
             this.ResumeLayout(false);

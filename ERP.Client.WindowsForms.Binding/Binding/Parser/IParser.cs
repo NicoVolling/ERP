@@ -42,6 +42,12 @@ namespace ERP.Client.WindowsForms.Binding.Parser
             };
             Func<Object> GetInt32Default = () => -1;
 
+            Func<Guid, bool> IsGuidDefault = (o) =>
+            {
+                return o == Guid.Empty;
+            };
+            Func<Object> GetGuidDefault = () => Guid.Empty;
+
             Func<double, bool> IsDoubleDefault = (i) =>
             {
                 return i == -1;
@@ -56,6 +62,12 @@ namespace ERP.Client.WindowsForms.Binding.Parser
                 o => int.Parse(o),
                 IsInt32Default,
                 GetInt32Default
+                ));
+
+            AddParser(new StringParser<Guid>(
+                o => Guid.Parse(o),
+                IsGuidDefault,
+                GetGuidDefault
                 ));
 
             AddParser(new StringParser<double>(

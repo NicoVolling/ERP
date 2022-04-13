@@ -10,14 +10,14 @@ namespace ERP.Business.Objects
     /// </summary>
     public abstract class BusinessObject : PropertyChangedNotifier
     {
-        private int iD = -1;
+        private Guid iD = Guid.Empty;
 
         public static BusinessObject Empty { get => new BusinessObjectEmpty(); }
 
         /// <summary>
         /// Identifier should be unique
         /// </summary>
-        public int ID
+        public Guid ID
         { get => iD; set { iD = value; NotifyPropertyChanged(); } }
 
         public void Deserialize(string Raw)
@@ -56,14 +56,14 @@ namespace ERP.Business.Objects
 
         public override string ToString()
         {
-            return $"[{ID}] {OnToString()}";
+            return $"{OnToString()}";
         }
 
         private class BusinessObjectEmpty : BusinessObject
         {
             public BusinessObjectEmpty()
             {
-                ID = -1;
+                ID = Guid.Empty;
             }
 
             public override string OnToString()

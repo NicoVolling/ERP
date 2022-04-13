@@ -8,15 +8,21 @@ namespace ERP.Business.Objects
 {
     public class BusinessObjectIdentifier
     {
-        public BusinessObjectIdentifier(int ID = -1, string Name = "")
+        public BusinessObjectIdentifier(Guid ID, string Name)
         {
             this.ID = ID;
             this.Name = Name;
         }
 
+        public BusinessObjectIdentifier()
+        {
+            this.ID = Guid.Empty;
+            this.Name = "";
+        }
+
         public static BusinessObjectIdentifier Empty { get => new(BusinessObject.Empty.ID, BusinessObject.Empty.ToString()); }
 
-        public int ID { get; set; }
+        public Guid ID { get; set; }
 
         public string Name { get; set; }
 

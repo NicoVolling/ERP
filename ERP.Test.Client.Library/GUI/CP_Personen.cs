@@ -59,7 +59,7 @@ namespace ERP.Test.Client.Library.GUI
 
             b_ComboBox1.IDChanged += (s, e) =>
             {
-                if (b_ComboBox1.SelectedObjectID != -1)
+                if (b_ComboBox1.SelectedObjectID != Guid.Empty)
                 {
                     try
                     {
@@ -162,9 +162,9 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_clear = new System.Windows.Forms.Button();
             this.bindableCollectionPanel1.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // btn_save
-            //
+            // 
             this.btn_save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_save.Location = new System.Drawing.Point(324, 219);
             this.btn_save.Name = "btn_save";
@@ -173,9 +173,9 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_save.Text = "Save";
             this.btn_save.UseVisualStyleBackColor = true;
             this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
-            //
+            // 
             // btn_delete
-            //
+            // 
             this.btn_delete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_delete.Location = new System.Drawing.Point(243, 219);
             this.btn_delete.Name = "btn_delete";
@@ -184,10 +184,10 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_delete.Text = "Delete";
             this.btn_delete.UseVisualStyleBackColor = true;
             this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
-            //
+            // 
             // b_TextBox2
-            //
-            this.b_TextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.b_TextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox2.BindingDestination = "Person.Firstname";
             this.b_TextBox2.Description = "Firstname";
@@ -197,12 +197,12 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox2.Name = "b_TextBox2";
             this.b_TextBox2.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox2.StatusVisible = true;
-            this.b_TextBox2.TabIndex = 0;
+            this.b_TextBox2.TabIndex = 1;
             this.b_TextBox2.Tag = "Person.Firstname";
-            //
+            // 
             // b_TextBox3
-            //
-            this.b_TextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.b_TextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox3.BindingDestination = "Person.Name";
             this.b_TextBox3.Description = "Name";
@@ -212,11 +212,11 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox3.Name = "b_TextBox3";
             this.b_TextBox3.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox3.StatusVisible = true;
-            this.b_TextBox3.TabIndex = 0;
+            this.b_TextBox3.TabIndex = 2;
             this.b_TextBox3.Tag = "Person.Name";
-            //
+            // 
             // btn_create
-            //
+            // 
             this.btn_create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_create.Location = new System.Drawing.Point(162, 219);
             this.btn_create.Name = "btn_create";
@@ -225,9 +225,9 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_create.Text = "Create";
             this.btn_create.UseVisualStyleBackColor = true;
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
-            //
+            // 
             // bindableCollectionPanel1
-            //
+            // 
             this.bindableCollectionPanel1.Controls.Add(this.b_ComboBox1);
             this.bindableCollectionPanel1.Controls.Add(this.b_TextBox5);
             this.bindableCollectionPanel1.Controls.Add(this.b_TextBox2);
@@ -238,23 +238,25 @@ namespace ERP.Test.Client.Library.GUI
             this.bindableCollectionPanel1.Name = "bindableCollectionPanel1";
             this.bindableCollectionPanel1.Size = new System.Drawing.Size(399, 210);
             this.bindableCollectionPanel1.TabIndex = 3;
-            //
+            // 
             // b_ComboBox1
-            //
+            // 
             this.b_ComboBox1.BindingDestination = "BusinessObjectList";
             this.b_ComboBox1.Description = "Person";
             this.b_ComboBox1.FixedDescriptionWidth = 80;
             this.b_ComboBox1.IsReadOnly = false;
             this.b_ComboBox1.Location = new System.Drawing.Point(17, 11);
             this.b_ComboBox1.Name = "b_ComboBox1";
+            this.b_ComboBox1.ObjectList = null;
+            this.b_ComboBox1.SelectedObjectID = new System.Guid("00000000-0000-0000-0000-000000000000");
             this.b_ComboBox1.Size = new System.Drawing.Size(365, 31);
             this.b_ComboBox1.StatusVisible = true;
-            this.b_ComboBox1.TabIndex = 1;
+            this.b_ComboBox1.TabIndex = 0;
             this.b_ComboBox1.Tag = "BusinessObjectList";
-            //
+            // 
             // b_TextBox5
-            //
-            this.b_TextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.b_TextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox5.BindingDestination = "Person.ID";
             this.b_TextBox5.Description = "ID";
@@ -265,11 +267,12 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox5.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox5.StatusVisible = true;
             this.b_TextBox5.TabIndex = 0;
+            this.b_TextBox5.TabStop = false;
             this.b_TextBox5.Tag = "Person.ID";
-            //
+            // 
             // b_TextBox4
-            //
-            this.b_TextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.b_TextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_TextBox4.BindingDestination = "Person.Birthday";
             this.b_TextBox4.Description = "Birthday";
@@ -279,11 +282,11 @@ namespace ERP.Test.Client.Library.GUI
             this.b_TextBox4.Name = "b_TextBox4";
             this.b_TextBox4.Size = new System.Drawing.Size(365, 29);
             this.b_TextBox4.StatusVisible = true;
-            this.b_TextBox4.TabIndex = 0;
+            this.b_TextBox4.TabIndex = 3;
             this.b_TextBox4.Tag = "Person.Birthday";
-            //
+            // 
             // btn_clear
-            //
+            // 
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_clear.Location = new System.Drawing.Point(84, 219);
             this.btn_clear.Name = "btn_clear";
@@ -292,9 +295,9 @@ namespace ERP.Test.Client.Library.GUI
             this.btn_clear.Text = "Clear";
             this.btn_clear.UseVisualStyleBackColor = true;
             this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
-            //
+            // 
             // CP_Personen
-            //
+            // 
             this.Controls.Add(this.bindableCollectionPanel1);
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_create);
@@ -303,6 +306,7 @@ namespace ERP.Test.Client.Library.GUI
             this.Name = "CP_Personen";
             this.bindableCollectionPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         private void RefreshButtons()

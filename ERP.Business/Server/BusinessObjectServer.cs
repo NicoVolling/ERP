@@ -70,7 +70,7 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result Delete(int ID)
+        public Result Delete(Guid ID)
         {
             if (!ServerSide) { return GetClientResult(ID); }
             return new Result(OnDelete(ID));
@@ -94,7 +94,7 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetData(int ID)
+        public Result GetData(Guid ID)
         {
             if (!ServerSide) { return GetClientResult(ID); }
             return new Result(OnGetData(ID));
@@ -121,10 +121,11 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public virtual bool OnDelete(int ID)
+        public virtual bool OnDelete(Guid ID)
         {
             try
             {
+                Load();
                 T_BusinessObject Object = GetObjectByID(ID);
                 RemoveObject(ID);
                 return true;
@@ -140,10 +141,11 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public virtual T_BusinessObject OnGetData(int ID)
+        public virtual T_BusinessObject OnGetData(Guid ID)
         {
             try
             {
+                Load();
                 return GetObjectByID(ID);
             }
             catch
@@ -169,7 +171,7 @@ namespace ERP.Business.Server
             }
         }
 
-        public void RemoveObject(int ID)
+        public void RemoveObject(Guid ID)
         {
             ObjectList.RemoveAll(o => o.ID == ID);
         }
@@ -189,38 +191,12 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="Object">Will be added to the list</param>
         /// <returns>ID that the object will retrieve</returns>
-        protected int AddObject(T_BusinessObject Object)
+        protected Guid AddObject(T_BusinessObject Object)
         {
-            int ID = -1;
-            if (ObjectList.Any())
-            {
-                int previous = -1;
-                foreach (T_BusinessObject obj in ObjectList.OrderBy(o => o.ID))
-                {
-                    if (previous != -1)
-                    {
-                        if (obj.ID - previous > 1)
-                        {
-                            ID = previous + 1;
-                            break;
-                        }
-                    }
-                    previous = obj.ID;
-                }
-                if (ID < 0)
-                {
-                    ID = previous + 1;
-                }
-            }
-            else
-            {
-                ID = 0;
-            }
-
-            Object.ID = ID;
+            Object.ID = Guid.NewGuid();
             ObjectList.Add(Object);
 
-            return ID;
+            return Object.ID;
         }
 
         /// <summary>
@@ -230,7 +206,7 @@ namespace ERP.Business.Server
         /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        protected T_BusinessObject GetObjectByID(int ID)
+        protected T_BusinessObject GetObjectByID(Guid ID)
         {
             Load();
             if (ObjectList.FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
@@ -247,6 +223,7 @@ namespace ERP.Business.Server
         {
             try
             {
+                Load();
                 T_BusinessObject Object = GetObjectByID(Data.ID);
                 Object.Deserialize(Data);
                 return Object;
@@ -267,6 +244,7 @@ namespace ERP.Business.Server
         {
             try
             {
+                Load();
                 AddObject(Data);
                 return Data;
             }

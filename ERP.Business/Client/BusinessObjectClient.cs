@@ -32,7 +32,7 @@ namespace ERP.Business.Client
         /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <exception cref="Exception"></exception>
-        public void Change(int ID, T_BusinessObject Data)
+        public void Change(Guid ID, T_BusinessObject Data)
         {
             if (BeforeChange())
             {
@@ -76,7 +76,7 @@ namespace ERP.Business.Client
         /// </summary>
         /// <param name="ID"></param>
         /// <exception cref="Exception"></exception>
-        public void Delete(int ID)
+        public void Delete(Guid ID)
         {
             if (BeforeDelete())
             {
@@ -97,7 +97,7 @@ namespace ERP.Business.Client
         /// </summary>
         /// <param name="ID"></param>
         /// <exception cref="Exception"></exception>
-        public void GetData(int ID)
+        public void GetData(Guid ID)
         {
             if (BeforeGetData())
             {
