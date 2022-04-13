@@ -23,6 +23,12 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
+        [Category("Darstellung")]
+        public bool CanMaximize { get => this.btn_maximize.Visible; set => this.btn_maximize.Visible = value; }
+
+        [Category("Darstellung")]
+        public bool CanResize { get => this.ResizePanel.Visible; set => this.ResizePanel.Visible = value; }
+
         public ContentPanel ContentPanel
         {
             get => ContentsPanel.Controls.Cast<Control>().FirstOrDefault(o => o is ContentPanel) as ContentPanel;
