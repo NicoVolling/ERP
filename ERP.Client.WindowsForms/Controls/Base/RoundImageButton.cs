@@ -50,16 +50,17 @@ namespace ERP.Client.WindowsForms.Controls.Base
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            float X = this.Width * 0.15f;
-            float Y = this.Height * 0.15f;
             float Height = this.Height * 0.7f;
             float Width = this.Width * 0.7f;
+            if (Width > Height) { Width = Height; }
+            if (Height > Width) { Height = Width; }
             Graphics gfx = e.Graphics;
             gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             gfx.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             if (Image != null)
             {
-                gfx.DrawImage(Image, X, Y, Width, Height);
+                PointF Point = AlignContent(ContentAlignment.MiddleCenter, Size, Padding, new SizeF(Width, Height));
+                gfx.DrawImage(Image, Point.X, Point.Y, Width, Height);
             }
             else
             {

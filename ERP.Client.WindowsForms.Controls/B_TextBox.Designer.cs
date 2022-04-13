@@ -37,7 +37,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             // ControlPanel
             // 
             this.ControlPanel.Controls.Add(this.textBox1);
-            this.ControlPanel.Size = new System.Drawing.Size(383, 29);
+            this.ControlPanel.Size = new System.Drawing.Size(351, 29);
             // 
             // textBox1
             // 
@@ -47,16 +47,16 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Location = new System.Drawing.Point(3, 3);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(376, 23);
+            this.textBox1.Size = new System.Drawing.Size(344, 23);
             this.textBox1.TabIndex = 0;
             // 
             // B_TextBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ButtonVisible = false;
             this.Name = "B_TextBox";
             this.Size = new System.Drawing.Size(383, 29);
-            this.StatusVisible = false;
             this.ControlPanel.ResumeLayout(false);
             this.ControlPanel.PerformLayout();
             this.ResumeLayout(false);

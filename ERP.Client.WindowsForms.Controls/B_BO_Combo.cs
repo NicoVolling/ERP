@@ -97,16 +97,16 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.Combobox = new System.Windows.Forms.ComboBox();
             this.ControlPanel.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // ControlPanel
-            //
+            // 
             this.ControlPanel.Controls.Add(this.Combobox);
             this.ControlPanel.Size = new System.Drawing.Size(351, 29);
-            //
+            // 
             // Combobox
-            //
-            this.Combobox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.Combobox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Combobox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -115,13 +115,15 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             this.Combobox.Name = "Combobox";
             this.Combobox.Size = new System.Drawing.Size(344, 23);
             this.Combobox.TabIndex = 0;
-            //
+            // 
             // B_BO_Combo
-            //
+            // 
+            this.ButtonVisible = false;
             this.Name = "B_BO_Combo";
             this.Size = new System.Drawing.Size(383, 29);
             this.ControlPanel.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         private void RefreshList()

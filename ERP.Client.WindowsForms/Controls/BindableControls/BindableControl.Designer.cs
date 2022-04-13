@@ -32,7 +32,10 @@
             this.StatusLed = new ERP.Client.WindowsForms.Controls.Base.StatusLed();
             this.ControlPanel = new System.Windows.Forms.Panel();
             this.lbl_Description = new System.Windows.Forms.Label();
+            this.panel_btn = new System.Windows.Forms.Panel();
+            this.btn = new ERP.Client.WindowsForms.Controls.Base.RoundImageButton();
             this.StatusPanel.SuspendLayout();
+            this.panel_btn.SuspendLayout();
             this.SuspendLayout();
             // 
             // StatusPanel
@@ -61,7 +64,7 @@
             this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ControlPanel.Location = new System.Drawing.Point(100, 0);
             this.ControlPanel.Name = "ControlPanel";
-            this.ControlPanel.Size = new System.Drawing.Size(251, 76);
+            this.ControlPanel.Size = new System.Drawing.Size(206, 76);
             this.ControlPanel.TabIndex = 1;
             // 
             // lbl_Description
@@ -75,15 +78,38 @@
             this.lbl_Description.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lbl_Description.TextChanged += new System.EventHandler(this.lbl_Description_TextChanged);
             // 
+            // panel_btn
+            // 
+            this.panel_btn.Controls.Add(this.btn);
+            this.panel_btn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel_btn.Location = new System.Drawing.Point(306, 0);
+            this.panel_btn.Name = "panel_btn";
+            this.panel_btn.Padding = new System.Windows.Forms.Padding(4, 4, 9, 4);
+            this.panel_btn.Size = new System.Drawing.Size(45, 76);
+            this.panel_btn.TabIndex = 3;
+            // 
+            // btn
+            // 
+            this.btn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn.Image = global::ERP.Client.WindowsForms.Base.Resources.search;
+            this.btn.Location = new System.Drawing.Point(4, 4);
+            this.btn.Name = "btn";
+            this.btn.Size = new System.Drawing.Size(32, 68);
+            this.btn.TabIndex = 0;
+            this.btn.Text = "roundImageButton1";
+            this.btn.Click += new System.EventHandler(this.btn_Click);
+            // 
             // BindableControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.ControlPanel);
+            this.Controls.Add(this.panel_btn);
             this.Controls.Add(this.lbl_Description);
             this.Controls.Add(this.StatusPanel);
             this.Name = "BindableControl";
             this.Size = new System.Drawing.Size(383, 76);
             this.StatusPanel.ResumeLayout(false);
+            this.panel_btn.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -93,5 +119,7 @@
         private Panel StatusPanel;
         protected Panel ControlPanel;
         private Label lbl_Description;
+        private Panel panel_btn;
+        private Base.RoundImageButton btn;
     }
 }

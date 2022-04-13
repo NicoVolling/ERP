@@ -25,10 +25,15 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             Status = BindingStatus.Unsaved;
         }
 
+        public event EventHandler ButtonClick;
+
         public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         [Category("Bindung")]
         public string BindingDestination { get => this.Tag?.ToString(); set => this.Tag = value; }
+
+        [Category("Darstellung"), DefaultValue(false)]
+        public bool ButtonVisible { get => panel_btn.Visible; set => panel_btn.Visible = value; }
 
         [Category("Darstellung")]
         public string Description
@@ -57,7 +62,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             protected set { status = value; SetBindingStatus(Status); OnStatusChanged(Status); }
         }
 
-        [Category("Darstellung")]
+        [Category("Darstellung"), DefaultValue(true)]
         public bool StatusVisible { get => StatusPanel.Visible; set => StatusPanel.Visible = value; }
 
         public Type TargetType { get; private set; }
@@ -170,6 +175,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         {
         }
 
+        protected virtual void OnButtonClick()
+        {
+            ButtonClick?.Invoke(this, EventArgs.Empty);
+        }
+
         protected virtual void OnClear()
         {
             Set(Parser.GetDefault(OrigingType));
@@ -181,6 +191,7 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
         protected virtual void OnIsReadOnlyChanged()
         {
             this.ControlPanel.Enabled = !IsReadOnly;
+            this.btn.Enabled = !IsReadOnly;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -243,6 +254,11 @@ namespace ERP.Client.WindowsForms.Controls.BindableControls
             {
                 throw;
             }
+        }
+
+        private void btn_Click(object sender, EventArgs e)
+        {
+            OnButtonClick();
         }
 
         private void lbl_Description_TextChanged(object sender, EventArgs e)

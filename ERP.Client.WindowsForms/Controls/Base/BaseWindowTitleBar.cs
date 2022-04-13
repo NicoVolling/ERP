@@ -144,7 +144,10 @@ namespace ERP.Client.WindowsForms.Controls.Base
                 if (Destination.Y < 0)
                 {
                     Destination.Y = 0;
-                    BaseWindow.Dock = DockStyle.Fill;
+                    if (BaseWindow.CanMaximize)
+                    {
+                        BaseWindow.Dock = DockStyle.Fill;
+                    }
                 }
                 else if (Destination.Y > BaseWindow.Parent.Height - BaseWindow.Height)
                 {
