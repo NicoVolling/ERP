@@ -113,6 +113,11 @@ namespace ERP.Business.Client
             }
         }
 
+        /// <summary>
+        /// Returns true if an object with the given ID exists.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public bool GetExistence(Guid ID)
         {
             Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetExistence(ID);
@@ -137,6 +142,24 @@ namespace ERP.Business.Client
             if (!Result.Error)
             {
                 return Json.Deserialize<List<BusinessObjectIdentifier>>(Result.ReturnValue);
+            }
+            else
+            {
+                throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
+            }
+        }
+
+        /// <summary>
+        /// Gets Data of given Objects.
+        /// </summary>
+        /// <param name="IDs">IDs</param>
+        /// <returns></returns>
+        public List<BusinessObject> GetObjects(IEnumerable<Guid> IDs)
+        {
+            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList(IDs);
+            if (!Result.Error)
+            {
+                return Json.Deserialize<List<BusinessObject>>(Result.ReturnValue);
             }
             else
             {

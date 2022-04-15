@@ -121,6 +121,17 @@ namespace ERP.Business.Server
             return new Result(OnGetList().Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
         }
 
+        /// <summary>
+        /// Gets Data of given Objects.
+        /// </summary>
+        /// <param name="IDs">IDs</param>
+        /// <returns></returns>
+        public Result GetObjects(IEnumerable<Guid> IDs)
+        {
+            if (!ServerSide) { return GetClientResult(); }
+            return new Result(OnGetList().Where(o => IDs.Contains(o.ID)));
+        }
+
         public void Load()
         {
             IFileSaver.Load(this);
