@@ -23,6 +23,8 @@ namespace ERP.Client.WindowsForms.Controls.Windows
 
         public event EventHandler Closed;
 
+        public event EventHandler HasFocusChanged;
+
         public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         [Category("Darstellung")]
@@ -76,6 +78,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
                     this.BringToFront();
                 }
                 this.BackColor = value ? Color.FromArgb(255, 255, 255) : Color.FromArgb(40, 40, 40);
+                HasFocusChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

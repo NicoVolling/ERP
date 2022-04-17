@@ -68,9 +68,10 @@ namespace ERP.Client.WindowsForms
 
             if (Blocked is BaseWindow BWBlocked)
             {
-                BWBlocked.Enabled = false;
+                BWBlocked.ContentPanel.Enabled = false;
+                BWBlocked.HasFocusChanged += (s, e) => { if (BWBlocked.HasFocus) { BaseWindow.HasFocus = true; } };
 
-                BaseWindow.Closed += (s, e) => { BWBlocked.Enabled = true; };
+                BaseWindow.Closed += (s, e) => { BWBlocked.ContentPanel.Enabled = true; };
             }
 
             BaseWindow.ContentPanel.Open(BaseWindow);
