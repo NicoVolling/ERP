@@ -28,6 +28,7 @@ namespace ERP.Test.Client.App
                     Client.Create(person1);
                     Client.GetData(person1.ID);
                     person1 = Client.Data;
+                    Client.Delete(person1.ID);
 
                     Log.WriteLine(person1, ConsoleColor.Magenta);
 

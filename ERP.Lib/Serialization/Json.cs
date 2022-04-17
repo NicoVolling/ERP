@@ -7,6 +7,16 @@ namespace ERP.BaseLib.Serialization
     /// </summary>
     public static class Json
     {
+        static JsonSerializerSettings Settings;
+
+        static Json() 
+        {
+            Settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+        }
+
         /// <summary>
         /// Converts the string to a object.
         /// </summary>
@@ -36,7 +46,7 @@ namespace ERP.BaseLib.Serialization
         /// <returns>String.</returns>
         public static string Serialize(Object Object)
         {
-            return JsonConvert.SerializeObject(Object);
+            return JsonConvert.SerializeObject(Object, Formatting.Indented, Settings);
         }
     }
 }

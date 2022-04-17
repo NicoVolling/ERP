@@ -1,5 +1,6 @@
 ﻿using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
+using ERP.BaseLib.Output;
 using ERP.Exceptions.ErpExceptions.CommandExceptions;
 using ERP.IO.FileSystem;
 
@@ -73,7 +74,8 @@ namespace ERP.Commands.Base
                 timer = new Timer(new TimerCallback((o) =>
                 {
                     Save();
-                }), null, 0, 150000); //2:30 min.
+                    Log.WriteLine("Data has been saved", ConsoleColor.Blue);
+                }), null, 150000, 150000); //2:30 min.
             }
         }
 

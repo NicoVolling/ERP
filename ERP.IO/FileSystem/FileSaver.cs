@@ -18,9 +18,9 @@
             if (!Target.CanLoad()) { return; }
             try
             {
-                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename))))
+                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"))))
                 {
-                    Target.Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", (Target.Filename))));
+                    Target.Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json")));
                 }
             }
             catch
@@ -41,7 +41,7 @@
                 {
                     System.IO.Directory.CreateDirectory(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data")));
                 }
-                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename), Target.Serialize());
+                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"), Target.Serialize());
             }
             catch
             {
