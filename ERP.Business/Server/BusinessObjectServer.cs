@@ -126,10 +126,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="IDs">IDs</param>
         /// <returns></returns>
-        public Result GetObjects(IEnumerable<Guid> IDs)
+        public Result GetObjects(Guid[] IDs)
         {
-            if (!ServerSide) { return GetClientResult(); }
-            return new Result(OnGetList().Where(o => IDs.Contains(o.ID)));
+            if (!ServerSide) { return GetClientResult(IDs); }
+            return new Result(OnGetList().Where(o => IDs.Any(p => p == o.ID)).ToArray());
         }
 
         public void Load()

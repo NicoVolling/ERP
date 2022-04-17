@@ -10,7 +10,7 @@ namespace ERP.Business.Client
     /// <summary>
     /// This class contains all ClientFunctionalities
     /// </summary>
-    public abstract class BusinessObjectClient<T_CommandCollection, T_BusinessObject>
+    public abstract class BusinessObjectClient<T_CommandCollection, T_BusinessObject> : IBusinessObjectClient
         where T_CommandCollection : BusinessObjectServer<T_BusinessObject>, new()
         where T_BusinessObject : BusinessObject, new()
     {
@@ -20,6 +20,8 @@ namespace ERP.Business.Client
         public BusinessObjectClient()
         {
         }
+
+        BusinessObject IBusinessObjectClient.BO_Data { get => Data; set => Data = value as T_BusinessObject; }
 
         /// <summary>
         /// Current context. This is the BusinessObject containing all the Data.
@@ -49,6 +51,11 @@ namespace ERP.Business.Client
             }
         }
 
+        public void Change(Guid ID, BusinessObject Data)
+        {
+            Change(ID, Data);
+        }
+
         /// <summary>
         /// Creates a new object on the server.
         /// </summary>
@@ -69,6 +76,11 @@ namespace ERP.Business.Client
                     throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
                 }
             }
+        }
+
+        public void Create(BusinessObject Data)
+        {
+            Create(Data);
         }
 
         /// <summary>
@@ -154,17 +166,22 @@ namespace ERP.Business.Client
         /// </summary>
         /// <param name="IDs">IDs</param>
         /// <returns></returns>
-        public List<BusinessObject> GetObjects(IEnumerable<Guid> IDs)
+        public List<T_BusinessObject> GetObjects(Guid[] IDs)
         {
-            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList(IDs);
+            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetObjects(IDs);
             if (!Result.Error)
             {
-                return Json.Deserialize<List<BusinessObject>>(Result.ReturnValue);
+                return Json.Deserialize<List<T_BusinessObject>>(Result.ReturnValue);
             }
             else
             {
                 throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
             }
+        }
+
+        List<BusinessObject> IBusinessObjectClient.GetObjects(Guid[] IDs)
+        {
+            return this.GetObjects(IDs).Select(o => o as BusinessObject).ToList();
         }
 
         protected virtual bool BeforeChange()

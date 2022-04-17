@@ -1,5 +1,6 @@
 ﻿using ERP.BaseLib.Output;
 using ERP.Client.WindowsForms;
+using ERP.Client.WindowsForms.Controls.BindableControls;
 using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Commands.Base;
 using ERP.Test.Client.Library.GUI;
@@ -45,6 +46,19 @@ namespace ERP.Test.Client.App
                     new Dictionary<string, Func<BaseWindow>>()
                     {
                         { "Personen", () =>  new BaseWindow(new CP_Personen()) { Text = "Personen", Icon = ERP.Client.WindowsForms.Base.Resources.Icon, CanMaximize = false, CanResize = false } }
+                    }
+                },
+                {
+                    "GUI",
+                    new Dictionary<string, Func<BaseWindow>>()
+                    {
+                        { "Selection", () =>
+                        {
+                            BaseWindow BW = new BaseWindow(new B_BO_Selection_ContentPanel()) { Text = "Selection", Icon = ERP.Client.WindowsForms.Base.Resources.Icon, CanMaximize = true, CanResize = true };
+                            ((B_BO_Selection_ContentPanel)BW.ContentPanel).SetBusinessObjectList(new PersonClient(), new PersonClient().GetList());
+                            return BW;
+                        }
+                        }
                     }
                 }
             };

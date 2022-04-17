@@ -14,9 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="B_TextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="B_TextBox.cs" />
   </ItemGroup>
 
 </Project>

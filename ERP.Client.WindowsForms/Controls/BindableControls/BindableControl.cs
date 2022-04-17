@@ -1,10 +1,11 @@
 ﻿using ERP.Client.WindowsForms.Binding;
 using ERP.Client.WindowsForms.Binding.Parser;
+using ERP.Client.WindowsForms.Controls.Base;
 using System.ComponentModel;
 
 namespace ERP.Client.WindowsForms.Controls.BindableControls
 {
-    public partial class BindableControl : UserControl
+    public partial class BindableControl : BaseControl
     {
         private static double factor = -1;
         private string description;

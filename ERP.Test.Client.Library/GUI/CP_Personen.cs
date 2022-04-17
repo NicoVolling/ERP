@@ -1,6 +1,7 @@
 ﻿using ERP.Business.Objects;
 using ERP.Client.WindowsForms.Controls.Base;
 using ERP.Client.WindowsForms.Controls.BindableControls;
+using ERP.Client.WindowsForms.Controls.Windows;
 using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
 using System.Windows.Forms;
@@ -80,6 +81,23 @@ namespace ERP.Test.Client.Library.GUI
             };
 
             b_ComboBox1.Combobox.DropDown += Combobox_DropDown;
+        }
+
+        private void b_ComboBox1_ButtonClick(object sender, EventArgs e)
+        {
+            B_BO_Selection_ContentPanel CP = new B_BO_Selection_ContentPanel();
+            BaseWindow BW = new BaseWindow(CP);
+            CP.SetBusinessObjectList(new PersonClient(), new PersonClient().GetList());
+
+            BW.Closed += (s, e) =>
+            {
+                if (BW.Result is Person Person)
+                {
+                    DataContext.Person = Person;
+                }
+            };
+
+            BaseWindow.ParentBaseForm.OpenWindow(BW, BaseWindow);
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
@@ -245,6 +263,7 @@ namespace ERP.Test.Client.Library.GUI
             this.b_ComboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.b_ComboBox1.BindingDestination = "BusinessObjectList";
+            this.b_ComboBox1.ButtonVisible = true;
             this.b_ComboBox1.Description = "Person";
             this.b_ComboBox1.FixedDescriptionWidth = 80;
             this.b_ComboBox1.IsReadOnly = false;
@@ -253,8 +272,10 @@ namespace ERP.Test.Client.Library.GUI
             this.b_ComboBox1.ObjectList = null;
             this.b_ComboBox1.SelectedObjectID = new System.Guid("00000000-0000-0000-0000-000000000000");
             this.b_ComboBox1.Size = new System.Drawing.Size(411, 31);
+            this.b_ComboBox1.StatusVisible = false;
             this.b_ComboBox1.TabIndex = 0;
             this.b_ComboBox1.Tag = "BusinessObjectList";
+            this.b_ComboBox1.ButtonClick += new System.EventHandler(this.b_ComboBox1_ButtonClick);
             //
             // b_TextBox5
             //

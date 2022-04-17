@@ -53,7 +53,7 @@ namespace ERP.Client.WindowsForms
 
         public IEnumerable<BaseWindow> Windows { get => WindowPanel.Controls.Cast<Control>().Where(o => o is BaseWindow).Select(o => o as BaseWindow); }
 
-        public void OpenWindow(BaseWindow BaseWindow)
+        public void OpenWindow(BaseWindow BaseWindow, BaseWindow Blocked = null)
         {
             BaseWindow.SetParent(this);
             WindowPanel.Controls.Add(BaseWindow);
@@ -65,6 +65,14 @@ namespace ERP.Client.WindowsForms
             BaseWindow.StatusChanged += (s, e) => { BWTB.StatusColor = BindableControl.GetBindingStatusColor(e.Status); };
             BWTB.SetTaskBar();
             WindowListPanel.Controls.Add(BWTB);
+
+            if (Blocked is BaseWindow BWBlocked)
+            {
+                BWBlocked.Enabled = false;
+
+                BaseWindow.Closed += (s, e) => { BWBlocked.Enabled = true; };
+            }
+
             BaseWindow.ContentPanel.Open(BaseWindow);
         }
 

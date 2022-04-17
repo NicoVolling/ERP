@@ -104,7 +104,7 @@ namespace ERP.Client.WindowsForms.Controls.Base
         public void ShowMessage(string Title, string Message)
         {
             BaseWindow BW = new BaseWindow(new MessagingContentPanel() { Message = Message, DataContext = DataContext.Empty }) { Icon = ERP.Client.WindowsForms.Base.Resources.Icon, Text = Title };
-            this.BaseWindow.ParentBaseForm.OpenWindow(BW);
+            this.BaseWindow?.ParentBaseForm?.OpenWindow(BW, BaseWindow);
         }
 
         public void SyncAll()
@@ -119,6 +119,10 @@ namespace ERP.Client.WindowsForms.Controls.Base
         {
             if (!IsInDesignMode())
             {
+                if (Control is BaseControl BaseControl)
+                {
+                    BaseControl.SetContentPanel(this);
+                }
                 if (Control is BindableControl Bindable)
                 {
                     if (Bindable.BindingDestination is string BindingDestination)

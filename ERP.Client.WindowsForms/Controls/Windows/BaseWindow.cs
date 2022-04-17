@@ -21,6 +21,8 @@ namespace ERP.Client.WindowsForms.Controls.Windows
             CreateEvents(this);
         }
 
+        public event EventHandler Closed;
+
         public event EventHandler<BindingStatusChangedEventArgs> StatusChanged;
 
         [Category("Darstellung")]
@@ -84,6 +86,8 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         public BaseForm ParentBaseForm
         { get { if (parentBaseForm == null) { throw new ErpException("Cannot access ParentForm without setting it"); } return parentBaseForm; } set => parentBaseForm = value; }
 
+        public Object Result { get; set; }
+
         public BindingStatus Status
         { get => status; protected set { status = value; this.StatusColor = BindableControl.GetBindingStatusColor(value); OnStatusChanged(value); } }
 
@@ -95,6 +99,7 @@ namespace ERP.Client.WindowsForms.Controls.Windows
         public void Close()
         {
             ParentBaseForm.Close(this);
+            Closed?.Invoke(this, EventArgs.Empty);
             ContentPanel.Closed();
         }
 
