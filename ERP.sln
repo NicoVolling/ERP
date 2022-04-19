@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Business", "ERP.Busines
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Exceptions", "ERP.Exceptions\ERP.Exceptions.csproj", "{5EF38CCB-D28D-4D46-B354-AD24E48D1531}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Client.WindowsForms", "ERP.Client.WindowsForms\ERP.Client.WindowsForms.csproj", "{5154CF84-42CC-4B63-AD43-1A06C7AC9D27}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0E75AB64-0FE4-4671-AA90-27D64D27A2E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{CBA6DEBE-9D4E-49EA-A758-8ED48C0F561E}"
@@ -34,10 +32,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Client.App", "ERP.Test.Client.App\ERP.Test.Client.App.csproj", "{67270CE8-882B-4E9A-BE21-6717AA69C834}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Server.App", "ERP.Test.Server.App\ERP.Test.Server.App.csproj", "{BD674041-46C0-4861-A632-3BC7687E2146}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Client.WindowsForms.Controls.BindableControls", "ERP.Client.WindowsForms.Controls\ERP.Client.WindowsForms.Controls.BindableControls.csproj", "{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Client.WindowsForms.Binding", "ERP.Client.WindowsForms.Binding\ERP.Client.WindowsForms.Binding.csproj", "{569A11B7-614A-4858-9D98-8A58D8CB074D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,10 +63,6 @@ Global
 		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EF38CCB-D28D-4D46-B354-AD24E48D1531}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5154CF84-42CC-4B63-AD43-1A06C7AC9D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5154CF84-42CC-4B63-AD43-1A06C7AC9D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5154CF84-42CC-4B63-AD43-1A06C7AC9D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5154CF84-42CC-4B63-AD43-1A06C7AC9D27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9029F8DB-34BE-4EA5-B3D9-642CE6AFF116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9029F8DB-34BE-4EA5-B3D9-642CE6AFF116}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9029F8DB-34BE-4EA5-B3D9-642CE6AFF116}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,14 +83,6 @@ Global
 		{BD674041-46C0-4861-A632-3BC7687E2146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD674041-46C0-4861-A632-3BC7687E2146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD674041-46C0-4861-A632-3BC7687E2146}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F64247A-127E-48CA-ACF2-7B6D73F43FB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{569A11B7-614A-4858-9D98-8A58D8CB074D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
