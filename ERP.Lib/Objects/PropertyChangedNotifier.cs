@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ERP.BaseLib.Objecs
+namespace ERP.BaseLib.Objects
 {
     public class PropertyChangedNotifier : INotifyPropertyChanged
     {

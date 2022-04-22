@@ -15,6 +15,7 @@ namespace ERP.Business.Objects.Attributes
         }
 
         public int ID { get; }
+
         public string UserFriendlyName { get; }
     }
 }

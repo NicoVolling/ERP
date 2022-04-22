@@ -18,7 +18,7 @@ namespace ERP.Test.Client.App
             {
                 {
                     PersonClient Client = new();
-                    Person person1 = new() { Firstname = "Nico", Name = "Volling", Birthday = DateTime.Now };
+                    Person person1 = new() { Firstname = "Nico", Name = "Volling", Birthday = DateOnly.FromDateTime(DateTime.Now) };
 
                     Client.Create(person1);
                     Client.GetData(person1.ID);

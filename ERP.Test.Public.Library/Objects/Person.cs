@@ -1,16 +1,19 @@
-﻿using ERP.Business.Objects;
+﻿using ERP.BaseLib.Serialization.Converters;
+using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
+using Newtonsoft.Json;
 
 namespace ERP.Test.Public.Library.Objects
 {
     public class Person : BusinessObject
     {
-        private DateTime birthday;
+        private DateOnly birthday;
         private string firstname;
         private string name;
 
         [ShowGUI("Geburtstag", 2)]
-        public DateTime Birthday
+        [JsonConverter(typeof(DateOnlyConverter))]
+        public DateOnly Birthday
         {
             get => birthday;
             set { birthday = value; NotifyPropertyChanged(); }

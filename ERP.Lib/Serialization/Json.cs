@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ERP.BaseLib.Serialization.Converters;
+using Newtonsoft.Json;
 
 namespace ERP.BaseLib.Serialization
 {
@@ -7,13 +8,19 @@ namespace ERP.BaseLib.Serialization
     /// </summary>
     public static class Json
     {
-        static JsonSerializerSettings Settings;
+        private static JsonSerializerSettings Settings;
 
-        static Json() 
+        static Json()
         {
             Settings = new JsonSerializerSettings()
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter>()
+                {
+                    new ArgumentCollectionConverter(),
+                    new DateOnlyConverter(),
+                    new TimeOnlyConverter()
+                }
             };
         }
 

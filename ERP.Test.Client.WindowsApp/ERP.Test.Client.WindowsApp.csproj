@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>True</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>False</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Test.Client.Library\ERP.Test.Client.Library.csproj" />
+    <ProjectReference Include="..\ERP.Windows.WF.BindableControlSet\ERP.Windows.WF.BindableControlSet.csproj" />
+    <ProjectReference Include="..\ERP.Windows.WF.Binding\ERP.Windows.WF.Binding.csproj" />
+    <ProjectReference Include="..\ERP.Windows.WF\ERP.Windows.WF.csproj" />
+  </ItemGroup>
+
+</Project>

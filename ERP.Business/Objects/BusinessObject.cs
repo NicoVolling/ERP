@@ -1,4 +1,4 @@
-﻿using ERP.BaseLib.Objecs;
+﻿using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
 using ERP.Exceptions.ErpExceptions;
 using System.Reflection;
