@@ -43,22 +43,22 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 {
                     if (e.PropertyName == PropertyName)
                     {
-                        Bind(Bindable, DataContext, ObjectName.Skip(1));
+                        Bind(Bindable, DataContext, ObjectName);
                     }
                 };
             }
             else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
-                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, UserFriendlyName);
-                //Bindable.StatusChanged += (s, e) => { OnStatusChanged(this.Status); };
+                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, UserFriendlyName, DataContext);
             }
             else
             {
                 throw new ErpException("Binding failed");
             }
+            Bindable.OnBound(DataContext);
         }
 
-        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, string UserfriendlyName)
+        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, string UserfriendlyName, DataContext DataContext)
         {
             Bindable.UserFriendlyName = UserfriendlyName;
 
@@ -72,7 +72,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     Object getResult = Parser.Parse(Get(), Bindable.OriginType, out Error);
                     if (!Error)
                     {
-                        if (Parser.IsDefault(getResult, Bindable.OriginType))
+                        if (Parser.IsDefault(getResult))
                         {
                             Bindable.Status = InputStatus.Null;
                         }
@@ -98,7 +98,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     Object setResult = Parser.Parse(Object, TargetType, out Error);
                     if (!Error)
                     {
-                        if (Parser.IsDefault(setResult, TargetType))
+                        if (Parser.IsDefault(setResult))
                         {
                             Bindable.Status = InputStatus.Null;
                         }
@@ -133,7 +133,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 }
             };
 
-            PropertyChangedNotifier.PropertyChanged += (s, e) =>
+            Action<object, PropertyChangedEventArgs> PropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == PropertyName)
                 {
@@ -147,12 +147,17 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 }
             };
 
+            PropertyChangedNotifier.PropertyChanged += (s, e) =>
+            {
+                PropertyChanged(s, e);
+            };
+
             Bindable.FormatRequest += (s, e) =>
             {
                 Bindable.SetControlValue(OnGet());
             };
 
-            Bindable.OnBound();
+            PropertyChanged(null, new PropertyChangedEventArgs(PropertyName));
         }
 
         public static bool IsInDesignMode()
@@ -228,7 +233,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     }
                     else
                     {
-                        if (Parent is PropertyChangedNotifier PCN)
+                        if (Parent is INotifyPropertyChanged PCN)
                         {
                             Get = () => PI.GetValue(PCN);
                             if (PI.CanWrite)

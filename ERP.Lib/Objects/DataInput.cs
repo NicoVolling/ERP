@@ -55,5 +55,10 @@
         /// Is used to identify a command.
         /// </summary>
         public Command Command { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Command}";
+        }
     }
 }

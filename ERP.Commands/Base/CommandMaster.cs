@@ -27,7 +27,11 @@ namespace ERP.Commands.Base
         public static Result ExecuteCommand(DataInput DataInput)
         {
             Reload();
-            if (CommandCollectionTypes.FirstOrDefault(o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Command.Namespace) == true && o.Name.Replace("CC_", "") == DataInput.Command.Class && o.GetMethod(DataInput.Command.Action) != null) is Type CCType)
+            if (CommandCollectionTypes.FirstOrDefault(
+                o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Command.Namespace) == true &&
+                o.Name.Replace("CC_", "") == DataInput.Command.Class &&
+                o.GetMethod(DataInput.Command.Action) != null)
+                is Type CCType)
             {
                 try
                 {
@@ -40,7 +44,7 @@ namespace ERP.Commands.Base
             }
             else
             {
-                throw new CommandNotFoundEroException(DataInput.Command.ToString());
+                throw new CommandNotFoundErrorException(DataInput.Command.ToString());
             }
         }
 

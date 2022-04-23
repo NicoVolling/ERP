@@ -43,12 +43,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textbox.Location = new System.Drawing.Point(3, 3);
             this.textbox.Name = "textbox";
-            this.textbox.Size = new System.Drawing.Size(127, 23);
+            this.textbox.Size = new System.Drawing.Size(117, 23);
             this.textbox.TabIndex = 0;
             this.textbox.TextChanged += new System.EventHandler(this.textbox_TextChanged);
             // 
             // BindableTextBox
             // 
+            this.Access = false;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "BindableTextBox";

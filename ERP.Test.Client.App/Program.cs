@@ -34,7 +34,7 @@ namespace ERP.Test.Client.App
             }
             catch
             {
-                throw;
+                //throw;
             }
         }
     }

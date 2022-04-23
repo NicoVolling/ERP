@@ -26,7 +26,7 @@ namespace ERP.Windows.WF.Binding.Parsing.Parser
             {
                 return Parser;
             }
-            if (Type1 == Type2) { return new SameObjectParser<Object>(); }
+            if (Type1 == Type2 || Type1 == null || Type2 == null) { return new SameObjectParser<Object>(); }
             return null;
         }
 
@@ -34,7 +34,7 @@ namespace ERP.Windows.WF.Binding.Parsing.Parser
 
         public Object GetDefault(Type TargeType);
 
-        public bool IsDefault(Object Object, Type TargetType);
+        public bool IsDefault(Object Object);
 
         public Object Parse(Object Object, Type TargetType, out bool Error);
 

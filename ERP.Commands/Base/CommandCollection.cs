@@ -269,7 +269,7 @@ namespace ERP.Commands.Base
             }
             else
             {
-                throw new CommandNotFoundEroException(Input.Command.ToString());
+                throw new CommandNotFoundErrorException(Input.Command.ToString());
             }
         }
 

@@ -1,14 +1,13 @@
 ﻿using ERP.Windows.WF.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ERP.Windows.WF.Binding.Controls
 {
-    public interface IBindable
+    public class BaseBindable : IBindable
     {
         public event EventHandler ControlValueChanged;
 
@@ -18,7 +17,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public string BindingDestination { get; set; }
 
-        public Type OriginType { get; }
+        public Type OriginType => null;
 
         public bool ReadOnly { get; set; }
 
@@ -26,12 +25,26 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public string UserFriendlyName { get; set; }
 
-        public Object GetControlValue();
+        public Object Value { get; set; }
 
-        public Control GetMainControl();
+        public object GetControlValue()
+        {
+            return Value;
+        }
 
-        public void OnBound(DataContext DataContext);
+        public Control GetMainControl()
+        {
+            return null;
+        }
 
-        public void SetControlValue(Object Value);
+        public void OnBound(DataContext DataContext)
+        {
+        }
+
+        public void SetControlValue(object Value)
+        {
+            this.Value = Value;
+            ControlValueChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

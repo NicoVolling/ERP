@@ -25,7 +25,7 @@ namespace ERP.Windows.WF.Binding.Forms
             InitializeComponent();
         }
 
-        public BindingMaster BindingMaster { get; }
+        public BindingMaster BindingMaster { get; protected set; }
 
         public DataContext DataContext { get; set; }
 

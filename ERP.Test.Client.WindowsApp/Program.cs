@@ -1,4 +1,5 @@
 using ERP.Test.Client.WindowsApp.Windows;
+using ERP.Test.Server.Library;
 using ERP.Windows.WF.Base;
 using ERP.Windows.WF.Binding.Forms;
 
@@ -14,6 +15,7 @@ namespace ERP.Test.Client.WindowsApp
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+            Startup.SetAssembly();
             ApplicationConfiguration.Initialize();
             Application.Run(new PersonForm());
         }

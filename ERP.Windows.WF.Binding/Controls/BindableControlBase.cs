@@ -1,4 +1,7 @@
-﻿using ERP.Windows.WF.Base;
+﻿using ERP.Business.Objects;
+using ERP.Windows.WF.Base;
+using ERP.Windows.WF.Binding.Components;
+using ERP.Windows.WF.Binding.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +28,8 @@ namespace ERP.Windows.WF.Binding.Controls
         }
 
         public event EventHandler AfterBound;
+
+        public event EventHandler<BusinessObject> ButtonClick;
 
         public event EventHandler ControlValueChanged;
 
@@ -67,6 +72,9 @@ namespace ERP.Windows.WF.Binding.Controls
         public bool SearchButtonActive { get => panel_button.Visible; set => panel_button.Visible = value; }
 
         [Category("Bindung")]
+        public SelectionDialogStarter SelectionDialogStarter { get; set; }
+
+        [Category("Bindung")]
         public InputStatus Status
         {
             get => status;
@@ -80,6 +88,9 @@ namespace ERP.Windows.WF.Binding.Controls
                 }
             }
         }
+
+        [Category("Bindung")]
+        public bool StatusVisible { get => panel_led.Visible; set => panel_led.Visible = value; }
 
         [Category("Bindung")]
         public string UserFriendlyName
@@ -106,12 +117,14 @@ namespace ERP.Windows.WF.Binding.Controls
             return (int)lbl_description.CreateGraphics().MeasureString(lbl_description.Text, lbl_description.Font).Width + lbl_description.Padding.Left + lbl_description.Padding.Right;
         }
 
-        public void OnBound()
+        public void OnBound(DataContext DataContext)
         {
             if (GetControl() is Control Control)
             {
-                Control.Enter += (s, e) => { FocusChanged(Control.Focused); };
-                Control.Leave += (s, e) => { FocusChanged(Control.Focused); };
+                Control.Enter += (s, e) => { FocusChanged(true); };
+                Control.Leave += (s, e) => { FocusChanged(false); };
+                Control.GotFocus += (s, e) => { FocusChanged(true); };
+                Control.LostFocus += (s, e) => { FocusChanged(false); };
                 FocusChanged(Control.Focused);
             }
             AfterBound?.Invoke(this, EventArgs.Empty);
@@ -242,9 +255,40 @@ namespace ERP.Windows.WF.Binding.Controls
                     try
                     {
                         PI.SetValue(Control, Value);
+                        if (Value)
+                        {
+                            Control.ForeColor = Color.LightGray;
+                            Control.BackColor = Color.FromArgb(35, 35, 35);
+                        }
+                        else
+                        {
+                            Control.ForeColor = Control.Parent.ForeColor;
+                            Control.BackColor = Control.Parent.BackColor;
+                        }
                     }
                     catch { }
                 }
+            }
+        }
+
+        private void btn_search_Click(object sender, EventArgs e)
+        {
+            if (SelectionDialogStarter != null)
+            {
+                SelectionDialogStarter.DataContext = (this.FindForm() as BindingForm)?.DataContext;
+                if (SelectionDialogStarter.DataContext != null)
+                {
+                    BusinessObject BO = SelectionDialogStarter.OpenDialog();
+                    ButtonClick?.Invoke(this, BO);
+                }
+                else
+                {
+                    MessageBox.Show("Fehler: DataContext konnte nicht gesetzt werden.");
+                }
+            }
+            else
+            {
+                ButtonClick?.Invoke(this, null);
             }
         }
     }

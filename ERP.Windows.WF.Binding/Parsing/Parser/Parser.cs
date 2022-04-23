@@ -284,7 +284,7 @@ namespace ERP.Windows.WF.Binding.Parsing.Parser
             return null;
         }
 
-        public bool IsDefault(Object Object, Type TargetType)
+        public bool IsDefault(Object Object)
         {
             if (Object is T1 t1)
             {
