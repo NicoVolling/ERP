@@ -128,7 +128,7 @@ namespace ERP.Windows.WF.Binding.Controls
                     PIList.Add(PI);
                 }
             }
-            foreach (KeyValuePair<PropertyInfo, ShowGUIAttribute> Kvp in PIList.Select(o => new KeyValuePair<PropertyInfo, ShowGUIAttribute>(o, o.GetCustomAttribute<ShowGUIAttribute>(true))))
+            foreach (KeyValuePair<PropertyInfo, ShowGUIAttribute> Kvp in PIList.Select(o => new KeyValuePair<PropertyInfo, ShowGUIAttribute>(o, o.GetCustomAttribute<ShowGUIAttribute>(true))).OrderBy(o => o.Value.ID))
             {
                 if (!dgv.Columns.Cast<DataGridViewColumn>().Any(o => o.Name == Kvp.Key.Name))
                 {
