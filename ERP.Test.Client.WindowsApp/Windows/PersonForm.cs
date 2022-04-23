@@ -32,6 +32,7 @@ namespace ERP.Test.Client.WindowsApp.Windows
         {
             base.OnLoad(e);
             DataContext.Client = new PersonClient();
+            DataContext.Person = new Person();
             DataContext.Objects = DataContext.Client.GetList();
         }
 

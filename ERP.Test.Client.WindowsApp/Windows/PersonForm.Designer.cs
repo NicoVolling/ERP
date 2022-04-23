@@ -33,8 +33,8 @@
             this.bindableTextBox2 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableTextBox3 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableControlPanel1 = new ERP.Windows.WF.Binding.Controls.BindableControlPanel();
-            this.selectionDialogStarter1 = new ERP.Windows.WF.Binding.Components.SelectionDialogStarter(this.components);
             this.bindableTextBox4 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
+            this.selectionDialogStarter1 = new ERP.Windows.WF.Binding.Components.SelectionDialogStarter(this.components);
             this.bindableControlPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -112,12 +112,6 @@
             this.bindableControlPanel1.Size = new System.Drawing.Size(379, 144);
             this.bindableControlPanel1.TabIndex = 1;
             // 
-            // selectionDialogStarter1
-            // 
-            this.selectionDialogStarter1.BindingDestinationClient = "Client";
-            this.selectionDialogStarter1.BindingDestinationList = "Objects";
-            this.selectionDialogStarter1.DataContext = null;
-            // 
             // bindableTextBox4
             // 
             this.bindableTextBox4.Access = true;
@@ -137,8 +131,14 @@
             this.bindableTextBox4.Status = ERP.Windows.WF.Base.InputStatus.Null;
             this.bindableTextBox4.StatusVisible = false;
             this.bindableTextBox4.TabIndex = 0;
-            this.bindableTextBox4.UserFriendlyName = null;
+            this.bindableTextBox4.UserFriendlyName = "";
             this.bindableTextBox4.ButtonClick += new System.EventHandler<ERP.Business.Objects.BusinessObject>(this.bindableTextBox4_ButtonClick);
+            // 
+            // selectionDialogStarter1
+            // 
+            this.selectionDialogStarter1.BindingDestinationClient = "Client";
+            this.selectionDialogStarter1.BindingDestinationList = "Objects";
+            this.selectionDialogStarter1.DataContext = null;
             // 
             // PersonForm
             // 
