@@ -29,6 +29,8 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public event EventHandler AfterBound;
 
+        public event EventHandler BeforeButtonClick;
+
         public event EventHandler<BusinessObject> ButtonClick;
 
         public event EventHandler ControlValueChanged;
@@ -170,11 +172,11 @@ namespace ERP.Windows.WF.Binding.Controls
                 }
                 else
                 {
+                    if (Status != InputStatus.Error)
+                    {
+                        Format();
+                    }
                     this.BackColor = MainPanel.BackColor;
-                }
-                if (Status != InputStatus.Error)
-                {
-                    Format();
                 }
             }
         }
@@ -273,6 +275,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         private void btn_search_Click(object sender, EventArgs e)
         {
+            BeforeButtonClick?.Invoke(this, EventArgs.Empty);
             if (SelectionDialogStarter != null)
             {
                 SelectionDialogStarter.DataContext = (this.FindForm() as BindingForm)?.DataContext;

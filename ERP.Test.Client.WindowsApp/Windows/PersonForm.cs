@@ -36,11 +36,65 @@ namespace ERP.Test.Client.WindowsApp.Windows
             DataContext.Objects = DataContext.Client.GetList();
         }
 
+        private void bindableTextBox4_BeforeButtonClick(object sender, EventArgs e)
+        {
+            DataContext.Objects = DataContext.Client.GetList();
+        }
+
         private void bindableTextBox4_ButtonClick(object sender, Business.Objects.BusinessObject e)
         {
             if (e != null)
             {
                 DataContext.Person = e as Person;
+            }
+        }
+
+        private void btn_delete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (DataContext.Client.GetExistence(DataContext.Person.ID))
+                {
+                    DataContext.Client.Delete(DataContext.Person.ID);
+                    DataContext.Person = new Person();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btn_new_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataContext.Person = new Person();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btn_save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (DataContext.Client.GetExistence(DataContext.Person.ID))
+                {
+                    DataContext.Client.Change(DataContext.Person.ID, DataContext.Person);
+                    DataContext.Person = DataContext.Client.BO_Data as Person;
+                }
+                else
+                {
+                    DataContext.Client.Create(DataContext.Person);
+                    DataContext.Person = DataContext.Client.BO_Data as Person;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

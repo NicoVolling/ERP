@@ -33,6 +33,9 @@
             this.bindableTextBox2 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableTextBox3 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableControlPanel1 = new ERP.Windows.WF.Binding.Controls.BindableControlPanel();
+            this.btn_new = new System.Windows.Forms.Button();
+            this.btn_delete = new System.Windows.Forms.Button();
+            this.btn_save = new System.Windows.Forms.Button();
             this.bindableTextBox4 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.selectionDialogStarter1 = new ERP.Windows.WF.Binding.Components.SelectionDialogStarter(this.components);
             this.bindableControlPanel1.SuspendLayout();
@@ -103,14 +106,50 @@
             // 
             // bindableControlPanel1
             // 
+            this.bindableControlPanel1.Controls.Add(this.btn_new);
+            this.bindableControlPanel1.Controls.Add(this.btn_delete);
+            this.bindableControlPanel1.Controls.Add(this.btn_save);
             this.bindableControlPanel1.Controls.Add(this.bindableTextBox4);
             this.bindableControlPanel1.Controls.Add(this.bindableTextBox1);
             this.bindableControlPanel1.Controls.Add(this.bindableTextBox3);
             this.bindableControlPanel1.Controls.Add(this.bindableTextBox2);
             this.bindableControlPanel1.Location = new System.Drawing.Point(12, 12);
             this.bindableControlPanel1.Name = "bindableControlPanel1";
-            this.bindableControlPanel1.Size = new System.Drawing.Size(379, 144);
+            this.bindableControlPanel1.Size = new System.Drawing.Size(379, 187);
             this.bindableControlPanel1.TabIndex = 1;
+            // 
+            // btn_new
+            // 
+            this.btn_new.ForeColor = System.Drawing.Color.Black;
+            this.btn_new.Location = new System.Drawing.Point(134, 154);
+            this.btn_new.Name = "btn_new";
+            this.btn_new.Size = new System.Drawing.Size(75, 23);
+            this.btn_new.TabIndex = 1;
+            this.btn_new.Text = "Neu";
+            this.btn_new.UseVisualStyleBackColor = true;
+            this.btn_new.Click += new System.EventHandler(this.btn_new_Click);
+            // 
+            // btn_delete
+            // 
+            this.btn_delete.ForeColor = System.Drawing.Color.Black;
+            this.btn_delete.Location = new System.Drawing.Point(215, 154);
+            this.btn_delete.Name = "btn_delete";
+            this.btn_delete.Size = new System.Drawing.Size(75, 23);
+            this.btn_delete.TabIndex = 1;
+            this.btn_delete.Text = "Löschen";
+            this.btn_delete.UseVisualStyleBackColor = true;
+            this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
+            // 
+            // btn_save
+            // 
+            this.btn_save.ForeColor = System.Drawing.Color.Black;
+            this.btn_save.Location = new System.Drawing.Point(296, 154);
+            this.btn_save.Name = "btn_save";
+            this.btn_save.Size = new System.Drawing.Size(75, 23);
+            this.btn_save.TabIndex = 1;
+            this.btn_save.Text = "Speichern";
+            this.btn_save.UseVisualStyleBackColor = true;
+            this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
             // 
             // bindableTextBox4
             // 
@@ -132,6 +171,7 @@
             this.bindableTextBox4.StatusVisible = false;
             this.bindableTextBox4.TabIndex = 0;
             this.bindableTextBox4.UserFriendlyName = "";
+            this.bindableTextBox4.BeforeButtonClick += new System.EventHandler(this.bindableTextBox4_BeforeButtonClick);
             this.bindableTextBox4.ButtonClick += new System.EventHandler<ERP.Business.Objects.BusinessObject>(this.bindableTextBox4_ButtonClick);
             // 
             // selectionDialogStarter1
@@ -144,7 +184,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(406, 216);
             this.Controls.Add(this.bindableControlPanel1);
             this.Name = "PersonForm";
             this.Text = "PersonForm";
@@ -161,5 +201,8 @@
         private ERP.Windows.WF.Binding.Controls.BindableControlPanel bindableControlPanel1;
         private ERP.Windows.WF.Binding.Components.SelectionDialogStarter selectionDialogStarter1;
         private ERP.Windows.WF.BindableControlSet.BindableTextBox bindableTextBox4;
+        private Button btn_new;
+        private Button btn_delete;
+        private Button btn_save;
     }
 }

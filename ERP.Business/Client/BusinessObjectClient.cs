@@ -53,7 +53,7 @@ namespace ERP.Business.Client
 
         public void Change(Guid ID, BusinessObject Data)
         {
-            Change(ID, Data);
+            Change(ID, Data as T_BusinessObject);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace ERP.Business.Client
 
         public void Create(BusinessObject Data)
         {
-            Create(Data);
+            Create(Data as T_BusinessObject);
         }
 
         /// <summary>
