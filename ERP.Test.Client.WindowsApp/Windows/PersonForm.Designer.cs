@@ -172,7 +172,7 @@
             this.bindableTextBox4.TabIndex = 0;
             this.bindableTextBox4.UserFriendlyName = "";
             this.bindableTextBox4.BeforeButtonClick += new System.EventHandler(this.bindableTextBox4_BeforeButtonClick);
-            this.bindableTextBox4.ButtonClick += new System.EventHandler<ERP.Business.Objects.BusinessObject>(this.bindableTextBox4_ButtonClick);
+            this.bindableTextBox4.ButtonClicked += new System.EventHandler<ERP.Business.Objects.BusinessObject>(this.bindableTextBox4_ButtonClick);
             // 
             // selectionDialogStarter1
             // 

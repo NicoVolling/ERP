@@ -81,6 +81,14 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public string UserFriendlyName { get; set; }
 
+        public new void Dispose()
+        {
+            base.Dispose();
+            FormatRequest = null;
+            ControlValueChanged = null;
+            ClientBinder.Dispose();
+        }
+
         public object GetControlValue()
         {
             return BOIList;

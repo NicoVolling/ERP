@@ -135,6 +135,10 @@ namespace ERP.Windows.WF.Binding.Supervisor
 
             Action<object, PropertyChangedEventArgs> PropertyChanged = (s, e) =>
             {
+                if (Bindable.IsDisposed)
+                {
+                    PropertyChanged = null; return;
+                }
                 if (e.PropertyName == PropertyName)
                 {
                     if (mayGet)
@@ -149,7 +153,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
 
             PropertyChangedNotifier.PropertyChanged += (s, e) =>
             {
-                PropertyChanged(s, e);
+                PropertyChanged?.Invoke(s, e);
             };
 
             Bindable.FormatRequest += (s, e) =>

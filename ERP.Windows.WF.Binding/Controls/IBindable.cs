@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ERP.Windows.WF.Binding.Controls
 {
-    public interface IBindable
+    public interface IBindable : IDisposable
     {
         public event EventHandler ControlValueChanged;
 
@@ -17,6 +17,8 @@ namespace ERP.Windows.WF.Binding.Controls
         public bool Access { get; set; }
 
         public string BindingDestination { get; set; }
+
+        public bool IsDisposed { get; }
 
         public Type OriginType { get; }
 

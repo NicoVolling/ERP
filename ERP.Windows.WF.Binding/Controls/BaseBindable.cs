@@ -17,6 +17,8 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public string BindingDestination { get; set; }
 
+        public bool IsDisposed { get; private set; }
+
         public Type OriginType => null;
 
         public bool ReadOnly { get; set; }
@@ -26,6 +28,13 @@ namespace ERP.Windows.WF.Binding.Controls
         public string UserFriendlyName { get; set; }
 
         public Object Value { get; set; }
+
+        public void Dispose()
+        {
+            ControlValueChanged = null;
+            FormatRequest = null;
+            IsDisposed = true;
+        }
 
         public object GetControlValue()
         {

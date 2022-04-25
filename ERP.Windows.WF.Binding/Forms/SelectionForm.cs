@@ -32,6 +32,12 @@ namespace ERP.Windows.WF.Binding.Forms
 
         public BusinessObject SelectedObject { get; private set; }
 
+        public new void Dispose()
+        {
+            bindableDataGridView1?.Dispose();
+            base.Dispose();
+        }
+
         protected override DataContext GetDataContext()
         {
             return dataContext;

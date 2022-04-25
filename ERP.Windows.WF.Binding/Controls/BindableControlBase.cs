@@ -31,7 +31,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public event EventHandler BeforeButtonClick;
 
-        public event EventHandler<BusinessObject> ButtonClick;
+        public event EventHandler<BusinessObject> ButtonClicked;
 
         public event EventHandler ControlValueChanged;
 
@@ -111,6 +111,17 @@ namespace ERP.Windows.WF.Binding.Controls
                 }
                 lbl_description.Text = $"{userFriendlyName}:";
             }
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            FormatRequest = null;
+            AfterBound = null;
+            ControlValueChanged = null;
+            BeforeButtonClick = null;
+            ButtonClicked = null;
+            StatusChanged = null;
         }
 
         public int GetUserfriendlyNameWidth()
@@ -282,7 +293,7 @@ namespace ERP.Windows.WF.Binding.Controls
                 if (SelectionDialogStarter.DataContext != null)
                 {
                     BusinessObject BO = SelectionDialogStarter.OpenDialog();
-                    ButtonClick?.Invoke(this, BO);
+                    ButtonClicked?.Invoke(this, BO);
                 }
                 else
                 {
@@ -291,7 +302,7 @@ namespace ERP.Windows.WF.Binding.Controls
             }
             else
             {
-                ButtonClick?.Invoke(this, null);
+                ButtonClicked?.Invoke(this, null);
             }
         }
     }

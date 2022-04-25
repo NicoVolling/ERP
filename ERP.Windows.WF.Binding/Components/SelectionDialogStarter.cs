@@ -38,10 +38,13 @@ namespace ERP.Windows.WF.Binding.Components
             SelectionForm SF = new(BindingDestinationList, BindingDestinationClient, DataContext);
             if (SF.ShowDialog() is DialogResult DR && DR == DialogResult.OK)
             {
-                return SF.SelectedObject;
+                BusinessObject BO = SF.SelectedObject;
+                SF.Dispose();
+                return BO;
             }
             else
             {
+                SF.Dispose();
                 return null;
             }
         }
