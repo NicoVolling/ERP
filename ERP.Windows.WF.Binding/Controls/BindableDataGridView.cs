@@ -79,7 +79,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public InputStatus Status { get; set; }
 
-        public string UserFriendlyName { get; set; }
+        public string UserFriendlyName { get; set; } 
 
         public new void Dispose()
         {

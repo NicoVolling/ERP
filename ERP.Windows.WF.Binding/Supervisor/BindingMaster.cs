@@ -128,6 +128,10 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 {
                     Object ControlValue = Bindable.GetControlValue();
                     mayGet = false;
+                    if (Bindable is BindableControlBase BCB)
+                    {
+                        BCB.ValueChanged = true;
+                    }
                     OnSet(ControlValue);
                     mayGet = true;
                 }
@@ -147,6 +151,10 @@ namespace ERP.Windows.WF.Binding.Supervisor
                         Object Value = OnGet();
                         maySet = true;
                         Bindable.SetControlValue(Value);
+                        if (Bindable is BindableControlBase BCB)
+                        {
+                            BCB.ValueChanged = false;
+                        }
                     }
                 }
             };

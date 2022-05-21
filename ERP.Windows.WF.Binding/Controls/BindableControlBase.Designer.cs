@@ -47,8 +47,8 @@
             this.MainPanel.Controls.Add(this.ControlPanel);
             this.MainPanel.Controls.Add(this.lbl_access);
             this.MainPanel.Controls.Add(this.panel_button);
-            this.MainPanel.Controls.Add(this.lbl_description);
             this.MainPanel.Controls.Add(this.panel_led);
+            this.MainPanel.Controls.Add(this.lbl_description);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(3, 0);
             this.MainPanel.Name = "MainPanel";

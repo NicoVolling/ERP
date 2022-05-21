@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace ERP.Windows.WF.Binding.Controls
 {
     public class BaseBindable : IBindable
-    {
+    { 
+
         public event EventHandler ControlValueChanged;
 
         public event EventHandler FormatRequest;
@@ -20,8 +21,6 @@ namespace ERP.Windows.WF.Binding.Controls
         public bool IsDisposed { get; private set; }
 
         public Type OriginType => null;
-
-        public bool ReadOnly { get; set; }
 
         public InputStatus Status { get; set; }
 

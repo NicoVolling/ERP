@@ -21,6 +21,7 @@ namespace ERP.Windows.WF.Binding.Controls
         private string info;
         private InputStatus status;
         private string userFriendlyName;
+        private bool valueChanged;
 
         public BindableControlBase()
         {
@@ -90,6 +91,8 @@ namespace ERP.Windows.WF.Binding.Controls
                 }
             }
         }
+
+        public bool ValueChanged { get => valueChanged; set { valueChanged = value; OnStatusChanged(); } }
 
         [Category("Bindung")]
         public bool StatusVisible { get => panel_led.Visible; set => panel_led.Visible = value; }
@@ -236,9 +239,13 @@ namespace ERP.Windows.WF.Binding.Controls
         protected virtual void OnStatusChanged()
         {
             StatusChanged?.Invoke(this, EventArgs.Empty);
-            if (status == InputStatus.OK)
+            if (status == InputStatus.OK && !ValueChanged)
             {
                 StatusLed.ForeColor = Color.LimeGreen;
+            }
+            else if(status == InputStatus.OK && ValueChanged) 
+            {
+                StatusLed.ForeColor = Color.Orange;
             }
             else if (status == InputStatus.Error)
             {
