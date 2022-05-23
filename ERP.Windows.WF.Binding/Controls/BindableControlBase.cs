@@ -2,16 +2,8 @@
 using ERP.Windows.WF.Base;
 using ERP.Windows.WF.Binding.Components;
 using ERP.Windows.WF.Binding.Forms;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ERP.Windows.WF.Binding.Controls
 {
@@ -92,8 +84,6 @@ namespace ERP.Windows.WF.Binding.Controls
             }
         }
 
-        public bool ValueChanged { get => valueChanged; set { valueChanged = value; OnStatusChanged(); } }
-
         [Category("Bindung")]
         public bool StatusVisible { get => panel_led.Visible; set => panel_led.Visible = value; }
 
@@ -115,6 +105,9 @@ namespace ERP.Windows.WF.Binding.Controls
                 lbl_description.Text = $"{userFriendlyName}:";
             }
         }
+
+        public bool ValueChanged
+        { get => valueChanged; set { valueChanged = value; OnStatusChanged(); } }
 
         public new void Dispose()
         {
@@ -243,7 +236,7 @@ namespace ERP.Windows.WF.Binding.Controls
             {
                 StatusLed.ForeColor = Color.LimeGreen;
             }
-            else if(status == InputStatus.OK && ValueChanged) 
+            else if (status == InputStatus.OK && ValueChanged)
             {
                 StatusLed.ForeColor = Color.Orange;
             }

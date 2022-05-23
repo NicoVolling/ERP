@@ -1,15 +1,6 @@
 ﻿using ERP.Business.Objects;
 using ERP.Windows.WF.Binding.Controls;
 using ERP.Windows.WF.Binding.Supervisor;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ERP.Windows.WF.Binding.Forms
 {

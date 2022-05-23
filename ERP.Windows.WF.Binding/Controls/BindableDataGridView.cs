@@ -2,19 +2,11 @@
 using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
 using ERP.Windows.WF.Base;
-using ERP.Windows.WF.Binding.Forms;
 using ERP.Windows.WF.Binding.Parsing.Parser;
 using ERP.Windows.WF.Binding.Supervisor;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ERP.Windows.WF.Binding.Controls
 {
@@ -79,7 +71,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public InputStatus Status { get; set; }
 
-        public string UserFriendlyName { get; set; } 
+        public string UserFriendlyName { get; set; }
 
         public new void Dispose()
         {

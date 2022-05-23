@@ -1,15 +1,9 @@
 ﻿using ERP.Windows.WF.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Windows.WF.Binding.Controls
 {
     public class BaseBindable : IBindable
-    { 
-
+    {
         public event EventHandler ControlValueChanged;
 
         public event EventHandler FormatRequest;

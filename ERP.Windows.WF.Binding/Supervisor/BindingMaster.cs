@@ -1,18 +1,10 @@
-﻿using ERP.Exceptions.ErpExceptions;
-using ERP.Windows.WF.Binding.Controls;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ERP.BaseLib.Objects;
-using System.Reflection;
-using ERP.BaseLib.Helpers;
-using ERP.Windows.WF.Binding.Parsing.Parser;
+﻿using ERP.Business.Objects.Attributes;
+using ERP.Exceptions.ErpExceptions;
 using ERP.Windows.WF.Base;
-using ERP.Business.Objects.Attributes;
-using ERP.Windows.WF.Binding.Forms;
+using ERP.Windows.WF.Binding.Controls;
+using ERP.Windows.WF.Binding.Parsing.Parser;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace ERP.Windows.WF.Binding.Supervisor
 {

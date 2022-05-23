@@ -1,5 +1,4 @@
-﻿using ERP.BaseLib.Objects;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace ERP.BaseLib.Serialization.Converters
 {

@@ -1,13 +1,7 @@
 ﻿using ERP.Business.Objects;
 using ERP.Windows.WF.Binding.Controls;
 using ERP.Windows.WF.Binding.Forms;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Windows.WF.Binding.Components
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.Business.Objects.Attributes
+﻿namespace ERP.Business.Objects.Attributes
 {
     public class ShowGUIAttribute : Attribute
     {
