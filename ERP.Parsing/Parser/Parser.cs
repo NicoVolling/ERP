@@ -1,6 +1,6 @@
 ﻿using ERP.Exceptions.ErpExceptions;
 
-namespace ERP.Windows.WF.Binding.Parsing.Parser
+namespace ERP.Parsing.Parser
 {
     public class Parser<T1, T2> : IParser
     {

@@ -1,4 +1,4 @@
-﻿namespace ERP.Windows.WF.Binding.Parsing.Parser
+﻿namespace ERP.Parsing.Parser
 {
     public class SameObjectParser<T> : IParser
     {

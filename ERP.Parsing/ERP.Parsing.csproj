@@ -3,12 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ERP.Business\ERP.Business.csproj" />
-    <ProjectReference Include="..\ERP.Parsing\ERP.Parsing.csproj" />
   </ItemGroup>
 
 </Project>

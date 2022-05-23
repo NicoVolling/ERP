@@ -1,8 +1,8 @@
 ﻿using ERP.Business.Client;
 using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
+using ERP.Parsing.Parser;
 using ERP.Windows.WF.Base;
-using ERP.Windows.WF.Binding.Parsing.Parser;
 using ERP.Windows.WF.Binding.Supervisor;
 using System.ComponentModel;
 using System.Data;

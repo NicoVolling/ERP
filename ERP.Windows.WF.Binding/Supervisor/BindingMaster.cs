@@ -1,8 +1,8 @@
 ﻿using ERP.Business.Objects.Attributes;
 using ERP.Exceptions.ErpExceptions;
+using ERP.Parsing.Parser;
 using ERP.Windows.WF.Base;
 using ERP.Windows.WF.Binding.Controls;
-using ERP.Windows.WF.Binding.Parsing.Parser;
 using System.ComponentModel;
 using System.Reflection;
 

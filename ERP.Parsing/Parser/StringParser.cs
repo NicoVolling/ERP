@@ -1,4 +1,4 @@
-﻿namespace ERP.Windows.WF.Binding.Parsing.Parser
+﻿namespace ERP.Parsing.Parser
 {
     public class StringParser<T2> : Parser<string, T2>
     {
@@ -37,9 +37,9 @@
         public static Func<Object> GetStringDefault { get; } = () => string.Empty;
 
         public static Func<string, bool> IsStringDefault { get; } = (s) =>
-                {
-                    return (s is string str && str.Length == 0) || s is null;
-                };
+                  {
+                      return (s is string str && str.Length == 0) || s is null;
+                  };
 
         public static Func<T2, string> T2ToString { get; } = (o) => o.ToString();
     }

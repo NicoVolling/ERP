@@ -1,6 +1,7 @@
 ﻿using ERP.BaseLib.Serialization.Converters;
 using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
+using ERP.Parsing.Parser;
 using Newtonsoft.Json;
 
 namespace ERP.Test.Public.Library.Objects
@@ -10,6 +11,7 @@ namespace ERP.Test.Public.Library.Objects
         private DateOnly birthday;
         private string firstname;
         private string name;
+        private double salary;
 
         [ShowGUI("Geburtstag", 2)]
         [JsonConverter(typeof(DateOnlyConverter))]
@@ -31,6 +33,13 @@ namespace ERP.Test.Public.Library.Objects
         {
             get => name;
             set { name = value; NotifyPropertyChanged(); }
+        }
+
+        [ShowGUI("Gehalt", 3)]
+        public double Salary
+        {
+            get => salary;
+            set { salary = value; NotifyPropertyChanged(); }
         }
 
         public override string OnToString()

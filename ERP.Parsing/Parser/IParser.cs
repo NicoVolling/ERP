@@ -1,6 +1,6 @@
 ﻿using ERP.Business.Objects;
 
-namespace ERP.Windows.WF.Binding.Parsing.Parser
+namespace ERP.Parsing.Parser
 {
     public interface IParser
     {
@@ -17,7 +17,7 @@ namespace ERP.Windows.WF.Binding.Parsing.Parser
         public static IParser GetParser(Type Type1, Type Type2)
         {
             if (!parsers.Any()) { FillParsers(); }
-            if (parsers.FirstOrDefault(o => (o.Type1 == Type1 && o.Type2 == Type2) || o.Type2 == Type1 && o.Type1 == Type2) is IParser Parser)
+            if (parsers.FirstOrDefault(o => o.Fits(Type1, Type2)) is IParser Parser)
             {
                 return Parser;
             }
@@ -26,6 +26,11 @@ namespace ERP.Windows.WF.Binding.Parsing.Parser
         }
 
         public bool CanParse(Object Object, Type TargetType);
+
+        public bool Fits(Type Type1, Type Type2)
+        {
+            return (Type1 == this.Type1 && Type2 == this.Type2) || (Type1 == this.Type2 && Type2 == this.Type1);
+        }
 
         public Object GetDefault(Type TargeType);
 
