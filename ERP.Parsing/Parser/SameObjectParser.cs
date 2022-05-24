@@ -37,7 +37,7 @@
             return Object is T Obj && IsDefault1(Obj);
         }
 
-        public object Parse(object Object, Type TargetType, out bool Error)
+        public object Parse(object Object, Type TargetType, string FormatOptions, out bool Error)
         {
             Error = false;
             return Object;

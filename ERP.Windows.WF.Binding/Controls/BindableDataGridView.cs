@@ -143,6 +143,7 @@ namespace ERP.Windows.WF.Binding.Controls
                     }
                     Column.Name = Kvp.Key.Name;
                     Column.HeaderText = Kvp.Value.UserFriendlyName;
+                    Column.Tag = Kvp.Value.FormatOptions;
                     dgv.Columns.Add(Column);
                     Column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
@@ -160,7 +161,7 @@ namespace ERP.Windows.WF.Binding.Controls
                     PropertyInfo PI = BO.GetType().GetProperty(Cell.OwningColumn.Name);
                     Type Type = PI.PropertyType == typeof(bool) ? typeof(bool) : typeof(string);
                     IParser Parser = IParser.GetParser(Type, PI.PropertyType);
-                    Cell.Value = Parser.Parse(PI.GetValue(BO), Type, out bool Error);
+                    Cell.Value = Parser.Parse(PI.GetValue(BO), Type, Cell.OwningColumn.Tag?.ToString(), out bool Error);
                 }
             }
         }

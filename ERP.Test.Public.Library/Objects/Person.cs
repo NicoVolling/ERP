@@ -35,7 +35,7 @@ namespace ERP.Test.Public.Library.Objects
             set { name = value; NotifyPropertyChanged(); }
         }
 
-        [ShowGUI("Gehalt", 3)]
+        [ShowGUI("Gehalt", 3, "N2")]
         public double Salary
         {
             get => salary;

@@ -79,6 +79,7 @@ namespace ERP.Windows.WF.Binding.Controls
                 status = value;
                 if (changed)
                 {
+                    ErrorMessageShowed = false;
                     OnStatusChanged();
                 }
             }
@@ -108,6 +109,8 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public bool ValueChanged
         { get => valueChanged; set { valueChanged = value; OnStatusChanged(); } }
+
+        private bool ErrorMessageShowed { get; set; }
 
         public new void Dispose()
         {
@@ -146,7 +149,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         protected void FocusChanged(bool Focused)
         {
-            if (Status == InputStatus.Error && !Focused)
+            if (Status == InputStatus.Error && !Focused && !ErrorMessageShowed)
             {
                 if (MessageBox.Show("Achtung!\nIn dem aktuell ausgewählten Eingabefeld liegt ein Fehler vor.\nMöchten Sie abbrechen, Ihre Eingabe wiederholen oder Fortfahren?", "Fehler in Eingabefeld", MessageBoxButtons.CancelTryContinue, MessageBoxIcon.Exclamation) is DialogResult DR)
                 {
@@ -156,10 +159,12 @@ namespace ERP.Windows.WF.Binding.Controls
                     }
                     else if (DR == DialogResult.TryAgain)
                     {
+                        ErrorMessageShowed = true;
                         GetControl()?.Select();
                     }
                     else if (DR == DialogResult.Continue)
                     {
+                        ErrorMessageShowed = true;
                         if (Focused)
                         {
                             this.BackColor = StatusLed.ForeColor;

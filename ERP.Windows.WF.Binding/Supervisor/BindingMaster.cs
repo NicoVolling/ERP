@@ -27,7 +27,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 ObjectName = Bindable.BindingDestination.Split(".", StringSplitOptions.RemoveEmptyEntries);
             }
 
-            GetAccessors(DataContext, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType, out string UserFriendlyName);
+            GetAccessors(DataContext, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType, out string UserFriendlyName, out string FormatOptions);
 
             if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
@@ -41,7 +41,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
             }
             else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
-                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, UserFriendlyName, DataContext);
+                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, UserFriendlyName, DataContext, FormatOptions);
             }
             else
             {
@@ -50,7 +50,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
             Bindable.OnBound(DataContext);
         }
 
-        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, string UserfriendlyName, DataContext DataContext)
+        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, string UserfriendlyName, DataContext DataContext, string FormatOptions)
         {
             Bindable.UserFriendlyName = UserfriendlyName;
 
@@ -61,7 +61,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, out Error);
+                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, FormatOptions, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(getResult))
@@ -87,7 +87,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object setResult = Parser.Parse(Object, TargetType, out Error);
+                    Object setResult = Parser.Parse(Object, TargetType, FormatOptions, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(setResult))
@@ -208,7 +208,8 @@ namespace ERP.Windows.WF.Binding.Supervisor
             out INotifyPropertyChanged PropertyChangedNotifier,
             out string PropertyName,
             out Type TargetType,
-            out string UserfriendlyName)
+            out string UserfriendlyName,
+            out string FormatOptions)
         {
             if (Parent.GetType().GetProperties().Where(o => o.Name.Equals(ObjectName.First())).FirstOrDefault() is PropertyInfo PI)
             {
@@ -219,7 +220,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                         Object obj = PI.GetValue(Parent);
                         if (obj is INotifyPropertyChanged NewParent)
                         {
-                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType, out UserfriendlyName);
+                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType, out UserfriendlyName, out FormatOptions);
                         }
                         else if (obj is null && Parent is INotifyPropertyChanged PCN)
                         {
@@ -229,6 +230,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                             PropertyName = ObjectName.First();
                             TargetType = PI.PropertyType;
                             UserfriendlyName = string.Empty;
+                            FormatOptions = string.Empty;
                         }
                         else
                         {
@@ -254,10 +256,12 @@ namespace ERP.Windows.WF.Binding.Supervisor
                             if (PI.GetCustomAttribute(typeof(ShowGUIAttribute)) is ShowGUIAttribute SGA)
                             {
                                 UserfriendlyName = SGA.UserFriendlyName;
+                                FormatOptions = SGA.FormatOptions;
                             }
                             else
                             {
-                                UserfriendlyName = String.Empty;
+                                UserfriendlyName = string.Empty;
+                                FormatOptions = string.Empty;
                             }
                         }
                         else
