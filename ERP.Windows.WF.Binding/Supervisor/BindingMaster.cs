@@ -92,14 +92,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     {
                         if (Parser.IsDefault(setResult))
                         {
-                            if (ShowGUIAttribute.Required)
-                            {
-                                Bindable.Status = InputStatus.Error;
-                            }
-                            else
-                            {
-                                Bindable.Status = InputStatus.Null;
-                            }
+                            Bindable.Status = InputStatus.Null;
                         }
                         else
                         {

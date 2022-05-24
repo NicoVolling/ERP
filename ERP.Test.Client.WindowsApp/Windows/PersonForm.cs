@@ -70,22 +70,29 @@ namespace ERP.Test.Client.WindowsApp.Windows
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-            try
+            if (this.BindingMaster.Bindables.Any(o => o.Status == ERP.Windows.WF.Base.InputStatus.Error))
             {
-                if (DataContext.Client.GetExistence(DataContext.Person.ID))
-                {
-                    DataContext.Client.Change(DataContext.Person.ID, DataContext.Person);
-                    DataContext.Person = DataContext.Client.BO_Data as Person;
-                }
-                else
-                {
-                    DataContext.Client.Create(DataContext.Person);
-                    DataContext.Person = DataContext.Client.BO_Data as Person;
-                }
+                MessageBox.Show("Es liegen Fehler vor.");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
+                try
+                {
+                    if (DataContext.Client.GetExistence(DataContext.Person.ID))
+                    {
+                        DataContext.Client.Change(DataContext.Person.ID, DataContext.Person);
+                        DataContext.Person = DataContext.Client.BO_Data as Person;
+                    }
+                    else
+                    {
+                        DataContext.Client.Create(DataContext.Person);
+                        DataContext.Person = DataContext.Client.BO_Data as Person;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
     }
