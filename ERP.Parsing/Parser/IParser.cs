@@ -1,4 +1,5 @@
 ﻿using ERP.Business.Objects;
+using ERP.Business.Objects.Attributes;
 using System.Globalization;
 
 namespace ERP.Parsing.Parser
@@ -37,7 +38,7 @@ namespace ERP.Parsing.Parser
 
         public bool IsDefault(Object Object);
 
-        public Object Parse(Object Object, Type TargetType, string FormatOptions, out bool Error);
+        public Object Parse(Object Object, Type TargetType, ShowGUIAttribute ShowGUIAttribute, out bool Error);
 
         private static void FillParsers()
         {
@@ -64,7 +65,8 @@ namespace ERP.Parsing.Parser
             Func<DateTime, DateTime, bool> DateTimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
 
             AddParser(new StringParser<int>(
-                (o, fo) => int.Parse(o),
+                (o, fo) => int.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
+                (o, fo) => o.ToString() + fo?.Suffix,
                 IsInt32Default,
                 GetInt32Default
                 ));
@@ -76,8 +78,8 @@ namespace ERP.Parsing.Parser
                 ));
 
             AddParser(new StringParser<double>(
-                (o, fo) => double.Parse(o),
-                (o, fo) => string.IsNullOrEmpty(fo) ? o.ToString("N2") : o.ToString(fo),
+                (o, fo) => double.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
+                (o, fo) => (string.IsNullOrEmpty(fo?.FormatOptions) ? o.ToString("N2") : o.ToString(fo.FormatOptions)) + fo?.Suffix,
                 IsDoubleDefault,
                 GetDoubleDefault
                 ));
@@ -85,8 +87,8 @@ namespace ERP.Parsing.Parser
             AddParser(new StringParser());
 
             AddParser(new StringParser<DateOnly>(
-                (o, fo) => DateOnly.Parse(o),
-                (o, fo) => string.IsNullOrEmpty(fo) ? o.ToString("dd.MM.yyyy") : o.ToString(fo),
+                (o, fo) => DateOnly.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
+                (o, fo) => (string.IsNullOrEmpty(fo?.FormatOptions) ? o.ToString("dd.MM.yyyy") : o.ToString(fo.FormatOptions)) + fo?.Suffix,
                 DateOnlyComparer
                 ));
 
@@ -98,14 +100,14 @@ namespace ERP.Parsing.Parser
                 ));
 
             AddParser(new StringParser<TimeOnly>(
-                (o, fo) => TimeOnly.Parse(o),
-                (o, fo) => string.IsNullOrEmpty(fo) ? o.ToString("HH:mm") : o.ToString(fo),
+                (o, fo) => TimeOnly.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
+                (o, fo) => (string.IsNullOrEmpty(fo?.FormatOptions) ? o.ToString("HH:mm") : o.ToString(fo.FormatOptions)) + fo?.Suffix,
                 TimeOnlyComparer
                 ));
 
             AddParser(new StringParser<DateTime>(
-                (o, fo) => DateTime.Parse(o),
-                (o, fo) => string.IsNullOrEmpty(fo) ? o.ToString("dd.MM.yyyy HH:mm") : o.ToString(fo),
+                (o, fo) => DateTime.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
+                (o, fo) => (string.IsNullOrEmpty(fo?.FormatOptions) ? o.ToString("dd.MM.yyyy HH:mm") : o.ToString(fo.FormatOptions)) + fo?.Suffix,
                 DateTimeOnlyComparer
             ));
 

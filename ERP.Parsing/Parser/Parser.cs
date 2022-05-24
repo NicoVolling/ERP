@@ -1,10 +1,11 @@
-﻿using ERP.Exceptions.ErpExceptions;
+﻿using ERP.Business.Objects.Attributes;
+using ERP.Exceptions.ErpExceptions;
 
 namespace ERP.Parsing.Parser
 {
     public class Parser<T1, T2> : IParser
     {
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> Compare2;
@@ -22,7 +23,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2)
         {
             Func<T1, bool> IsDefault1;
             Func<T2, bool> IsDefault2;
@@ -37,7 +38,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1)
         {
             Func<T1, T1, bool> tmp;
             Func<T2, T2, bool> Compare2;
@@ -55,7 +56,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T2, T2, bool> Compare2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T2, T2, bool> Compare2)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> tmp;
@@ -73,7 +74,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> Compare2;
@@ -88,7 +89,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> Compare2;
@@ -106,7 +107,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> Compare2;
@@ -124,7 +125,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
         {
             Func<T1, T1, bool> tmp1;
             Func<T2, T2, bool> Compare2;
@@ -142,7 +143,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> tmp1;
@@ -160,7 +161,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, bool> IsDefault2, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> tmp1;
             Func<T2, T2, bool> Compare2;
@@ -178,7 +179,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<Object> GetDefault1)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> tmp1;
@@ -196,7 +197,7 @@ namespace ERP.Parsing.Parser
                 () => default(T2));
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> tmp1;
             Func<T2, T2, bool> Compare2;
@@ -214,7 +215,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             Func<T1, T1, bool> Compare1;
             Func<T2, T2, bool> tmp1;
@@ -232,7 +233,7 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Parser(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        public Parser(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<T1, bool> IsDefault1, Func<T2, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             Ctor(OnParse1To2,
                 OnParse2To1,
@@ -244,8 +245,8 @@ namespace ERP.Parsing.Parser
                 GetDefault2);
         }
 
-        public Func<T1, string, T2> OnParse1To2 { get; private set; }
-        public Func<T2, string, T1> OnParse2To1 { get; private set; }
+        public Func<T1, ShowGUIAttribute, T2> OnParse1To2 { get; private set; }
+        public Func<T2, ShowGUIAttribute, T1> OnParse2To1 { get; private set; }
         public Type Type1 { get => typeof(T1); }
 
         public Type Type2 { get => typeof(T2); }
@@ -292,7 +293,7 @@ namespace ERP.Parsing.Parser
             return false;
         }
 
-        public Object Parse(Object Object, Type TargetType, string FormatOptions, out bool Error)
+        public Object Parse(Object Object, Type TargetType, ShowGUIAttribute ShowGUIAttribute, out bool Error)
         {
             Error = false;
             if (CanParse(Object, TargetType))
@@ -309,7 +310,7 @@ namespace ERP.Parsing.Parser
                 {
                     try
                     {
-                        return OnParse1To2(T1, FormatOptions);
+                        return OnParse1To2(T1, ShowGUIAttribute);
                     }
                     catch
                     {
@@ -322,7 +323,7 @@ namespace ERP.Parsing.Parser
                 {
                     try
                     {
-                        return OnParse2To1(T2, FormatOptions);
+                        return OnParse2To1(T2, ShowGUIAttribute);
                     }
                     catch
                     {
@@ -354,7 +355,7 @@ namespace ERP.Parsing.Parser
             return o => (o is T Obj && IsDefault(Obj)) || o is null;
         }
 
-        private void Ctor(Func<T1, string, T2> OnParse1To2, Func<T2, string, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<Object, bool> IsDefault1, Func<Object, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
+        private void Ctor(Func<T1, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, T1> OnParse2To1, Func<T1, T1, bool> Compare1, Func<T2, T2, bool> Compare2, Func<Object, bool> IsDefault1, Func<Object, bool> IsDefault2, Func<Object> GetDefault1, Func<Object> GetDefault2)
         {
             this.OnParse1To2 = OnParse1To2;
             this.OnParse2To1 = OnParse2To1;

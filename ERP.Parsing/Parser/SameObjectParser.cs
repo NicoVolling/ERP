@@ -1,4 +1,6 @@
-﻿namespace ERP.Parsing.Parser
+﻿using ERP.Business.Objects.Attributes;
+
+namespace ERP.Parsing.Parser
 {
     public class SameObjectParser<T> : IParser
     {
@@ -37,7 +39,7 @@
             return Object is T Obj && IsDefault1(Obj);
         }
 
-        public object Parse(object Object, Type TargetType, string FormatOptions, out bool Error)
+        public object Parse(object Object, Type TargetType, ShowGUIAttribute ShowGUIAttribute, out bool Error)
         {
             Error = false;
             return Object;

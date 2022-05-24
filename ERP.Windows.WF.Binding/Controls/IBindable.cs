@@ -16,6 +16,8 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public Type OriginType { get; }
 
+        public bool ReadOnly { get; set; }
+
         public InputStatus Status { get; set; }
 
         public string UserFriendlyName { get; set; }

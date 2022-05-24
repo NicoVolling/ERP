@@ -11,14 +11,13 @@ namespace ERP.Test.Public.Library.Objects
         private DateOnly birthday;
         private string firstname;
         private string name;
-        private double salary;
 
         [ShowGUI("Geburtstag", 2)]
         [JsonConverter(typeof(DateOnlyConverter))]
         public DateOnly Birthday
         {
             get => birthday;
-            set { birthday = value; NotifyPropertyChanged(); }
+            set { birthday = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(Salary)); }
         }
 
         [ShowGUI("Vorname", 0)]
@@ -35,11 +34,17 @@ namespace ERP.Test.Public.Library.Objects
             set { name = value; NotifyPropertyChanged(); }
         }
 
-        [ShowGUI("Gehalt", 3, "N2")]
+        [ShowGUI("Gehalt", 3, "N2", " €")]
         public double Salary
         {
-            get => salary;
-            set { salary = value; NotifyPropertyChanged(); }
+            get
+            {
+                if (Birthday != default)
+                {
+                    return Math.Round((Birthday.Year + (Birthday.Month * 12.3)) * 1.96 + (Birthday.Day * 2.984), 2);
+                }
+                return 0;
+            }
         }
 
         public override string OnToString()

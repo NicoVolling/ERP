@@ -1,4 +1,5 @@
-﻿using ERP.Business.Client;
+﻿using ERP.BaseLib.Serialization;
+using ERP.Business.Client;
 using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
 using ERP.Parsing.Parser;
@@ -143,7 +144,7 @@ namespace ERP.Windows.WF.Binding.Controls
                     }
                     Column.Name = Kvp.Key.Name;
                     Column.HeaderText = Kvp.Value.UserFriendlyName;
-                    Column.Tag = Kvp.Value.FormatOptions;
+                    Column.Tag = Json.Serialize(Kvp.Value);
                     dgv.Columns.Add(Column);
                     Column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
@@ -161,7 +162,12 @@ namespace ERP.Windows.WF.Binding.Controls
                     PropertyInfo PI = BO.GetType().GetProperty(Cell.OwningColumn.Name);
                     Type Type = PI.PropertyType == typeof(bool) ? typeof(bool) : typeof(string);
                     IParser Parser = IParser.GetParser(Type, PI.PropertyType);
-                    Cell.Value = Parser.Parse(PI.GetValue(BO), Type, Cell.OwningColumn.Tag?.ToString(), out bool Error);
+                    ShowGUIAttribute SGA = new ShowGUIAttribute();
+                    if (Cell.OwningColumn.Tag != null)
+                    {
+                        SGA = Json.Deserialize<ShowGUIAttribute>(Cell.OwningColumn.Tag.ToString());
+                    }
+                    Cell.Value = Parser.Parse(PI.GetValue(BO), Type, SGA, out bool Error);
                 }
             }
         }

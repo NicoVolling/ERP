@@ -149,7 +149,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         protected void FocusChanged(bool Focused)
         {
-            if (Focused)
+            if (Focused && !ReadOnly)
             {
                 this.BackColor = StatusLed.ForeColor;
             }

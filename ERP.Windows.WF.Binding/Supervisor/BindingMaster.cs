@@ -29,7 +29,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
 
             GetAccessors(DataContext, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType, out ShowGUIAttribute ShowGUIAttribute);
 
-            if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
+            if (Get == null && Set == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
                 PropertyChangedNotifier.PropertyChanged += (s, e) =>
                 {
@@ -39,7 +39,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     }
                 };
             }
-            else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
+            else if (Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
                 BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, DataContext, ShowGUIAttribute);
             }
@@ -53,6 +53,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
         public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, DataContext DataContext, ShowGUIAttribute ShowGUIAttribute)
         {
             Bindable.UserFriendlyName = ShowGUIAttribute?.UserFriendlyName;
+            Bindable.ReadOnly = Set == null;
 
             IParser Parser = IParser.GetParser(Bindable.OriginType, TargetType);
 
@@ -61,7 +62,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, ShowGUIAttribute?.FormatOptions, out Error);
+                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, ShowGUIAttribute, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(getResult))
@@ -87,7 +88,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object setResult = Parser.Parse(Object, TargetType, ShowGUIAttribute?.FormatOptions, out Error);
+                    Object setResult = Parser.Parse(Object, TargetType, ShowGUIAttribute, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(setResult))
@@ -110,9 +111,10 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     throw;
                 }
             };
+            if (Set == null) { OnSet = (o) => { }; }
 
             bool mayGet = true;
-            bool maySet = true;
+            bool maySet = Set != null;
 
             Bindable.ControlValueChanged += (s, e) =>
             {
@@ -246,7 +248,8 @@ namespace ERP.Windows.WF.Binding.Supervisor
                             }
                             else
                             {
-                                throw new ErpException("Coudlnt set Value");
+                                Set = null;
+                                //throw new ErpException("Couldnt set Value");
                             }
                             PropertyChangedNotifier = PCN;
                             PropertyName = ObjectName.First();
