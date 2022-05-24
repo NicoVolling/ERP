@@ -49,7 +49,9 @@ namespace ERP.Test.Public.Library.Objects
 
         public override string OnToString()
         {
-            return $"{Firstname} {Name}";
+            string bd = $" ({ Birthday})";
+            if (Birthday == default) { bd = string.Empty; }
+            return $"{Firstname} {Name}{bd}";
         }
     }
 }

@@ -33,12 +33,12 @@
             this.bindableTextBox2 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableTextBox3 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableControlPanel1 = new ERP.Windows.WF.Binding.Controls.BindableControlPanel();
+            this.bindableTextBox5 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.btn_new = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
             this.btn_save = new System.Windows.Forms.Button();
             this.bindableTextBox4 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.selectionDialogStarter1 = new ERP.Windows.WF.Binding.Components.SelectionDialogStarter(this.components);
-            this.bindableTextBox5 = new ERP.Windows.WF.BindableControlSet.BindableTextBox();
             this.bindableControlPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +47,7 @@
             this.bindableTextBox1.Access = true;
             this.bindableTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindableTextBox1.BackColor = System.Drawing.Color.White;
+            this.bindableTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.bindableTextBox1.BindingDestination = "Person.Firstname";
             this.bindableTextBox1.DescriptionWidth = 0;
             this.bindableTextBox1.ForeColor = System.Drawing.Color.White;
@@ -69,7 +69,7 @@
             this.bindableTextBox2.Access = true;
             this.bindableTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindableTextBox2.BackColor = System.Drawing.Color.White;
+            this.bindableTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.bindableTextBox2.BindingDestination = "Person.Name";
             this.bindableTextBox2.DescriptionWidth = 0;
             this.bindableTextBox2.ForeColor = System.Drawing.Color.White;
@@ -91,7 +91,7 @@
             this.bindableTextBox3.Access = true;
             this.bindableTextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindableTextBox3.BackColor = System.Drawing.Color.White;
+            this.bindableTextBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.bindableTextBox3.BindingDestination = "Person.Birthday";
             this.bindableTextBox3.DescriptionWidth = 0;
             this.bindableTextBox3.ForeColor = System.Drawing.Color.White;
@@ -125,6 +125,28 @@
             this.bindableControlPanel1.Name = "bindableControlPanel1";
             this.bindableControlPanel1.Size = new System.Drawing.Size(400, 219);
             this.bindableControlPanel1.TabIndex = 1;
+            // 
+            // bindableTextBox5
+            // 
+            this.bindableTextBox5.Access = true;
+            this.bindableTextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.bindableTextBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.bindableTextBox5.BindingDestination = "Person.Salary";
+            this.bindableTextBox5.DescriptionWidth = 0;
+            this.bindableTextBox5.ForeColor = System.Drawing.Color.White;
+            this.bindableTextBox5.Location = new System.Drawing.Point(3, 147);
+            this.bindableTextBox5.Name = "bindableTextBox5";
+            this.bindableTextBox5.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.bindableTextBox5.ReadOnly = false;
+            this.bindableTextBox5.SearchButtonActive = false;
+            this.bindableTextBox5.SelectionDialogStarter = null;
+            this.bindableTextBox5.Size = new System.Drawing.Size(391, 31);
+            this.bindableTextBox5.Status = ERP.Windows.WF.Base.InputStatus.Null;
+            this.bindableTextBox5.StatusVisible = true;
+            this.bindableTextBox5.TabIndex = 2;
+            this.bindableTextBox5.UserFriendlyName = null;
+            this.bindableTextBox5.ValueChanged = false;
             // 
             // btn_new
             // 
@@ -167,8 +189,8 @@
             this.bindableTextBox4.Access = true;
             this.bindableTextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindableTextBox4.BackColor = System.Drawing.Color.White;
-            this.bindableTextBox4.BindingDestination = "Person.ID";
+            this.bindableTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.bindableTextBox4.BindingDestination = "Person.UserfriendlyName";
             this.bindableTextBox4.DescriptionWidth = 0;
             this.bindableTextBox4.ForeColor = System.Drawing.Color.White;
             this.bindableTextBox4.Location = new System.Drawing.Point(3, 3);
@@ -191,28 +213,6 @@
             this.selectionDialogStarter1.BindingDestinationClient = "Client";
             this.selectionDialogStarter1.BindingDestinationList = "Objects";
             this.selectionDialogStarter1.DataContext = null;
-            // 
-            // bindableTextBox5
-            // 
-            this.bindableTextBox5.Access = true;
-            this.bindableTextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bindableTextBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.bindableTextBox5.BindingDestination = "Person.Salary";
-            this.bindableTextBox5.DescriptionWidth = 0;
-            this.bindableTextBox5.ForeColor = System.Drawing.Color.White;
-            this.bindableTextBox5.Location = new System.Drawing.Point(3, 147);
-            this.bindableTextBox5.Name = "bindableTextBox5";
-            this.bindableTextBox5.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.bindableTextBox5.ReadOnly = false;
-            this.bindableTextBox5.SearchButtonActive = false;
-            this.bindableTextBox5.SelectionDialogStarter = null;
-            this.bindableTextBox5.Size = new System.Drawing.Size(391, 31);
-            this.bindableTextBox5.Status = ERP.Windows.WF.Base.InputStatus.Null;
-            this.bindableTextBox5.StatusVisible = true;
-            this.bindableTextBox5.TabIndex = 2;
-            this.bindableTextBox5.UserFriendlyName = null;
-            this.bindableTextBox5.ValueChanged = false;
             // 
             // PersonForm
             // 

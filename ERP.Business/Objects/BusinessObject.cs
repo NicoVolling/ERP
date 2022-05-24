@@ -1,5 +1,6 @@
 ﻿using ERP.BaseLib.Objects;
 using ERP.BaseLib.Serialization;
+using ERP.Business.Objects.Attributes;
 using ERP.Exceptions.ErpExceptions;
 using System.Reflection;
 
@@ -19,6 +20,8 @@ namespace ERP.Business.Objects
         /// </summary>
         public Guid ID
         { get => iD; set { iD = value; NotifyPropertyChanged(); } }
+
+        public string UserfriendlyName { get => ToString(); }
 
         public void Deserialize(string Raw)
         {
