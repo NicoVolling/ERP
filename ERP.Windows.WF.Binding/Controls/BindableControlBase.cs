@@ -79,7 +79,6 @@ namespace ERP.Windows.WF.Binding.Controls
                 status = value;
                 if (changed)
                 {
-                    ErrorMessageShowed = false;
                     OnStatusChanged();
                 }
             }
@@ -108,9 +107,10 @@ namespace ERP.Windows.WF.Binding.Controls
         }
 
         public bool ValueChanged
-        { get => valueChanged; set { valueChanged = value; OnStatusChanged(); } }
-
-        private bool ErrorMessageShowed { get; set; }
+        {
+            get => valueChanged;
+            set { valueChanged = value; OnStatusChanged(); }
+        }
 
         public new void Dispose()
         {
@@ -149,47 +149,17 @@ namespace ERP.Windows.WF.Binding.Controls
 
         protected void FocusChanged(bool Focused)
         {
-            if (Status == InputStatus.Error && !Focused && !ErrorMessageShowed)
+            if (Focused)
             {
-                if (MessageBox.Show("Achtung!\nIn dem aktuell ausgewählten Eingabefeld liegt ein Fehler vor.\nMöchten Sie abbrechen, Ihre Eingabe wiederholen oder Fortfahren?", "Fehler in Eingabefeld", MessageBoxButtons.CancelTryContinue, MessageBoxIcon.Exclamation) is DialogResult DR)
-                {
-                    if (DR == DialogResult.Cancel)
-                    {
-                        Format();
-                    }
-                    else if (DR == DialogResult.TryAgain)
-                    {
-                        ErrorMessageShowed = true;
-                        GetControl()?.Select();
-                    }
-                    else if (DR == DialogResult.Continue)
-                    {
-                        ErrorMessageShowed = true;
-                        if (Focused)
-                        {
-                            this.BackColor = StatusLed.ForeColor;
-                        }
-                        else
-                        {
-                            this.BackColor = MainPanel.BackColor;
-                        }
-                    }
-                }
+                this.BackColor = StatusLed.ForeColor;
             }
             else
             {
-                if (Focused)
+                if (Status != InputStatus.Error)
                 {
-                    this.BackColor = StatusLed.ForeColor;
+                    Format();
                 }
-                else
-                {
-                    if (Status != InputStatus.Error)
-                    {
-                        Format();
-                    }
-                    this.BackColor = MainPanel.BackColor;
-                }
+                this.BackColor = MainPanel.BackColor;
             }
         }
 

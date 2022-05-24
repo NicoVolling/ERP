@@ -27,7 +27,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 ObjectName = Bindable.BindingDestination.Split(".", StringSplitOptions.RemoveEmptyEntries);
             }
 
-            GetAccessors(DataContext, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType, out string UserFriendlyName, out string FormatOptions);
+            GetAccessors(DataContext, ObjectName, out Action<object> Set, out Func<object> Get, out INotifyPropertyChanged PropertyChangedNotifier, out string PropertyName, out Type TargetType, out ShowGUIAttribute ShowGUIAttribute);
 
             if (Set == null && Get == null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
@@ -41,7 +41,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
             }
             else if (Set != null && Get != null && PropertyChangedNotifier != null && PropertyName != null && TargetType != null)
             {
-                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, UserFriendlyName, DataContext, FormatOptions);
+                BindControl(Bindable, Get, Set, PropertyChangedNotifier, PropertyName, TargetType, DataContext, ShowGUIAttribute);
             }
             else
             {
@@ -50,9 +50,9 @@ namespace ERP.Windows.WF.Binding.Supervisor
             Bindable.OnBound(DataContext);
         }
 
-        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, string UserfriendlyName, DataContext DataContext, string FormatOptions)
+        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, DataContext DataContext, ShowGUIAttribute ShowGUIAttribute)
         {
-            Bindable.UserFriendlyName = UserfriendlyName;
+            Bindable.UserFriendlyName = ShowGUIAttribute?.UserFriendlyName;
 
             IParser Parser = IParser.GetParser(Bindable.OriginType, TargetType);
 
@@ -61,7 +61,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, FormatOptions, out Error);
+                    Object getResult = Parser.Parse(Get(), Bindable.OriginType, ShowGUIAttribute?.FormatOptions, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(getResult))
@@ -87,22 +87,29 @@ namespace ERP.Windows.WF.Binding.Supervisor
                 try
                 {
                     bool Error;
-                    Object setResult = Parser.Parse(Object, TargetType, FormatOptions, out Error);
+                    Object setResult = Parser.Parse(Object, TargetType, ShowGUIAttribute?.FormatOptions, out Error);
                     if (!Error)
                     {
                         if (Parser.IsDefault(setResult))
                         {
-                            Bindable.Status = InputStatus.Null;
+                            if (ShowGUIAttribute.Required)
+                            {
+                                Bindable.Status = InputStatus.Error;
+                            }
+                            else
+                            {
+                                Bindable.Status = InputStatus.Null;
+                            }
                         }
                         else
                         {
-                            Bindable.Status = Base.InputStatus.OK;
+                            Bindable.Status = InputStatus.OK;
                         }
                         Set(setResult);
                     }
                     else
                     {
-                        Bindable.Status = Base.InputStatus.Error;
+                        Bindable.Status = InputStatus.Error;
                     }
                 }
                 catch
@@ -208,8 +215,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
             out INotifyPropertyChanged PropertyChangedNotifier,
             out string PropertyName,
             out Type TargetType,
-            out string UserfriendlyName,
-            out string FormatOptions)
+            out ShowGUIAttribute ShowGUIAttribute)
         {
             if (Parent.GetType().GetProperties().Where(o => o.Name.Equals(ObjectName.First())).FirstOrDefault() is PropertyInfo PI)
             {
@@ -220,7 +226,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                         Object obj = PI.GetValue(Parent);
                         if (obj is INotifyPropertyChanged NewParent)
                         {
-                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType, out UserfriendlyName, out FormatOptions);
+                            GetAccessors(NewParent, ObjectName.Skip(1), out Set, out Get, out PropertyChangedNotifier, out PropertyName, out TargetType, out ShowGUIAttribute);
                         }
                         else if (obj is null && Parent is INotifyPropertyChanged PCN)
                         {
@@ -229,8 +235,7 @@ namespace ERP.Windows.WF.Binding.Supervisor
                             PropertyChangedNotifier = PCN;
                             PropertyName = ObjectName.First();
                             TargetType = PI.PropertyType;
-                            UserfriendlyName = string.Empty;
-                            FormatOptions = string.Empty;
+                            ShowGUIAttribute = null;
                         }
                         else
                         {
@@ -255,13 +260,11 @@ namespace ERP.Windows.WF.Binding.Supervisor
                             TargetType = PI.PropertyType;
                             if (PI.GetCustomAttribute(typeof(ShowGUIAttribute)) is ShowGUIAttribute SGA)
                             {
-                                UserfriendlyName = SGA.UserFriendlyName;
-                                FormatOptions = SGA.FormatOptions;
+                                ShowGUIAttribute = SGA;
                             }
                             else
                             {
-                                UserfriendlyName = string.Empty;
-                                FormatOptions = string.Empty;
+                                ShowGUIAttribute = null;
                             }
                         }
                         else
