@@ -196,7 +196,7 @@
             this.bindableTextBox4.Location = new System.Drawing.Point(3, 3);
             this.bindableTextBox4.Name = "bindableTextBox4";
             this.bindableTextBox4.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.bindableTextBox4.ReadOnly = true;
+            this.bindableTextBox4.ReadOnly = false;
             this.bindableTextBox4.SearchButtonActive = true;
             this.bindableTextBox4.SelectionDialogStarter = this.selectionDialogStarter1;
             this.bindableTextBox4.Size = new System.Drawing.Size(391, 31);

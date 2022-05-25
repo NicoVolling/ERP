@@ -17,7 +17,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         private int currentSite = 1;
 
-        private int elementCount = 50;
+        private int elementCount = 35;
 
         private int maxSite = 1;
 
@@ -109,6 +109,18 @@ namespace ERP.Windows.WF.Binding.Controls
             }
         }
 
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            currentSite = currentSite - 1;
+            RefreshGUI();
+        }
+
+        private void btn_fore_Click(object sender, EventArgs e)
+        {
+            currentSite = currentSite + 1;
+            RefreshGUI();
+        }
+
         private void ClientBinder_ControlValueChanged(object sender, EventArgs e)
         {
             SetControlValue(BOIList);
@@ -153,6 +165,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         private void DGV_Data()
         {
+            dgv.Rows.Clear();
             foreach (BusinessObject BO in CurrentObjects)
             {
                 int rowid = dgv.Rows.Add();
@@ -209,7 +222,7 @@ namespace ERP.Windows.WF.Binding.Controls
                 {
                     objectsto = BOIList.Count();
                 }
-                lbl_site.Text = $"Seite {currentSite} von {maxSite} ({objectsfrom}-{objectsto})";
+                lbl_site.Text = $"Seite {currentSite} von {maxSite} ({objectsfrom}-{objectsto - 1})";
 
                 RefreshDGV();
             }
