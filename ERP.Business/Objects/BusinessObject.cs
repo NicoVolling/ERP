@@ -3,6 +3,7 @@ using ERP.BaseLib.Serialization;
 using ERP.Business.Objects.Attributes;
 using ERP.Exceptions.ErpExceptions;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace ERP.Business.Objects
 {
@@ -20,8 +21,6 @@ namespace ERP.Business.Objects
         /// </summary>
         public Guid ID
         { get => iD; set { iD = value; NotifyPropertyChanged(); } }
-
-        public string UserfriendlyName { get => ToString(); }
 
         public void Deserialize(string Raw)
         {

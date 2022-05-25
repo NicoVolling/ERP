@@ -274,6 +274,29 @@ namespace ERP.Windows.WF.Binding.Supervisor
                     throw new ErpException("Couldnt read Value");
                 }
             }
+            else if (Parent.GetType().GetMethods().Where(o => o.Name.Equals(ObjectName.First())).FirstOrDefault() is MethodInfo MI && MI.ReturnType == typeof(string) && ObjectName.Count() == 1)
+            {
+                if (Parent is INotifyPropertyChanged PCN)
+                {
+                    Get = () => MI.Invoke(PCN, null);
+                    Set = null;
+                    PropertyChangedNotifier = PCN;
+                    PropertyName = ObjectName.First();
+                    TargetType = MI.ReturnType;
+                    if (MI.GetCustomAttribute(typeof(ShowGUIAttribute)) is ShowGUIAttribute SGA)
+                    {
+                        ShowGUIAttribute = SGA;
+                    }
+                    else
+                    {
+                        ShowGUIAttribute = null;
+                    }
+                }
+                else
+                {
+                    throw new ErpException("Parent is not in correct type");
+                }
+            }
             else
             {
                 throw new ErpException("Couldnt find Value");

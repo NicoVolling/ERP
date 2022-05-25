@@ -35,6 +35,7 @@ namespace ERP.Test.Public.Library.Objects
         }
 
         [ShowGUI("Gehalt", 3, "N2", " €")]
+        [JsonIgnore]
         public double Salary
         {
             get
@@ -49,7 +50,7 @@ namespace ERP.Test.Public.Library.Objects
 
         public override string OnToString()
         {
-            string bd = $" ({ Birthday})";
+            string bd = $" ({Birthday})";
             if (Birthday == default) { bd = string.Empty; }
             return $"{Firstname} {Name}{bd}";
         }

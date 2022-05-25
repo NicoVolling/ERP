@@ -190,7 +190,7 @@
             this.bindableTextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.bindableTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.bindableTextBox4.BindingDestination = "Person.UserfriendlyName";
+            this.bindableTextBox4.BindingDestination = "Person.ToString";
             this.bindableTextBox4.DescriptionWidth = 0;
             this.bindableTextBox4.ForeColor = System.Drawing.Color.White;
             this.bindableTextBox4.Location = new System.Drawing.Point(3, 3);
