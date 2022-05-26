@@ -17,7 +17,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         private int currentSite = 1;
 
-        private int elementCount = 35;
+        private int maxElementCount = 35;
 
         private int maxSite = 1;
 
@@ -104,7 +104,7 @@ namespace ERP.Windows.WF.Binding.Controls
             if (BOIList != null)
             {
                 currentSite = 1;
-                maxSite = (int)Math.Ceiling(((double)BOIList.Count()) / ((double)elementCount));
+                maxSite = (int)Math.Ceiling(((double)BOIList.Count()) / ((double)maxElementCount));
                 RefreshGUI();
             }
         }
@@ -212,13 +212,13 @@ namespace ERP.Windows.WF.Binding.Controls
             {
                 if (currentSite == maxSite) { btn_fore.Enabled = false; } else { btn_fore.Enabled = true; }
                 if (currentSite == 1) { btn_back.Enabled = false; } else { btn_back.Enabled = true; }
-                objectsfrom = ((currentSite - 1) * elementCount) + 1;
+                objectsfrom = ((currentSite - 1) * maxElementCount) + 1;
                 if (currentSite == maxSite && objectsfrom > BOIList.Count())
                 {
                     objectsfrom = BOIList.Count();
                 }
-                objectsto = (currentSite * elementCount) + 1;
-                if (objectsto == maxSite && objectsto > BOIList.Count())
+                objectsto = (currentSite * maxElementCount) + 1;
+                if (currentSite == maxSite && objectsto > BOIList.Count())
                 {
                     objectsto = BOIList.Count();
                 }
