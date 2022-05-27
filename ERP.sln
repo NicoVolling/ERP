@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Windows.WF.Binding", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Windows.WF.BindableControlSet", "ERP.Windows.WF.BindableControlSet\ERP.Windows.WF.BindableControlSet.csproj", "{AEDB920A-2BC5-480B-A174-0025D7222250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Parsing", "ERP.Parsing\ERP.Parsing.csproj", "{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Parsing", "ERP.Parsing\ERP.Parsing.csproj", "{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
