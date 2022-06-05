@@ -1,4 +1,5 @@
 ﻿using ERP.BaseLib.Output;
+using ERP.Business.Filtering;
 using ERP.Commands.Base;
 using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
@@ -32,7 +33,7 @@ namespace ERP.Test.Client.App
                     Console.ReadLine();
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 //throw;
             }
