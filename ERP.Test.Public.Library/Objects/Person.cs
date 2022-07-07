@@ -1,7 +1,6 @@
 ﻿using ERP.BaseLib.Serialization.Converters;
 using ERP.Business.Objects;
 using ERP.Business.Objects.Attributes;
-using ERP.Parsing.Parser;
 using Newtonsoft.Json;
 
 namespace ERP.Test.Public.Library.Objects
