@@ -22,7 +22,7 @@ namespace ERP.BaseLib.Serialization.Converters
         {
             ArgumentCollection AC = (ArgumentCollection)value;
 
-            writer.WriteValue(Json.Serialize(AC.ToArray()));
+            writer.WriteValue(AC.ToArray().Serialize());
         }
     }
 }

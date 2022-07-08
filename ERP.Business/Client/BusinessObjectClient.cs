@@ -41,7 +41,7 @@ namespace ERP.Business.Client
                 Result Result = CommandCollection.GetInstance<T_CommandCollection>().Change(Data);
                 if (!Result.Error)
                 {
-                    Data.Deserialize(Result.ReturnValue);
+                    Data.DeserializeAndApplyChanges(Result.ReturnValue);
                     this.Data = Data;
                 }
                 else
@@ -68,7 +68,7 @@ namespace ERP.Business.Client
                 Result Result = CommandCollection.GetInstance<T_CommandCollection>().Create(Data);
                 if (!Result.Error)
                 {
-                    Data.Deserialize(Result.ReturnValue);
+                    Data.DeserializeAndApplyChanges(Result.ReturnValue);
                     this.Data = Data;
                 }
                 else
@@ -116,7 +116,7 @@ namespace ERP.Business.Client
                 Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetData(ID);
                 if (!Result.Error)
                 {
-                    Data.Deserialize(Result.ReturnValue);
+                    Data.DeserializeAndApplyChanges(Result.ReturnValue);
                 }
                 else
                 {

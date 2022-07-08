@@ -156,7 +156,7 @@ namespace ERP.Windows.WF.Binding.Controls
                     }
                     Column.Name = Kvp.Key.Name;
                     Column.HeaderText = Kvp.Value.UserFriendlyName;
-                    Column.Tag = Json.Serialize(Kvp.Value);
+                    Column.Tag = Kvp.Value.Serialize();
                     dgv.Columns.Add(Column);
                     Column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }

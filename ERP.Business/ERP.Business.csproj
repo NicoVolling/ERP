@@ -11,8 +11,4 @@
     <ProjectReference Include="..\ERP.IO\ERP.IO.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Filtering\" />
-  </ItemGroup>
-
 </Project>

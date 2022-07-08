@@ -185,7 +185,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private static Result ExecuteCommandClient(DataInput Input)
         {
-            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Json.Serialize(Input)));
+            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Input.Serialize()));
             string res = response.Result.Content.ReadAsStringAsync().Result;
             try
             {
@@ -301,7 +301,7 @@ namespace ERP.Commands.Base
                         {
                             return new(new CommandErpException($"Client: Cannot process Parameters, because of Argumenttype: {Type.Name}.{MethodBase.Name}, {PI.ParameterType.Name}!={Arguments[i].GetType().Name}"));
                         }
-                        Parameters.Add(PI.Name, Json.Serialize(Arguments[i]));
+                        Parameters.Add(PI.Name, Arguments[i].Serialize());
                     }
 
                     i++;

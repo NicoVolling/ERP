@@ -83,7 +83,7 @@ namespace ERP.Business.Server
             return new Result(res);
         }
 
-        void IFileSaver.Deserialize(string Raw)
+        void IFileSaver.DeserializeData(string Raw)
         {
             List<T_BusinessObject> ObjectList = Json.Deserialize<List<T_BusinessObject>>(Raw);
             if (ObjectList != null)
@@ -156,9 +156,9 @@ namespace ERP.Business.Server
             DataChanged = false;
         }
 
-        string IFileSaver.Serialize()
+        string IFileSaver.SerializeData()
         {
-            return Json.Serialize(ObjectList);
+            return ObjectList.Serialize();
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace ERP.Business.Server
             {
                 Load();
                 T_BusinessObject Object = GetObjectByID(Data.ID);
-                Object.Deserialize(Data);
+                Object.ApplyChanges(Data);
                 return Object;
             }
             catch

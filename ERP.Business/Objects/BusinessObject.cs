@@ -22,28 +22,6 @@ namespace ERP.Business.Objects
         public Guid ID
         { get => iD; set { iD = value; NotifyPropertyChanged(); } }
 
-        public void Deserialize(string Raw)
-        {
-            BusinessObject BO = (BusinessObject)Json.Deserialize(Raw, this.GetType());
-            Deserialize(BO);
-        }
-
-        public void Deserialize(BusinessObject Object)
-        {
-            if (Object.GetType() != this.GetType())
-            {
-                throw new TypeMismatchErpException(this.GetType(), Object.GetType());
-            }
-
-            foreach (PropertyInfo Property in this.GetType().GetProperties())
-            {
-                if (Property.CanRead && Property.CanWrite && Property.GetGetMethod() is MethodInfo && Property.GetSetMethod() is MethodInfo)
-                {
-                    Property.SetValue(this, Property.GetValue(Object));
-                }
-            }
-        }
-
         public bool IsEmpty()
         {
             return ID == Empty.ID;
@@ -53,7 +31,7 @@ namespace ERP.Business.Objects
 
         public virtual string Serialize()
         {
-            return Json.Serialize(this);
+            return this.Serialize();
         }
 
         public override string ToString()

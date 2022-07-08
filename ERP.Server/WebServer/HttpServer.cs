@@ -65,7 +65,7 @@ namespace ERP.Server.WebServer
                 }
             }
 
-            string resultObject = Json.Serialize(Result);
+            string resultObject = Result.Serialize();
 
             return resultObject;
         }

@@ -27,7 +27,7 @@ namespace ERP.BaseLib.Objects
         public Argument(string Name, Object Value)
         {
             this.Name = Name;
-            this.Value = Json.Serialize(Value);
+            this.Value = Value.Serialize();
         }
 
         /// <summary>

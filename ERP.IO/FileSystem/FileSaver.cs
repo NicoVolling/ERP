@@ -20,7 +20,7 @@
             {
                 if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"))))
                 {
-                    Target.Deserialize(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json")));
+                    Target.DeserializeData(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json")));
                 }
             }
             catch
@@ -41,7 +41,7 @@
                 {
                     System.IO.Directory.CreateDirectory(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data")));
                 }
-                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"), Target.Serialize());
+                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"), Target.SerializeData());
             }
             catch
             {
@@ -75,12 +75,12 @@
         /// Deserializes the data in the class.
         /// </summary>
         /// <param name="Raw">Serialized Data.</param>
-        protected internal void Deserialize(string Raw);
+        protected internal void DeserializeData(string Raw);
 
         /// <summary>
         /// Serializes the data in the class.
         /// </summary>
         /// <returns>Serialized Data.</returns>
-        protected internal string Serialize();
+        protected internal string SerializeData();
     }
 }

@@ -52,7 +52,7 @@ namespace ERP.BaseLib.Objects
         /// <param name="ReturnValue">All data wich server sends to client.</param>
         public Result(Object ReturnValue)
         {
-            this.ReturnValue = Json.Serialize(ReturnValue);
+            this.ReturnValue = ReturnValue.Serialize();
             this.ErrorMessage = String.Empty;
         }
 

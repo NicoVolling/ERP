@@ -93,7 +93,7 @@ namespace ERP.BaseLib.Objects
 
         public override string ToString()
         {
-            return Json.Serialize(_arguments);
+            return _arguments.Serialize();
         }
     }
 }
