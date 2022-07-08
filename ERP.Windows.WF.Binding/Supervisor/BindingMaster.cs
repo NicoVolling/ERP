@@ -50,12 +50,50 @@ namespace ERP.Windows.WF.Binding.Supervisor
             Bindable.OnBound(DataContext);
         }
 
-        public static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, DataContext DataContext, ShowGUIAttribute ShowGUIAttribute)
+        public static bool IsInDesignMode()
+        {
+            if (Application.ExecutablePath.IndexOf("DesignToolsServer.exe", StringComparison.OrdinalIgnoreCase) > -1)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected void ControllAddedHandling(Control Control)
+        {
+            if (!IsInDesignMode())
+            {
+                if (Control is IBindable Bindable)
+                {
+                    if (Bindable.BindingDestination is string BindingDestination)
+                    {
+                        if (BindingDestination.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Any())
+                        {
+                            if (!Bindables.Contains(Bindable))
+                            {
+                                Bindables.Add(Bindable);
+                                Bind(Bindable, DataContext, str);
+                            }
+                        }
+                    }
+                }
+                foreach (Control Control1 in Control.Controls)
+                {
+                    ControllAddedHandling(Control1);
+                }
+                Control.ControlAdded += (s, e) =>
+                {
+                    ControllAddedHandling(e.Control);
+                };
+            }
+        }
+
+        private static void BindControl(IBindable Bindable, Func<Object> Get, Action<Object> Set, INotifyPropertyChanged PropertyChangedNotifier, string PropertyName, Type TargetType, DataContext DataContext, ShowGUIAttribute ShowGUIAttribute)
         {
             Bindable.UserFriendlyName = ShowGUIAttribute?.UserFriendlyName;
             Bindable.ReadOnly = Set == null;
 
-            IParser Parser = IParser.GetParser(Bindable.OriginType, TargetType);
+            IParser Parser = ParsingMaster.GetParser(Bindable.OriginType, TargetType);
 
             Func<Object> OnGet = () =>
             {
@@ -164,44 +202,6 @@ namespace ERP.Windows.WF.Binding.Supervisor
             };
 
             PropertyChanged(null, new PropertyChangedEventArgs(PropertyName));
-        }
-
-        public static bool IsInDesignMode()
-        {
-            if (Application.ExecutablePath.IndexOf("DesignToolsServer.exe", StringComparison.OrdinalIgnoreCase) > -1)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        protected void ControllAddedHandling(Control Control)
-        {
-            if (!IsInDesignMode())
-            {
-                if (Control is IBindable Bindable)
-                {
-                    if (Bindable.BindingDestination is string BindingDestination)
-                    {
-                        if (BindingDestination.Split('.', StringSplitOptions.RemoveEmptyEntries) is IEnumerable<string> str && str.Any())
-                        {
-                            if (!Bindables.Contains(Bindable))
-                            {
-                                Bindables.Add(Bindable);
-                                Bind(Bindable, DataContext, str);
-                            }
-                        }
-                    }
-                }
-                foreach (Control Control1 in Control.Controls)
-                {
-                    ControllAddedHandling(Control1);
-                }
-                Control.ControlAdded += (s, e) =>
-                {
-                    ControllAddedHandling(e.Control);
-                };
-            }
         }
 
         private static void GetAccessors(Object Parent, IEnumerable<string> ObjectName,

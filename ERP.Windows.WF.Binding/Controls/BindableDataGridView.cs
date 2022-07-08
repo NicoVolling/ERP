@@ -174,7 +174,7 @@ namespace ERP.Windows.WF.Binding.Controls
                 {
                     PropertyInfo PI = BO.GetType().GetProperty(Cell.OwningColumn.Name);
                     Type Type = PI.PropertyType == typeof(bool) ? typeof(bool) : typeof(string);
-                    IParser Parser = IParser.GetParser(Type, PI.PropertyType);
+                    IParser Parser = ParsingMaster.GetParser(Type, PI.PropertyType);
                     ShowGUIAttribute SGA = new ShowGUIAttribute();
                     if (Cell.OwningColumn.Tag != null)
                     {
