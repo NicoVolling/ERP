@@ -11,7 +11,7 @@ namespace ERP.Parsing.Parser
     {
         private static List<IParser> parsers { get; } = new List<IParser>();
 
-        public static void AddParser(this Type Type1, Type DestinationType, IParser Parser)
+        public static void AddParser(this Type Type1, IParser Parser)
         {
             AddParser(Parser);
         }
@@ -56,6 +56,7 @@ namespace ERP.Parsing.Parser
             Func<TimeOnly, TimeOnly, bool> TimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
             Func<DateTime, DateTime, bool> DateTimeOnlyComparer = (a, b) => a.CompareTo(b) == 0;
 
+            //TODO: TryParse for all.
             AddParser(new StringParser<int>(
                 (o, fo) => int.Parse(string.IsNullOrEmpty(fo?.Suffix) ? o : o.Replace(fo.Suffix, "")),
                 (o, fo) => o.ToString() + fo?.Suffix,
