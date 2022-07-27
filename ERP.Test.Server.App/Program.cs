@@ -13,7 +13,7 @@ namespace ERP.Test.Server.App
             Startup.SetAssembly();
 
             HttpServer Server = new();
-            Server.Start(ERP.BaseLib.Statics.Http.ServerUrl);
+            Server.Start(ERP.BaseLib.Statics.Http.ServerUrls);
         }
     }
 }

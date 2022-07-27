@@ -185,7 +185,7 @@ namespace ERP.Commands.Base
         /// <returns>The Result wich comes from the server.</returns>
         private static Result ExecuteCommandClient(DataInput Input)
         {
-            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrl, new StringContent(Input.Serialize()));
+            Task<HttpResponseMessage> response = new HttpClient().PostAsync(Http.ServerUrls.First(), new StringContent(Input.Serialize()));
             string res = response.Result.Content.ReadAsStringAsync().Result;
             try
             {

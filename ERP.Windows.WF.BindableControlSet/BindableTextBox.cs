@@ -1,4 +1,5 @@
 ﻿using ERP.Windows.WF.Binding.Controls;
+using System.ComponentModel;
 
 namespace ERP.Windows.WF.BindableControlSet
 {
@@ -10,6 +11,9 @@ namespace ERP.Windows.WF.BindableControlSet
         }
 
         public Type OriginType { get => typeof(string); }
+
+        [Category("Darstellung")]
+        public bool UserPasswordChar { get => textbox.UseSystemPasswordChar; set => textbox.UseSystemPasswordChar = value; }
 
         public object GetControlValue()
         {

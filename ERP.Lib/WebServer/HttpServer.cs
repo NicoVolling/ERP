@@ -30,14 +30,17 @@ namespace ERP.BaseLib.WebServer
         /// <summary>
         /// Starts the server.
         /// </summary>
-        public void Start(string Url)
+        public void Start(List<string> Urls)
         {
             IsRunning = true;
-            listener.Prefixes.Add(Url);
+            foreach (string url in Urls)
+            {
+                listener.Prefixes.Add(url);
+            }
             listener.Start();
             if (ConsoleOutput)
             {
-                Log.WriteLine($"Listening for connections on {Url}", ConsoleColor.Green);
+                Log.WriteLine($"Listening for connections on {string.Join(',', Urls)}", ConsoleColor.Green);
             }
             Task listenTask = HandleIncommingConnections();
             listenTask.GetAwaiter().GetResult();

@@ -29,11 +29,6 @@ namespace ERP.Business.Objects
 
         public abstract string OnToString();
 
-        public virtual string Serialize()
-        {
-            return this.Serialize();
-        }
-
         public override string ToString()
         {
             return $"{OnToString()}";

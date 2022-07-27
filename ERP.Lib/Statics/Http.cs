@@ -6,8 +6,8 @@
     public static class Http
     {
         /// <summary>
-        /// The url the server listens on
+        /// The urls the server listens on
         /// </summary>
-        public static string ServerUrl = "http://localhost:55555/";
+        public static List<string> ServerUrls = new() { "http://localhost:55555/" };
     }
 }
