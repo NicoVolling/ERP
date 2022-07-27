@@ -24,12 +24,12 @@ namespace ERP.Test.Client.WindowsApp.Windows
             base.OnLoad(e);
             DataContext.Client = new PersonClient();
             DataContext.Person = new Person();
-            DataContext.Objects = DataContext.Client.GetList();
+            DataContext.Objects = DataContext.Client.GetList(DataContext.SECURITY_CODE);
         }
 
         private void bindableTextBox4_BeforeButtonClick(object sender, EventArgs e)
         {
-            DataContext.Objects = DataContext.Client.GetList();
+            DataContext.Objects = DataContext.Client.GetList(DataContext.SECURITY_CODE);
         }
 
         private void bindableTextBox4_ButtonClick(object sender, Business.Objects.BusinessObject e)
@@ -44,9 +44,9 @@ namespace ERP.Test.Client.WindowsApp.Windows
         {
             try
             {
-                if (DataContext.Client.GetExistence(DataContext.Person.ID))
+                if (DataContext.Client.GetExistence(DataContext.SECURITY_CODE, DataContext.Person.ID))
                 {
-                    DataContext.Client.Delete(DataContext.Person.ID);
+                    DataContext.Client.Delete(DataContext.SECURITY_CODE, DataContext.Person.ID);
                     DataContext.Person = new Person();
                 }
             }
@@ -78,14 +78,14 @@ namespace ERP.Test.Client.WindowsApp.Windows
             {
                 try
                 {
-                    if (DataContext.Client.GetExistence(DataContext.Person.ID))
+                    if (DataContext.Client.GetExistence(DataContext.SECURITY_CODE, DataContext.Person.ID))
                     {
-                        DataContext.Client.Change(DataContext.Person.ID, DataContext.Person);
+                        DataContext.Client.Change(DataContext.SECURITY_CODE, DataContext.Person.ID, DataContext.Person);
                         DataContext.Person = DataContext.Client.BO_Data as Person;
                     }
                     else
                     {
-                        DataContext.Client.Create(DataContext.Person);
+                        DataContext.Client.Create(DataContext.SECURITY_CODE, DataContext.Person);
                         DataContext.Person = DataContext.Client.BO_Data as Person;
                     }
                 }

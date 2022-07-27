@@ -25,6 +25,7 @@ namespace ERP.Business.Server
         }
 
         public bool DataLoaded { get; private set; } = false;
+
         public string Filename { get; }
 
         /// <summary>
@@ -45,13 +46,12 @@ namespace ERP.Business.Server
         /// <summary>
         /// Changes the Object.
         /// </summary>
-        /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Change(T_BusinessObject Data)
+        public Result Change(Guid SECURITY_CODE, T_BusinessObject Data)
         {
-            if (!ServerSide) { return GetClientResult(Data); }
-            T_BusinessObject res = OnChange(Data);
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data); }
+            T_BusinessObject res = OnChange(SECURITY_CODE, Data);
             DataChanged = true;
             return new Result(res);
         }
@@ -59,13 +59,12 @@ namespace ERP.Business.Server
         /// <summary>
         /// Creates the Object.
         /// </summary>
-        /// <param name="User"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Create(T_BusinessObject Data)
+        public Result Create(Guid SECURITY_CODE, T_BusinessObject Data)
         {
-            if (!ServerSide) { return GetClientResult(Data); }
-            T_BusinessObject res = OnCreate(Data);
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data); }
+            T_BusinessObject res = OnCreate(SECURITY_CODE, Data);
             DataChanged = true;
             return new Result(res);
         }
@@ -75,10 +74,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result Delete(Guid ID)
+        public Result Delete(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(ID); }
-            bool res = OnDelete(ID);
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
+            bool res = OnDelete(SECURITY_CODE, ID);
             DataChanged = true;
             return new Result(res);
         }
@@ -106,10 +105,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetData(Guid ID)
+        public Result GetData(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(ID); }
-            return new Result(OnGetData(ID));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
+            return new Result(OnGetData(SECURITY_CODE, ID));
         }
 
         /// <summary>
@@ -117,20 +116,20 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetExistence(Guid ID)
+        public Result GetExistence(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(ID); }
-            return new Result(OnGetExistence(ID));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
+            return new Result(OnGetExistence(SECURITY_CODE, ID));
         }
 
         /// <summary>
         /// Gets a list of all Objects.
         /// </summary>
         /// <returns></returns>
-        public Result GetList()
+        public Result GetList(Guid SECURITY_CODE)
         {
-            if (!ServerSide) { return GetClientResult(); }
-            return new Result(OnGetList().Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE); }
+            return new Result(OnGetList(SECURITY_CODE).Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
         }
 
         /// <summary>
@@ -138,10 +137,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="IDs">IDs</param>
         /// <returns></returns>
-        public Result GetObjects(Guid[] IDs)
+        public Result GetObjects(Guid SECURITY_CODE, Guid[] IDs)
         {
-            if (!ServerSide) { return GetClientResult(IDs); }
-            return new Result(OnGetList().Where(o => IDs.Any(p => p == o.ID)).ToArray());
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, IDs); }
+            return new Result(OnGetList(SECURITY_CODE).Where(o => IDs.Any(p => p == o.ID)).ToArray());
         }
 
         public void Load()
@@ -188,13 +187,26 @@ namespace ERP.Business.Server
             throw new MissingObjectErpException(typeof(T_BusinessObject), ID);
         }
 
+        protected List<T_BusinessObject> GetObjectList()
+        {
+            try
+            {
+                Load();
+                return ObjectList;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Changes the Object.
         /// </summary>
         /// <param name="ID"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnChange(T_BusinessObject Data)
+        protected virtual T_BusinessObject OnChange(Guid SECURITY_CODE, T_BusinessObject Data)
         {
             try
             {
@@ -215,7 +227,7 @@ namespace ERP.Business.Server
         /// <param name="User"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnCreate(T_BusinessObject Data)
+        protected virtual T_BusinessObject OnCreate(Guid SECURITY_CODE, T_BusinessObject Data)
         {
             try
             {
@@ -234,7 +246,7 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        protected virtual bool OnDelete(Guid ID)
+        protected virtual bool OnDelete(Guid SECURITY_CODE, Guid ID)
         {
             try
             {
@@ -254,7 +266,7 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        protected virtual T_BusinessObject OnGetData(Guid ID)
+        protected virtual T_BusinessObject OnGetData(Guid SECURITY_CODE, Guid ID)
         {
             try
             {
@@ -272,7 +284,7 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        protected virtual bool OnGetExistence(Guid ID)
+        protected virtual bool OnGetExistence(Guid SECURITY_CODE, Guid ID)
         {
             Load();
             return ObjectList.Any(o => o.ID == ID);
@@ -282,17 +294,9 @@ namespace ERP.Business.Server
         /// Gets a list of all Objects.
         /// </summary>
         /// <returns></returns>
-        protected virtual List<T_BusinessObject> OnGetList()
+        protected virtual List<T_BusinessObject> OnGetList(Guid SECURITY_CODE)
         {
-            try
-            {
-                Load();
-                return ObjectList;
-            }
-            catch
-            {
-                throw;
-            }
+            return GetObjectList();
         }
 
         protected void RemoveObject(Guid ID)

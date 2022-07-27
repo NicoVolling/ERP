@@ -17,6 +17,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         private int currentSite = 1;
 
+        private DataContext DataContext;
         private int maxElementCount = 35;
 
         private int maxSite = 1;
@@ -94,6 +95,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public void OnBound(DataContext DataContext)
         {
+            this.DataContext = DataContext;
             ClientBinder.ControlValueChanged += ClientBinder_ControlValueChanged;
             BindingMaster.Bind(ClientBinder, DataContext);
         }
@@ -189,7 +191,7 @@ namespace ERP.Windows.WF.Binding.Controls
         {
             try
             {
-                CurrentObjects = Client.GetObjects(BOIList.Take(new Range(objectsfrom - 1, objectsto - 1)).Select(o => o.ID).ToArray());
+                CurrentObjects = Client.GetObjects(DataContext.SECURITY_CODE, BOIList.Take(new Range(objectsfrom - 1, objectsto - 1)).Select(o => o.ID).ToArray());
 
                 if (CurrentObjects.Any())
                 {
