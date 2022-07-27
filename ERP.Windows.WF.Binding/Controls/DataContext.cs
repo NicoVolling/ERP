@@ -5,6 +5,8 @@ namespace ERP.Windows.WF.Binding.Controls
 {
     public partial class DataContext : Component, INotifyPropertyChanged
     {
+        private Guid sECURITY_CODE = Guid.Empty;
+
         public DataContext()
         {
             InitializeComponent();
@@ -18,6 +20,9 @@ namespace ERP.Windows.WF.Binding.Controls
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public Guid SECURITY_CODE
+        { get => sECURITY_CODE; set { sECURITY_CODE = value; NotifyPropertyChanged(nameof(SECURITY_CODE)); } }
 
         protected void NotifyPropertyChanged([CallerMemberName] string Sender = null)
         {

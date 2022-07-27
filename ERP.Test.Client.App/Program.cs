@@ -20,10 +20,10 @@ namespace ERP.Test.Client.App
                     PersonClient Client = new();
                     Person person1 = new() { Firstname = "Nico", Name = "Volling", Birthday = DateOnly.FromDateTime(DateTime.Now) };
 
-                    Client.Create(person1);
-                    Client.GetData(person1.ID);
+                    Client.Create(Guid.Empty, person1);
+                    Client.GetData(Guid.Empty, person1.ID);
                     person1 = Client.Data;
-                    Client.Delete(person1.ID);
+                    Client.Delete(Guid.Empty, person1.ID);
 
                     Log.WriteLine(person1, ConsoleColor.Magenta);
 
