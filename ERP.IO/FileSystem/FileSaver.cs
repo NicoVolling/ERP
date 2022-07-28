@@ -30,7 +30,7 @@
         }
 
         /// <summary>
-        /// Loads all data.
+        /// Saves all data.
         /// </summary>
         public static void Save(IFileSaver Target)
         {
