@@ -18,7 +18,7 @@ namespace ERP.Windows.WF.Base.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            float X = Padding.Left + 4;
+            float X = Padding.Left;
             float Y = Padding.Top;
             float Height = this.Height - Padding.Top - Padding.Bottom;
             float Width = this.Width - Padding.Left - Padding.Right;
