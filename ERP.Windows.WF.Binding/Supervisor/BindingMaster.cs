@@ -77,14 +77,18 @@ namespace ERP.Windows.WF.Binding.Supervisor
                         }
                     }
                 }
-                foreach (Control Control1 in Control.Controls)
+
+                if (Control is not IBindingParent)
                 {
-                    ControllAddedHandling(Control1);
+                    foreach (Control Control1 in Control.Controls)
+                    {
+                        ControllAddedHandling(Control1);
+                    }
+                    Control.ControlAdded += (s, e) =>
+                    {
+                        ControllAddedHandling(e.Control);
+                    };
                 }
-                Control.ControlAdded += (s, e) =>
-                {
-                    ControllAddedHandling(e.Control);
-                };
             }
         }
 
