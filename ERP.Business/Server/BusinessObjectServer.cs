@@ -173,6 +173,16 @@ namespace ERP.Business.Server
             return Object.ID;
         }
 
+        protected IEnumerable<T_BusinessObject> GenerateSampleData()
+        {
+            IEnumerable<T_BusinessObject> list = OnGenerateSampleData();
+            foreach (T_BusinessObject item in list)
+            {
+                if (item.ID == Guid.Empty) { item.ID = Guid.NewGuid(); }
+            }
+            return list;
+        }
+
         /// <summary>
         /// Gets Object by ID or throws Exception if not found.
         /// </summary>
@@ -183,7 +193,7 @@ namespace ERP.Business.Server
         protected T_BusinessObject GetObjectByID(Guid ID)
         {
             Load();
-            if (ObjectList.FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
+            if (GetObjectList().FirstOrDefault(o => o.ID == ID) is T_BusinessObject Object) { return Object; }
             throw new MissingObjectErpException(typeof(T_BusinessObject), ID);
         }
 
@@ -192,6 +202,10 @@ namespace ERP.Business.Server
             try
             {
                 Load();
+                if (!(ObjectList != null && ObjectList.Any()))
+                {
+                    ObjectList = GenerateSampleData().ToList();
+                }
                 return ObjectList;
             }
             catch
@@ -261,6 +275,11 @@ namespace ERP.Business.Server
             }
         }
 
+        protected virtual IEnumerable<T_BusinessObject> OnGenerateSampleData()
+        {
+            return new List<T_BusinessObject>();
+        }
+
         /// <summary>
         /// Gets Object by ID.
         /// </summary>
@@ -286,8 +305,7 @@ namespace ERP.Business.Server
         /// <returns></returns>
         protected virtual bool OnGetExistence(Guid SECURITY_CODE, Guid ID)
         {
-            Load();
-            return ObjectList.Any(o => o.ID == ID);
+            return GetObjectList().Any(o => o.ID == ID);
         }
 
         /// <summary>

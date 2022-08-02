@@ -191,7 +191,15 @@ namespace ERP.Windows.WF.Binding.Controls
         {
             try
             {
-                CurrentObjects = Client.GetObjects(DataContext.SECURITY_CODE, BOIList.Take(new Range(objectsfrom - 1, objectsto - 1)).Select(o => o.ID).ToArray());
+                Guid[] array;
+                if (BOIList.Count() > 1)
+                {
+                    array = BOIList.Take(new Range(objectsfrom - 1, objectsto - 1)).Select(o => o.ID).ToArray();
+                } else 
+                {
+                    array = BOIList.Select(o => o.ID).ToArray();
+                }
+                CurrentObjects = Client.GetObjects(DataContext.SECURITY_CODE, array);
 
                 if (CurrentObjects.Any())
                 {
