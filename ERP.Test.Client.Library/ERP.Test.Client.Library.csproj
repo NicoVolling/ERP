@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Business\ERP.Business.csproj" />
+    <ProjectReference Include="..\ERP.Test.Public.Library\ERP.Test.Public.Library.csproj" />
+    <ProjectReference Include="..\ERP.Test.Server.Library\ERP.Test.Server.Library.csproj" />
+  </ItemGroup>
+
+</Project>

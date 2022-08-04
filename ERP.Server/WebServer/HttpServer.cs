@@ -1,105 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using ERP.BaseLib.Objects;
+﻿using ERP.BaseLib.Objects;
+using ERP.BaseLib.Output;
 using ERP.BaseLib.Serialization;
-using ERP.BaseLib.Statics;
 using ERP.Commands.Base;
+using ERP.Exceptions.ErpExceptions;
+using System.Net;
 
 namespace ERP.Server.WebServer
 {
     /// <summary>
     /// The HttpServer wich must be started in order to handle request from the client.
     /// </summary>
-    public sealed class HttpServer
+    public sealed class HttpServer : ERP.BaseLib.WebServer.HttpServer
     {
-        private HttpListener listener;
-        private int reqCount = 0;
-
-        /// <summary>
-        /// Determines if the server is currently running.
-        /// </summary>
-        public bool IsRunning { get; private set; }
-
         /// <summary>
         /// Constructor
         /// </summary>
         public HttpServer()
         {
-            listener = new HttpListener();
+            this.ConsoleOutput = false;
             CommandMaster.Reload();
         }
 
-        private async Task HandleIncommingConnections() 
+        protected override string GetResultFromRequest(HttpListenerRequest Request)
         {
-            while(IsRunning) 
+            Result Result = new(new ErpException("UnknownError"));
+
+            bool isWebSendedRequest = false;
+
+            if (Request == null)
             {
-                HttpListenerContext ctx = await listener.GetContextAsync();
-
-                HttpListenerRequest req = ctx.Request;
-                HttpListenerResponse resp = ctx.Response;
-
-                if (req.Url?.AbsolutePath != "/favicon.ico")
-                {
-                    byte[] data = Encoding.UTF8.GetBytes(GetDataString(req));
-
-                    ConsoleColor cl = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"Request #{++reqCount}");
-                    Console.WriteLine("{");
-                    Console.ForegroundColor = cl;
-                    Console.WriteLine($"    [{req.HttpMethod}] " + req.Url.ToString());
-                    Console.WriteLine($"    \"{req.UserHostName}\" - " + req.UserHostAddress);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("}" + Environment.NewLine);
-
-                    resp.ContentType = "text/html";
-                    resp.ContentEncoding = Encoding.UTF8;
-                    resp.ContentLength64 = data.LongLength;
-                    await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                }
-
-                resp.Close();
-            }
-        }
-
-        private string GetDataString(HttpListenerRequest Request)
-        {
-            Result Result = new Result(true, "UnknownError");
-
-            if(Request == null) 
-            {
-                Result = new Result(true, "Request is null");
+                Result = new(new ErpException("Request is null"));
             }
             else
             {
                 string datastring = string.Empty;
-                if (Request.HttpMethod != "POST")
+                if (Request.HttpMethod == "GET")
                 {
-                    Result.Error = true;
-                    Result.ErrorMessage = "Method must be POST";
-                }
-                else
-                {
-                    using (var Reader = new StreamReader(Request.InputStream))
+                    try
                     {
-                        datastring = Reader.ReadToEnd();
+                        return DocumentationMaster.GetDocumentationPage(Request.Url?.AbsolutePath);
                     }
+                    catch (Exception ex)
+                    {
+                        return ex.Message;
+                    }
+                }
+                else if (Request.HttpMethod == "POST")
+                {
+                    using StreamReader Reader = new(Request.InputStream);
+                    datastring = Reader.ReadToEnd();
 
                     if (!string.IsNullOrEmpty(datastring))
                     {
                         try
                         {
-                            DataInput Input = Json.Deserialize<DataInput>(datastring);
+                            DataInput Input = GetInputFromData(datastring, out isWebSendedRequest);
                             Result = CommandMaster.ExecuteCommand(Input);
+                            Log.WriteLine($"Executed Command: {Input.Command}", ConsoleColor.Green);
                         }
                         catch (Exception ex)
                         {
                             Result.Error = true;
                             Result.ErrorMessage = ex.Message;
+                            Log.WriteLine($"Received an Error: {ex.GetType().Name}", ConsoleColor.Red);
                         }
                     }
                     else
@@ -108,36 +71,79 @@ namespace ERP.Server.WebServer
                         Result.ErrorMessage = "Missing command";
                     }
                 }
+                else
+                {
+                    Result.Error = true;
+                    Result.ErrorMessage = "Method must be POST";
+                }
             }
 
-            string resultObject = Json.Serialize(Result);
-            if (Result.Error)
+            string resultObject = Result.Serialize();
+
+            if (isWebSendedRequest)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
+                resultObject = DocumentationMaster.GetDocumentationRequlstPage(Result);
             }
 
             return resultObject;
         }
 
-        /// <summary>
-        /// Starts the server.
-        /// </summary>
-        public void Start()
+        private static DataInput GetInputFromData(string Data, out bool IsWebSendedRequest)
         {
-            IsRunning = true;
-            listener.Prefixes.Add(Http.Url);
-            listener.Start();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Listening for connections on {Http.Url}");
+            DataInput Input = null;
+            if (Data.StartsWith("Namespace"))
+            {
+                IsWebSendedRequest = true;
+                try
+                {
+                    string Namespace = "";
+                    string CommandCollection = "";
+                    string Action = "";
+                    foreach (string item in Data.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string[] kvp = item.Split('=');
+                        string name = kvp[0];
+                        string value = kvp[1];
+                        switch (name)
+                        {
+                            case "Namespace":
+                                Namespace = value;
+                                break;
 
-            Task listenTask = HandleIncommingConnections();
-            listenTask.GetAwaiter().GetResult();
+                            case "CommandCollection":
+                                CommandCollection = value;
+                                break;
 
-            listener.Close();
+                            case "Action":
+                                Action = value;
+                                Input = new DataInput(new(Namespace, CommandCollection, Action));
+                                break;
+
+                            default:
+                                string val = value.TrimStart().StartsWith("{") || value.TrimStart().StartsWith("[") ? value : "\"" + value + "\"";
+                                Input.Arguments.Add(new(name, val));
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                try
+                {
+                    IsWebSendedRequest = false;
+                    Input = Json.Deserialize<DataInput>(Data);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            return Input;
         }
     }
 }

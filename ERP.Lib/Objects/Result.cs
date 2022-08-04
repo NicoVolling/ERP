@@ -1,9 +1,4 @@
 ﻿using ERP.BaseLib.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.BaseLib.Objects
 {
@@ -18,9 +13,14 @@ namespace ERP.BaseLib.Objects
         public bool Error;
 
         /// <summary>
-        /// if request has failed, further informations are here.
+        /// If request has failed, further informations are here.
         /// </summary>
         public string ErrorMessage;
+
+        /// <summary>
+        /// The Type the Error. Example: ErpException
+        /// </summary>
+        public string ErrorType;
 
         /// <summary>
         /// All data wich server sends to client.
@@ -30,7 +30,7 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Constructor
         /// </summary>
-        public Result() 
+        public Result()
         {
             this.ReturnValue = String.Empty;
             this.ErrorMessage = String.Empty;
@@ -40,59 +40,86 @@ namespace ERP.BaseLib.Objects
         /// Constructor for answer on a successful request
         /// </summary>
         /// <param name="ReturnValue">All data wich server sends to client.</param>
-        public Result(string ReturnValue) 
+        public Result(string ReturnValue)
         {
             this.ReturnValue = ReturnValue;
             this.ErrorMessage = String.Empty;
         }
 
         /// <summary>
-        /// Constructor for answer on a failed request
+        /// Constructor for answer on a successful request
         /// </summary>
-        /// <param name="Error">Wether the request was successful.</param>
-        /// <param name="ErrorMessage">if request has failed, further informations are here.</param>
-        public Result(bool Error, string ErrorMessage) 
+        /// <param name="ReturnValue">All data wich server sends to client.</param>
+        public Result(Object ReturnValue)
         {
-            this.ReturnValue = String.Empty;
-            this.Error = Error;
-            this.ErrorMessage = ErrorMessage;
+            this.ReturnValue = ReturnValue.Serialize();
+            this.ErrorMessage = String.Empty;
         }
 
         /// <summary>
-        /// Everything worked well.
+        /// Constructor for answer on a failed request
         /// </summary>
-        public static Result OK = new Result("OK");
+        /// <param name="Exception">The Exception that has been thrown</param>
+        public Result(Exception Exception)
+        {
+            this.ReturnValue = String.Empty;
+            this.Error = true;
+            this.ErrorType = Exception.GetType().Name;
+            this.ErrorMessage = Exception.Message;
+        }
 
         /// <summary>
         /// Result for False-Answer
         /// </summary>
-        public static Result False = new Result("False");
+        public static Result False { get => new("False"); }
+
+        /// <summary>
+        /// Everything worked well.
+        /// </summary>
+        public static Result OK { get => new("OK"); }
 
         /// <summary>
         /// Result for True-Answer
         /// </summary>
-        public static Result True = new Result("True");
+        public static Result True { get => new("True"); }
 
-        public static bool operator== (Result Result1, Result Result2) 
+        public static implicit operator Result(string String)
         {
-            return 
-                Result1.Error == Result2.Error && 
-                Result1.ErrorMessage == Result2.ErrorMessage && 
-                Result1.ReturnValue == Result2.ReturnValue;
+            try
+            {
+                return Json.Deserialize<Result>(String);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public static bool operator!= (Result Result1, Result Result2) 
+        public static implicit operator string(Result Result)
+        {
+            return Result.ToString();
+        }
+
+        public static bool operator !=(Result Result1, Result Result2)
         {
             return !(Result1 == Result2);
         }
 
-        public override bool Equals(object? obj)
+        public static bool operator ==(Result Result1, Result Result2)
+        {
+            return
+                Result1.Error == Result2.Error &&
+                Result1.ErrorMessage == Result2.ErrorMessage &&
+                Result1.ReturnValue == Result2.ReturnValue;
+        }
+
+        public override bool Equals(object obj)
         {
             if (obj is Result Result1)
             {
                 return this == Result1;
             }
-            else 
+            else
             {
                 return base.Equals(obj);
             }
@@ -106,23 +133,6 @@ namespace ERP.BaseLib.Objects
         public override string ToString()
         {
             return Json.Serialize(this);
-        }
-
-        public static implicit operator string(Result Result) 
-        {
-            return Result.ToString();
-        }
-
-        public static implicit operator Result(string String) 
-        {
-            try
-            {
-                return Json.Deserialize<Result>(String);
-            }
-            catch
-            {
-                throw;
-            }
         }
     }
 }

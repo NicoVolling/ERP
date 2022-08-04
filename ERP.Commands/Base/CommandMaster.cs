@@ -1,11 +1,8 @@
-﻿using ERP.BaseLib.Attributes;
+﻿using ERP.BaseLib.Helpers;
 using ERP.BaseLib.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using ERP.BaseLib.Output;
+using ERP.Exceptions.ErpExceptions.CommandExceptions;
+using ERP.IO.FileSystem;
 
 namespace ERP.Commands.Base
 {
@@ -14,10 +11,12 @@ namespace ERP.Commands.Base
     /// </summary>
     public static class CommandMaster
     {
+        private static Timer timer;
+
         /// <summary>
         /// All CommandCollectionTypes founded in the Namespace.
         /// </summary>
-        static List<Type> CommandCollectionTypes = new List<Type>();
+        public static List<Type> CommandCollectionTypes { get; private set; } = new();
 
         /// <summary>
         /// Executes the command. Can only be used on server-side
@@ -28,7 +27,11 @@ namespace ERP.Commands.Base
         public static Result ExecuteCommand(DataInput DataInput)
         {
             Reload();
-            if (CommandCollectionTypes.FirstOrDefault(o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Namespace) == true && o.Name.Replace("CC_", "") == DataInput.Class && o.GetMethod(DataInput.Command) != null) is Type CCType)
+            if (CommandCollectionTypes.FirstOrDefault(
+                o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(DataInput.Command.Namespace) == true &&
+                o.Name.Replace("CC_", "") == DataInput.Command.Class &&
+                o.GetMethod(DataInput.Command.Action) != null)
+                is Type CCType)
             {
                 try
                 {
@@ -39,16 +42,16 @@ namespace ERP.Commands.Base
                     throw;
                 }
             }
-            else 
+            else
             {
-                throw new Exception($"No such Command: {DataInput.Namespace}.{DataInput.Class}.{DataInput.Command}");
+                throw new CommandNotFoundErrorException(DataInput.Command.ToString());
             }
         }
 
         /// <summary>
         /// Refreshes the list of CommandCollectionTypes if needed.
         /// </summary>
-        public static void Reload() 
+        public static void Reload()
         {
             if (CommandCollectionTypes.Count < 1)
             {
@@ -57,17 +60,42 @@ namespace ERP.Commands.Base
                 foreach (Type Type in CommandCollection.CommandAssembly.GetTypes().Where(o =>
                 o.IsClass &&
                 o.Namespace?.StartsWith(CommandCollection.ParentNamespace) == true &&
-                o.BaseType == typeof(CommandCollection)))
+                ReflectionHelper.DoesInheritFrom(o, typeof(CommandCollection))))
                 {
                     try
                     {
                         CommandCollection.GetInstance(Type);
-                    } 
+                    }
                     catch
                     {
                         throw;
                     }
                     CommandCollectionTypes.Add(Type);
+                }
+            }
+            if (timer is null)
+            {
+                timer = new Timer(new TimerCallback((o) =>
+                {
+                    Save();
+                    Log.WriteLine("Data has been saved", ConsoleColor.Blue);
+                }), null, 150000, 150000); //2:30 min.
+            }
+        }
+
+        /// <summary>
+        /// Executes Save() on every CommandCollection that is in Cache.
+        /// </summary>
+        public static void Save()
+        {
+            foreach (Type Type in CommandCollectionTypes)
+            {
+                if (CommandCollection.DoesInstanceExists(Type))
+                {
+                    if (CommandCollection.GetInstance(Type) is IFileSaver FS)
+                    {
+                        FS.Save();
+                    }
                 }
             }
         }

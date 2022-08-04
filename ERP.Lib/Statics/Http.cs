@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.BaseLib.Statics
+﻿namespace ERP.BaseLib.Statics
 {
     /// <summary>
     /// Contains information about the http-server
@@ -12,8 +6,8 @@ namespace ERP.BaseLib.Statics
     public static class Http
     {
         /// <summary>
-        /// The url the server listens on
+        /// The urls the server listens on
         /// </summary>
-        public static string Url = "http://localhost:55555/";
+        public static List<string> ServerUrls = new() { "http://localhost:55555/" };
     }
 }

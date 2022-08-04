@@ -4,12 +4,14 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ERP.Commands\ERP.Commands.csproj" />
+    <ProjectReference Include="..\ERP.Exceptions\ERP.Exceptions.csproj" />
     <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
+    <ProjectReference Include="..\ERP.Parsing\ERP.Parsing.csproj" />
   </ItemGroup>
 
 </Project>
