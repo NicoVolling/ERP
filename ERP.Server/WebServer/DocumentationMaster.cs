@@ -2,6 +2,8 @@
 using ERP.BaseLib.Serialization;
 using ERP.Commands.Base;
 using ERP.Parsing.Parser;
+using ERP.Server.WebServer.Html;
+using ERP.Server.WebServer.Html.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,76 +15,22 @@ namespace ERP.Server.WebServer
 {
     public static class DocumentationMaster
     {
-        private static string style = @"
-  <style>
-      table.minimalistBlack {
-      font-family: ""Lucida Sans Unicode"", ""Lucida Grande"", sans-serif;
-      border: 3px solid #000000;
-      width: 100%;
-      text-align: left;
-      border-collapse: collapse;
-    }
-    table.minimalistBlack td, table.minimalistBlack th {
-      border: 1px solid #000000;
-      padding: 5px 4px;
-    }
-    table.minimalistBlack tbody td {
-      font-size: 13px;
-    }
-    table.minimalistBlack thead {
-      background: #CFCFCF;
-      background: -moz-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
-      background: -webkit-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
-      background: linear-gradient(to bottom, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
-      border-bottom: 3px solid #000000;
-    }
-    table.minimalistBlack thead th {
-      font-size: 15px;
-      font-weight: bold;
-      color: #000000;
-      text-align: left;
-    }
-  </style>";
-
-        public static string GetDocumentationPage(string absolutePath)
+        public static WebPage GetDocumentationPage(string absolutePath)
         {
-            if (absolutePath.StartsWith("/")) { absolutePath = absolutePath.Substring(1); }
-
-            string top = @$"
-<!doctype html>
-<html>
-  <head>
-    <title>API-Documentation</title>
-  </head>
-  {style}
-  <body>
-    <div>
-";
-            string middle = @$"
-      <table class=""minimalistBlack"">
-      <thead>
-      <tr>
-      <th>Namespace</th>
-      <th>CommandCollection</th>
-      <th>Action</th>
-      <th>Paramters</th>
-      </tr>
-      </thead>
-      <tbody>";
-
-            string bottom = @"
-      </tbody>
-      </table>
-    </div>
-  </body>
-</html>
-";
+            if (absolutePath.StartsWith("/documentation/")) { absolutePath = absolutePath.Substring(15); }
 
             List<string> splitted = absolutePath.Split('/').ToList();
 
             string _Namespace = splitted.Count() > 0 ? splitted[0] : "";
             string _CommandCollection = splitted.Count() > 1 ? splitted[1] : "";
             string _Action = splitted.Count() > 2 ? splitted[2] : "";
+
+            WebPage WebPage = new WebPage().AddInnerComponent(new head().AddInnerComponent(new title().AddInnerText("API-Documentation")));
+            WebPage.AddInnerComponent(style.DocumentationStyle);
+            body body = new();
+            div div = new();
+            WebPage.AddInnerComponent(body);
+            body.AddInnerComponent(div);
 
             IEnumerable<Type> collections = CommandMaster.CommandCollectionTypes.Where(o => o.Namespace?.Replace(CommandCollection.ParentNamespace + ".", "").EndsWith(_Namespace) == true);
 
@@ -108,17 +56,6 @@ namespace ERP.Server.WebServer
                 }
             }
 
-            foreach ((string Namespace, string CollectionName, string MethodName, string Parameters) item in list.OrderBy(o => o.Namespace).ThenBy(o => o.CollectionName).ThenBy(o => o.MethodName))
-            {
-                string linknamespace = item.Namespace == _Namespace ? item.Namespace : @$"<a href=""/{item.Namespace}"">{item.Namespace}</a>";
-                string linkcollection = item.CollectionName == _CommandCollection ? item.CollectionName : @$"<a href=""{item.Namespace}/{item.CollectionName}"">{item.CollectionName}</a>";
-                string linkaction = item.MethodName == _Action ? item.MethodName : @$"<a href=""/{item.Namespace}/{item.CollectionName}/{item.MethodName}"">{item.MethodName}</a>";
-                string append = @$"      <tr>
-    <td>{linknamespace}</td><td>{linkcollection}</td><td>{linkaction}</td><td>{item.Parameters}</td></tr>
-    <tr>";
-                middle += append;
-            }
-
             string link = "";
             string display = "";
             if (_CommandCollection == String.Empty)
@@ -140,100 +77,194 @@ namespace ERP.Server.WebServer
             string currentNamespace = _Namespace == string.Empty ? $"All Namespaces ({collections.Count()} | {list.Count})" : $"{_Namespace} ({collections.Count()} | {list.Count})";
             string currentcollection = _CommandCollection == string.Empty ? $"All CommandCollections ({list.Count})" : $"{_CommandCollection} ({list.Count})";
             string currentaction = _Action == string.Empty ? $"All Actions" : $"{_Action}";
-            string alink = link == "" && _Namespace == "" && _CommandCollection == "" && _Action == "" ? "Unfiltered list" : @$"<a href=""/{link}"">{display}</a>";
-            top += @$"<table class=""minimalistBlack""><tbody><tr><td>{alink}</td><td>Namespace: <b>{currentNamespace}</b></td><td>CommandCollection: <b>{currentcollection}</b></td><td>Action: <b>{currentaction}</b></td></tr></tbody></table></br>";
-            if (!_Action.Equals(string.Empty))
-            {
-                middle = @$"
-    <form action=""/{_Namespace}/{_CommandCollection}/{_Action}"" method=""POST"" target=""_blank"" enctype=""text/plain"">
-    <input name=""Namespace"" type=""hidden"" value=""{_Namespace}""/>
-    <input name=""CommandCollection"" type=""hidden"" value=""{_CommandCollection}""/>
-    <input name=""Action"" type=""hidden"" value=""{_Action}""/>
-    <table class=""minimalistBlack"">
-    <thead>
-    <tr>
-    <th>ParameterTypeNamespace</th>
-    <th>ParameterType</th>
-    <th>ParameterName</th>
-    <th>ParameterValue</th>
-    </tr>
-    </thead>
-    <tbody>";
-                if (collections.Count() == 1)
-                {
-                    Type Col = collections.First();
-                    IEnumerable<MethodInfo> milist = Col.GetMethods().Where(o => (o.Name.Replace("CC_", "").Equals(_Action) || o.Name.Equals(_Action)) && o.IsPublic && o.ReturnType == typeof(Result));
-                    if (milist.Any())
-                    {
-                        MethodInfo MI = milist.First();
-                        foreach (ParameterInfo PI in MI.GetParameters())
-                        {
-                            IParser Parser = ParsingMaster.GetParser(PI.ParameterType, typeof(string));
-                            string Default = Parser?.GetDefault(PI.ParameterType).ToString();
-                            string append = @$"      <tr>
-    <td>{PI.ParameterType.Namespace}</td><td>{PI.ParameterType.Name}</td><td>{PI.Name}</td><td><input name=""{PI.Name}"" type=""text"" style=""width: 97%;"" value=""{Default}""/></td></tr>
-    <tr>";
-                            middle += append;
-                        }
-                    }
-                }
+            WebComponent alink = link == "" && _Namespace == "" && _CommandCollection == "" && _Action == "" ? new p().AddInnerText("Unfiltered list") : new a().SetLink($"/documentation/{link}").AddInnerText(display);
+            table toptable = new table();
+            toptable.AddAttribute("class", "minimalistBlack");
+            div.AddInnerComponent(toptable);
+            toptable.AddDataRow(new tr()
+                .AddColumn(new td().AddInnerComponent(alink))
+                .AddColumn(new td().AddInnerComponent(new p().AddInnerText($"Namespace: <b>{currentNamespace}</b>")))
+                .AddColumn(new td().AddInnerComponent(new p().AddInnerText($"CommandCollection: <b>{currentcollection}</b>")))
+                .AddColumn(new td().AddInnerComponent(new p().AddInnerText($"Action: <b>{currentaction}</b>")))
+                );
+            div.AddInnerComponent(new br());
 
-                middle += @$"      <tr>
-    <td></td><td></td><td></td><td><input type=""submit"" style=""width: 97%;""/></td></tr>
-    <tr>";
-                middle += "</form>";
+            if (_Action.Equals(string.Empty))
+            {
+                div.AddInnerComponent(GetActionListPage(_Namespace, _CommandCollection, _Action, list));
+            }
+            else if (!_Action.Equals(string.Empty))
+            {
+                div.AddInnerComponent(GetSingleActionPage(_Namespace, _CommandCollection, _Action, collections));
             }
 
-            return top + middle + bottom;
+            return WebPage;
         }
 
-        public static string GetDocumentationRequlstPage(Result result)
+        public static WebPage GetDocumentationRequestPage(Result result)
         {
-            string top = @$"
-<!doctype html>
-<html>
-  <head>
-    <title>API-Documentation</title>
-  </head>
-  {style}
-  <body>
-    <div>
-";
-            string middle = @$"
-      <table class=""minimalistBlack"">
-      <thead>
-      <tr>
-      <th>Error</th>
-      <th>ErrorType</th>
-      <th>ErrorMessage</th>
-      <th>ReturnValue</th>
-      </tr>
-      </thead>
-      <tbody>";
+            WebPage WebPage = new WebPage().AddInnerComponent(new head().AddInnerComponent(new title().AddInnerText("API-Documentation")));
+            WebPage.AddInnerComponent(style.DocumentationStyle);
+            body body = new();
+            div div = new();
+            WebPage.AddInnerComponent(body);
+            body.AddInnerComponent(div);
 
-            string bottom = @"
-      </tbody>
-      </table>
-    </div>
-  </body>
-</html>
-";
+            table table = new table();
+            table.AddAttribute("class", "minimalistBlack");
+            thead thead = new thead();
+            table.AddColumns(new tr()
+                .AddColumn(new th().AddInnerText("Error"))
+                .AddColumn(new th().AddInnerText("ErrorType"))
+                .AddColumn(new th().AddInnerText("ErrorMessage"))
+                .AddColumn(new th().AddInnerText("ReturnValue"))
+                );
+
             Func<string, string> GetReady = input =>
             {
                 if (string.IsNullOrEmpty(input))
                 {
                     return input;
                 }
-                return input.Replace("\"", "<b>\"</b>").Replace("{", "<b>{</b>").Replace("}", "<b>}</b>").Replace("[", "<b>[</b>").Replace("]", "<b>]</b>").Replace(",", "<b>,</b>");
+                string result = "";
+                int cnt = 0;
+                foreach (char chr in input)
+                {
+                    string newchr = "";
+                    switch (chr)
+                    {
+                        case '\"':
+                            newchr = "<span style=\"color: darkmagenta; \">\"</span>";
+                            break;
+
+                        case ',':
+                            newchr = "<span style=\"color: darkmagenta; \">,</span><br/>" + string.Concat(Enumerable.Repeat("&nbsp;", cnt * 4));
+                            break;
+
+                        case '{':
+                            cnt++;
+                            newchr = "<span style=\"color: darkmagenta; \">{</span><br/>" + string.Concat(Enumerable.Repeat("&nbsp;", cnt * 4));
+                            break;
+
+                        case '}':
+                            cnt--;
+                            newchr = "<br/>" + string.Concat(Enumerable.Repeat("&nbsp;", cnt * 4)) + "<span style=\"color: darkmagenta; \">}</span>";
+                            break;
+
+                        case '[':
+                            cnt++;
+                            newchr = "<span style=\"color: darkmagenta; \">[</span><br/>" + string.Concat(Enumerable.Repeat("&nbsp;", cnt * 4));
+                            break;
+
+                        case ']':
+                            cnt--;
+                            newchr = "<br/>" + string.Concat(Enumerable.Repeat("&nbsp;", cnt * 4)) + "<span style=\"color: darkmagenta; \">]</span>";
+                            break;
+
+                        default:
+                            newchr = chr.ToString();
+                            break;
+                    }
+                    result += newchr;
+                }
+                return $"<span style=\"color: darkblue; \">{result}</span>";
+                return input.Replace("\"", "<b>\"</b>").Replace("{", "<b>{</b><br/>").Replace("}", "<br/><b>}</b>").Replace("[", "<b>[</b><br/>").Replace("]", "<br/><b>]</b>").Replace(",", "<b>,</b><br/>");
             };
 
-            string color = result.Error ? "red" : "#28B463";
+            string color = result.Error ? "darkred" : "darkgreen";
 
-            middle += @$"      <tr style=""color: {color};"">
-    <td>{GetReady(result.Error.ToString())}</td><td>{GetReady(result.ErrorType?.ToString())}</td><td>{GetReady(result.ErrorMessage)}</td><td>{GetReady(result.ReturnValue)}</td></tr>
-    <tr>";
+            table.AddAttribute("style", $"border-color: {color};").AddDataRow(new tr()
+                .AddColumn(new td().AddInnerText(GetReady(result.Error.ToString())))
+                .AddColumn(new td().AddInnerText(GetReady(result.ErrorType?.ToString())))
+                .AddColumn(new td().AddInnerText(GetReady(result.ErrorMessage)))
+                .AddColumn(new td().AddInnerText(GetReady(result.ReturnValue)))
+                );
+            div.AddInnerComponent(table);
 
-            return top + middle + bottom;
+            return WebPage;
+        }
+
+        private static WebComponent GetActionListPage(string _Namespace, string _CommandCollection, string _Action, List<(string Namespace, string CollectionName, string MethodName, string Parameters)> CommandCollectionList)
+        {
+            table table = new table();
+            table.AddAttribute("class", "minimalistBlack");
+            thead thead = new thead();
+            table.AddColumns(new tr()
+                .AddColumn(new th().AddInnerText("Namespace"))
+                .AddColumn(new th().AddInnerText("CommandCollection"))
+                .AddColumn(new th().AddInnerText("Action"))
+                .AddColumn(new th().AddInnerText("Paramters"))
+                );
+
+            foreach ((string Namespace, string CollectionName, string MethodName, string Parameters) item in CommandCollectionList.OrderBy(o => o.Namespace).ThenBy(o => o.CollectionName).ThenBy(o => o.MethodName))
+            {
+                WebComponent wcnamespace = item.Namespace == _Namespace ? new WebComponentText().AddInnerText(item.Namespace) : new a().SetLink($"/documentation/{item.Namespace}").AddInnerText(item.Namespace);
+                WebComponent wccollection = item.CollectionName == _CommandCollection ? new WebComponentText().AddInnerText(item.CollectionName) : new a().SetLink($"/documentation/{item.Namespace}/{item.CollectionName}").AddInnerText(item.CollectionName);
+                WebComponent wcnaction = item.MethodName == _Action ? new WebComponentText().AddInnerText(item.MethodName) : new a().SetLink($"/documentation/{item.Namespace}/{item.CollectionName}/{item.MethodName}").AddInnerText(item.MethodName);
+                table.AddDataRow(new tr()
+                    .AddColumn(new td().AddInnerComponent(wcnamespace))
+                    .AddColumn(new td().AddInnerComponent(wccollection))
+                    .AddColumn(new td().AddInnerComponent(wcnaction))
+                    .AddColumn(new td().AddInnerText(item.Parameters))
+                    );
+            }
+            return table;
+        }
+
+        private static WebComponent GetSingleActionPage(string _Namespace, string _CommandCollection, string _Action, IEnumerable<Type> CommandCollectionTypeList)
+        {
+            form form = new form();
+            form.AddAttribute("action", $"/documentation/{_Namespace}/{_CommandCollection}/{_Action}");
+            form.AddAttribute("method", "POST");
+            form.AddAttribute("target", "_blank");
+            form.AddAttribute("enctype", "text/plain");
+            input inputnamespace = new input().AddAttribute("name", "Namespace").AddAttribute("type", "hidden").AddAttribute("value", _Namespace);
+            input inputcollection = new input().AddAttribute("name", "CommandCollection").AddAttribute("type", "hidden").AddAttribute("value", _CommandCollection);
+            input inputaction = new input().AddAttribute("name", "Action").AddAttribute("type", "hidden").AddAttribute("value", _Action);
+
+            form.AddInnerComponent(inputnamespace);
+            form.AddInnerComponent(inputcollection);
+            form.AddInnerComponent(inputaction);
+
+            table table = new table();
+            form.AddInnerComponent(table);
+            table.AddAttribute("class", "minimalistBlack");
+            table.AddColumns(new tr()
+                .AddColumn(new th().AddInnerText("ParameterTypeNamespace"))
+                .AddColumn(new th().AddInnerText("ParameterType"))
+                .AddColumn(new th().AddInnerText("ParameterName"))
+                .AddColumn(new th().AddInnerText("ParameterValue"))
+                );
+
+            if (CommandCollectionTypeList.Count() == 1)
+            {
+                Type Col = CommandCollectionTypeList.First();
+                IEnumerable<MethodInfo> milist = Col.GetMethods().Where(o => (o.Name.Replace("CC_", "").Equals(_Action) || o.Name.Equals(_Action)) && o.IsPublic && o.ReturnType == typeof(Result));
+                if (milist.Any())
+                {
+                    MethodInfo MI = milist.First();
+                    foreach (ParameterInfo PI in MI.GetParameters())
+                    {
+                        IParser Parser = ParsingMaster.GetParser(PI.ParameterType, typeof(string));
+                        string Default = Parser?.GetDefault(PI.ParameterType).ToString();
+                        
+                        table.AddDataRow(new tr()
+                            .AddColumn(new td().AddInnerText(PI.ParameterType.Namespace))
+                            .AddColumn(new td().AddInnerText(PI.ParameterType.Name))
+                            .AddColumn(new td().AddInnerText(PI.Name))
+                            .AddColumn(new td().AddInnerComponent(new input().AddAttribute("name", PI.Name).AddAttribute("type", "text").AddAttribute("value", Default)))
+                            );
+                    }
+                }
+            }
+
+            table.AddDataRow(new tr()
+                            .AddColumn(new td())
+                            .AddColumn(new td())
+                            .AddColumn(new td())
+                            .AddColumn(new td().AddInnerComponent(new input().AddAttribute("type", "submit")))
+                            );
+            return form;
         }
     }
 }

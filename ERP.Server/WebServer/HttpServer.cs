@@ -25,20 +25,19 @@ namespace ERP.Server.WebServer
         {
             Result Result = new(new ErpException("UnknownError"));
 
-            bool isWebSendedRequest = false;
-
             if (Request == null)
             {
                 Result = new(new ErpException("Request is null"));
             }
             else
             {
-                string datastring = string.Empty;
-                if (Request.HttpMethod == "GET")
+                bool documentation = Request.Url?.AbsolutePath.StartsWith("/documentation/") == true;
+
+                if (Request.HttpMethod == "GET" && documentation)
                 {
                     try
                     {
-                        return DocumentationMaster.GetDocumentationPage(Request.Url?.AbsolutePath);
+                        return DocumentationMaster.GetDocumentationPage(Request.Url?.AbsolutePath).ToString();
                     }
                     catch (Exception ex)
                     {
@@ -48,15 +47,29 @@ namespace ERP.Server.WebServer
                 else if (Request.HttpMethod == "POST")
                 {
                     using StreamReader Reader = new(Request.InputStream);
-                    datastring = Reader.ReadToEnd();
+
+                    string datastring = Reader.ReadToEnd();
 
                     if (!string.IsNullOrEmpty(datastring))
                     {
                         try
                         {
-                            DataInput Input = GetInputFromData(datastring, out isWebSendedRequest);
-                            Result = CommandMaster.ExecuteCommand(Input);
+                            DataInput Input = GetInputFromData(datastring);
+                            try
+                            {
+
+                                Result = CommandMaster.ExecuteCommand(Input);
+                            }
+                            catch (Exception ex)
+                            {
+                                Result.Error = true;
+                                Result.ErrorMessage = ex.Message;
+                            }
                             Log.WriteLine($"Executed Command: {Input.Command}", ConsoleColor.Green);
+                            if (documentation)
+                            {
+                                return DocumentationMaster.GetDocumentationRequestPage(Result).ToString();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -74,26 +87,18 @@ namespace ERP.Server.WebServer
                 else
                 {
                     Result.Error = true;
-                    Result.ErrorMessage = "Method must be POST";
+                    Result.ErrorMessage = "HttpMethod must be POST";
                 }
             }
 
-            string resultObject = Result.Serialize();
-
-            if (isWebSendedRequest)
-            {
-                resultObject = DocumentationMaster.GetDocumentationRequlstPage(Result);
-            }
-
-            return resultObject;
+            return Result.Serialize();
         }
 
-        private static DataInput GetInputFromData(string Data, out bool IsWebSendedRequest)
+        private static DataInput GetInputFromData(string Data)
         {
             DataInput Input = null;
             if (Data.StartsWith("Namespace"))
             {
-                IsWebSendedRequest = true;
                 try
                 {
                     string Namespace = "";
@@ -135,7 +140,6 @@ namespace ERP.Server.WebServer
             {
                 try
                 {
-                    IsWebSendedRequest = false;
                     Input = Json.Deserialize<DataInput>(Data);
                 }
                 catch
