@@ -41,11 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Windows.WF.Binding", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Windows.WF.BindableControlSet", "ERP.Windows.WF.BindableControlSet\ERP.Windows.WF.BindableControlSet.csproj", "{AEDB920A-2BC5-480B-A174-0025D7222250}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Parsing", "ERP.Parsing\ERP.Parsing.csproj", "{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OUTPUT--ERP--General", "OUTPUT--ERP--General\OUTPUT--ERP--General.csproj", "{6D0C0B02-FE12-4775-920D-1CEAE53E3303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OUTPUT--ERP--General", "OUTPUT--ERP--General\OUTPUT--ERP--General.csproj", "{6D0C0B02-FE12-4775-920D-1CEAE53E3303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OUTPUT--ERP--Windows", "OUTPUT--ERP--Windows\OUTPUT--ERP--Windows.csproj", "{F20B466C-C3EC-452D-9E1B-CD8174A724C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OUTPUT--ERP--Windows", "OUTPUT--ERP--Windows\OUTPUT--ERP--Windows.csproj", "{F20B466C-C3EC-452D-9E1B-CD8174A724C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERP.Parsing", "ERP.Parsing\ERP.Parsing.csproj", "{773B011A-5CDA-4A5B-9DBF-B4E7780AB614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,10 +113,6 @@ Global
 		{AEDB920A-2BC5-480B-A174-0025D7222250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEDB920A-2BC5-480B-A174-0025D7222250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEDB920A-2BC5-480B-A174-0025D7222250}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCFE031A-DB4E-4959-BFAC-ED9D2ED7CD38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D0C0B02-FE12-4775-920D-1CEAE53E3303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D0C0B02-FE12-4775-920D-1CEAE53E3303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D0C0B02-FE12-4775-920D-1CEAE53E3303}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -125,6 +121,10 @@ Global
 		{F20B466C-C3EC-452D-9E1B-CD8174A724C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F20B466C-C3EC-452D-9E1B-CD8174A724C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F20B466C-C3EC-452D-9E1B-CD8174A724C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773B011A-5CDA-4A5B-9DBF-B4E7780AB614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773B011A-5CDA-4A5B-9DBF-B4E7780AB614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773B011A-5CDA-4A5B-9DBF-B4E7780AB614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773B011A-5CDA-4A5B-9DBF-B4E7780AB614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

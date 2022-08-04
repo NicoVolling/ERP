@@ -52,6 +52,7 @@ namespace ERP.BaseLib.Objects
             {
                 throw new ArgumentAlreadyExistsErpException(Argument.Name);
             }
+            _arguments.Add(Argument);
         }
 
         /// <summary>

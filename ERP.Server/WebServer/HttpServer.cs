@@ -25,6 +25,8 @@ namespace ERP.Server.WebServer
         {
             Result Result = new(new ErpException("UnknownError"));
 
+            bool isWebSendedRequest = false;
+
             if (Request == null)
             {
                 Result = new(new ErpException("Request is null"));
@@ -32,12 +34,18 @@ namespace ERP.Server.WebServer
             else
             {
                 string datastring = string.Empty;
-                if (Request.HttpMethod != "POST")
+                if (Request.HttpMethod == "GET")
                 {
-                    Result.Error = true;
-                    Result.ErrorMessage = "Method must be POST";
+                    try
+                    {
+                        return DocumentationMaster.GetDocumentationPage(Request.Url?.AbsolutePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        return ex.Message;
+                    }
                 }
-                else
+                else if (Request.HttpMethod == "POST")
                 {
                     using StreamReader Reader = new(Request.InputStream);
                     datastring = Reader.ReadToEnd();
@@ -46,7 +54,7 @@ namespace ERP.Server.WebServer
                     {
                         try
                         {
-                            DataInput Input = Json.Deserialize<DataInput>(datastring);
+                            DataInput Input = GetInputFromData(datastring, out isWebSendedRequest);
                             Result = CommandMaster.ExecuteCommand(Input);
                             Log.WriteLine($"Executed Command: {Input.Command}", ConsoleColor.Green);
                         }
@@ -63,11 +71,79 @@ namespace ERP.Server.WebServer
                         Result.ErrorMessage = "Missing command";
                     }
                 }
+                else
+                {
+                    Result.Error = true;
+                    Result.ErrorMessage = "Method must be POST";
+                }
             }
 
             string resultObject = Result.Serialize();
 
+            if (isWebSendedRequest)
+            {
+                resultObject = DocumentationMaster.GetDocumentationRequlstPage(Result);
+            }
+
             return resultObject;
+        }
+
+        private static DataInput GetInputFromData(string Data, out bool IsWebSendedRequest)
+        {
+            DataInput Input = null;
+            if (Data.StartsWith("Namespace"))
+            {
+                IsWebSendedRequest = true;
+                try
+                {
+                    string Namespace = "";
+                    string CommandCollection = "";
+                    string Action = "";
+                    foreach (string item in Data.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string[] kvp = item.Split('=');
+                        string name = kvp[0];
+                        string value = kvp[1];
+                        switch (name)
+                        {
+                            case "Namespace":
+                                Namespace = value;
+                                break;
+
+                            case "CommandCollection":
+                                CommandCollection = value;
+                                break;
+
+                            case "Action":
+                                Action = value;
+                                Input = new DataInput(new(Namespace, CommandCollection, Action));
+                                break;
+
+                            default:
+                                string val = value.TrimStart().StartsWith("{") || value.TrimStart().StartsWith("[") ? value : "\"" + value + "\"";
+                                Input.Arguments.Add(new(name, val));
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                try
+                {
+                    IsWebSendedRequest = false;
+                    Input = Json.Deserialize<DataInput>(Data);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            return Input;
         }
     }
 }

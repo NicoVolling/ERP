@@ -1,4 +1,5 @@
-﻿using ERP.Business.Objects;
+﻿using ERP.BaseLib.Serialization;
+using ERP.Business.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,6 +109,11 @@ namespace ERP.Parsing.Parser
                 o => o.IsEmpty(),
                 () => BusinessObject.Empty
             ));
+
+            AddParser(new StringParser<Guid>(
+                (o, fo) => Guid.Parse(o),
+                (o, fo) => o.ToString()
+                ));
         }
     }
 }

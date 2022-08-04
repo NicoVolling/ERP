@@ -227,7 +227,12 @@ namespace ERP.Commands.Base
                         {
                             try
                             {
-                                Params.Add(Json.Deserialize(arg, Parameter.ParameterType));
+                                Object Param = Json.Deserialize(arg, Parameter.ParameterType);
+                                if (Param is null && !Parameter.IsOptional)
+                                {
+                                    throw new MissingArgumentErpException(Parameter.Name);
+                                }
+                                Params.Add(Param);
                             }
                             catch
                             {

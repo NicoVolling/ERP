@@ -11,12 +11,12 @@ namespace ERP.Commands.Base
     /// </summary>
     public static class CommandMaster
     {
+        private static Timer timer;
+
         /// <summary>
         /// All CommandCollectionTypes founded in the Namespace.
         /// </summary>
-        private static List<Type> CommandCollectionTypes = new();
-
-        private static Timer timer;
+        public static List<Type> CommandCollectionTypes { get; private set; } = new();
 
         /// <summary>
         /// Executes the command. Can only be used on server-side

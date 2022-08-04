@@ -11,6 +11,7 @@
     <ProjectReference Include="..\ERP.Commands\ERP.Commands.csproj" />
     <ProjectReference Include="..\ERP.Exceptions\ERP.Exceptions.csproj" />
     <ProjectReference Include="..\ERP.Lib\ERP.BaseLib.csproj" />
+    <ProjectReference Include="..\ERP.Parsing\ERP.Parsing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ namespace ERP.Test.Server.Library
     {
         public static void SetAssembly()
         {
-            CommandCollection.ParentNamespace = "ERP.Test.Server.Library";
+            CommandCollection.ParentNamespace = "ERP.Test.Server.Library.Commands";
             CommandCollection.CommandAssembly = Assembly.GetExecutingAssembly();
         }
     }
