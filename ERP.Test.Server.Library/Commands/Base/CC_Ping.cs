@@ -5,10 +5,10 @@ namespace ERP.Test.Server.Library.Commands.Base
 {
     public class CC_Ping : CommandCollection
     {
-        public Result Ping(Result Result)
+        public Result<bool> Ping()
         {
-            if (!ServerSide) { return GetClientResult(Result); }
-            return Result;
+            if (!ServerSide) { return GetClientResult().ToGenericResult<bool>(); }
+            return new(true);
         }
     }
 }

@@ -39,19 +39,25 @@ namespace ERP.Server.WebServer
                 collections = collections.Where(o => o.Name.Equals(_CommandCollection) || o.Name.Replace("CC_", "").Equals(_CommandCollection));
             }
 
-            List<(string Namespace, string CollectionName, string MethodName, string Parameters)> list = new();
+            List<(string Namespace, string CollectionName, string MethodName, string ReturnType, string Parameters)> list = new();
 
             foreach (Type collection in collections)
             {
                 foreach (MethodInfo mi in collection.GetMethods())
                 {
-                    if (mi.ReturnType == typeof(Result) && mi.IsPublic)
+                    if (mi.ReturnType.BaseType == typeof(Result) && mi.IsPublic)
                     {
                         string methodname = mi.Name;
                         string parameters = mi.GetParameters().Length.ToString();
                         string collectionname = collection.Name.Replace("CC_", "");
+                        string returntype = "";
 
-                        list.Add((collection.Namespace.Replace(CommandCollection.ParentNamespace + ".", ""), collectionname, methodname, parameters));
+                        if(mi.ReturnType.GenericTypeArguments.First() is Type type) 
+                        {
+                            returntype = GetReturnTypeFormatted(type);
+                        }
+
+                        list.Add((collection.Namespace.Replace(CommandCollection.ParentNamespace + ".", ""), collectionname, methodname, returntype, parameters));
                     }
                 }
             }
@@ -101,6 +107,27 @@ namespace ERP.Server.WebServer
             return WebPage;
         }
 
+        private static string GetReturnTypeFormatted(Type type)
+        {
+            string returntype = "";
+            if (type.GenericTypeArguments.Length < 1)
+            {
+                returntype = type.Name;
+            }
+            else
+            {
+                returntype = string.Concat(type.Name.TakeWhile(o => o != '`'));
+                returntype += "&#60;";
+                foreach (Type tp in type.GenericTypeArguments)
+                {
+                    if (!returntype.EndsWith("&#60;")) { returntype += ", "; }
+                    returntype += tp.Name;
+                }
+                returntype += "&#62;";
+            }
+            return returntype;
+        }
+
         public static WebPage GetDocumentationRequestPage(Result result)
         {
             WebPage WebPage = new WebPage().AddInnerComponent(new head().AddInnerComponent(new title().AddInnerText("API-Documentation")));
@@ -117,6 +144,7 @@ namespace ERP.Server.WebServer
                 .AddColumn(new th().AddInnerText("Error"))
                 .AddColumn(new th().AddInnerText("ErrorType"))
                 .AddColumn(new th().AddInnerText("ErrorMessage"))
+                .AddColumn(new th().AddInnerText("ReturnValueType"))
                 .AddColumn(new th().AddInnerText("ReturnValue"))
                 );
 
@@ -177,6 +205,7 @@ namespace ERP.Server.WebServer
                 .AddColumn(new td().AddInnerText(GetReady(result.Error.ToString())))
                 .AddColumn(new td().AddInnerText(GetReady(result.ErrorType?.ToString())))
                 .AddColumn(new td().AddInnerText(GetReady(result.ErrorMessage)))
+                .AddColumn(new td().AddInnerText(GetReady(result.ReturnValueType.Replace("<", "&#60;").Replace(">", "&#62;"))))
                 .AddColumn(new td().AddInnerText(GetReady(result.ReturnValue)))
                 );
             div.AddInnerComponent(table);
@@ -184,7 +213,7 @@ namespace ERP.Server.WebServer
             return WebPage;
         }
 
-        private static WebComponent GetActionListPage(string _Namespace, string _CommandCollection, string _Action, List<(string Namespace, string CollectionName, string MethodName, string Parameters)> CommandCollectionList)
+        private static WebComponent GetActionListPage(string _Namespace, string _CommandCollection, string _Action, List<(string Namespace, string CollectionName, string MethodName, string ReturnType, string Parameters)> CommandCollectionList)
         {
             table table = new table();
             table.AddAttribute("class", "minimalistBlack");
@@ -193,10 +222,11 @@ namespace ERP.Server.WebServer
                 .AddColumn(new th().AddInnerText("Namespace"))
                 .AddColumn(new th().AddInnerText("CommandCollection"))
                 .AddColumn(new th().AddInnerText("Action"))
+                .AddColumn(new th().AddInnerText("ReturnType"))
                 .AddColumn(new th().AddInnerText("Paramters"))
                 );
 
-            foreach ((string Namespace, string CollectionName, string MethodName, string Parameters) item in CommandCollectionList.OrderBy(o => o.Namespace).ThenBy(o => o.CollectionName).ThenBy(o => o.MethodName))
+            foreach ((string Namespace, string CollectionName, string MethodName, string ReturnType, string Parameters) item in CommandCollectionList.OrderBy(o => o.Namespace).ThenBy(o => o.CollectionName).ThenBy(o => o.MethodName))
             {
                 WebComponent wcnamespace = item.Namespace == _Namespace ? new WebComponentText().AddInnerText(item.Namespace) : new a().SetLink($"/documentation/{item.Namespace}").AddInnerText(item.Namespace);
                 WebComponent wccollection = item.CollectionName == _CommandCollection ? new WebComponentText().AddInnerText(item.CollectionName) : new a().SetLink($"/documentation/{item.Namespace}/{item.CollectionName}").AddInnerText(item.CollectionName);
@@ -205,6 +235,7 @@ namespace ERP.Server.WebServer
                     .AddColumn(new td().AddInnerComponent(wcnamespace))
                     .AddColumn(new td().AddInnerComponent(wccollection))
                     .AddColumn(new td().AddInnerComponent(wcnaction))
+                    .AddColumn(new td().AddInnerText(item.ReturnType))
                     .AddColumn(new td().AddInnerText(item.Parameters))
                     );
             }
@@ -239,7 +270,7 @@ namespace ERP.Server.WebServer
             if (CommandCollectionTypeList.Count() == 1)
             {
                 Type Col = CommandCollectionTypeList.First();
-                IEnumerable<MethodInfo> milist = Col.GetMethods().Where(o => (o.Name.Replace("CC_", "").Equals(_Action) || o.Name.Equals(_Action)) && o.IsPublic && o.ReturnType == typeof(Result));
+                IEnumerable<MethodInfo> milist = Col.GetMethods().Where(o => (o.Name.Replace("CC_", "").Equals(_Action) || o.Name.Equals(_Action)) && o.IsPublic && o.ReturnType.BaseType == typeof(Result));
                 if (milist.Any())
                 {
                     MethodInfo MI = milist.First();
@@ -247,7 +278,7 @@ namespace ERP.Server.WebServer
                     {
                         IParser Parser = ParsingMaster.GetParser(PI.ParameterType, typeof(string));
                         string Default = Parser?.GetDefault(PI.ParameterType).ToString();
-                        
+
                         table.AddDataRow(new tr()
                             .AddColumn(new td().AddInnerText(PI.ParameterType.Namespace))
                             .AddColumn(new td().AddInnerText(PI.ParameterType.Name))

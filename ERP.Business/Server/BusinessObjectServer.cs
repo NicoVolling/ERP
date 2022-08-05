@@ -48,12 +48,12 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Change(Guid SECURITY_CODE, T_BusinessObject Data)
+        public Result<T_BusinessObject> Change(Guid SECURITY_CODE, T_BusinessObject Data)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data); }
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data).ToGenericResult<T_BusinessObject>(); }
             T_BusinessObject res = OnChange(SECURITY_CODE, Data);
             DataChanged = true;
-            return new Result(res);
+            return new(res);
         }
 
         /// <summary>
@@ -61,12 +61,12 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="Data"></param>
         /// <returns></returns>
-        public Result Create(Guid SECURITY_CODE, T_BusinessObject Data)
+        public Result<T_BusinessObject> Create(Guid SECURITY_CODE, T_BusinessObject Data)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data); }
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, Data).ToGenericResult<T_BusinessObject>(); }
             T_BusinessObject res = OnCreate(SECURITY_CODE, Data);
             DataChanged = true;
-            return new Result(res);
+            return new(res);
         }
 
         /// <summary>
@@ -74,12 +74,12 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result Delete(Guid SECURITY_CODE, Guid ID)
+        public Result<bool> Delete(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID).ToGenericResult<bool>(); }
             bool res = OnDelete(SECURITY_CODE, ID);
             DataChanged = true;
-            return new Result(res);
+            return new(res);
         }
 
         void IFileSaver.DeserializeData(string Raw)
@@ -105,10 +105,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetData(Guid SECURITY_CODE, Guid ID)
+        public Result<T_BusinessObject> GetData(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
-            return new Result(OnGetData(SECURITY_CODE, ID));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID).ToGenericResult<T_BusinessObject>(); }
+            return new(OnGetData(SECURITY_CODE, ID));
         }
 
         /// <summary>
@@ -116,20 +116,20 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Result GetExistence(Guid SECURITY_CODE, Guid ID)
+        public Result<bool> GetExistence(Guid SECURITY_CODE, Guid ID)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID); }
-            return new Result(OnGetExistence(SECURITY_CODE, ID));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, ID).ToGenericResult<bool>(); }
+            return new(OnGetExistence(SECURITY_CODE, ID));
         }
 
         /// <summary>
         /// Gets a list of all Objects.
         /// </summary>
         /// <returns></returns>
-        public Result GetList(Guid SECURITY_CODE)
+        public Result<IEnumerable<BusinessObjectIdentifier>> GetList(Guid SECURITY_CODE)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE); }
-            return new Result(OnGetList(SECURITY_CODE).Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE).ToGenericResult<IEnumerable<BusinessObjectIdentifier>>(); }
+            return new(OnGetList(SECURITY_CODE).Select(o => new BusinessObjectIdentifier(o.ID, o.ToString())));
         }
 
         /// <summary>
@@ -137,10 +137,10 @@ namespace ERP.Business.Server
         /// </summary>
         /// <param name="IDs">IDs</param>
         /// <returns></returns>
-        public Result GetObjects(Guid SECURITY_CODE, Guid[] IDs)
+        public Result<IEnumerable<T_BusinessObject>> GetObjects(Guid SECURITY_CODE, Guid[] IDs)
         {
-            if (!ServerSide) { return GetClientResult(SECURITY_CODE, IDs); }
-            return new Result(OnGetList(SECURITY_CODE).Where(o => IDs.Any(p => p == o.ID)).ToArray());
+            if (!ServerSide) { return GetClientResult(SECURITY_CODE, IDs).ToGenericResult<IEnumerable<T_BusinessObject>>(); }
+            return new(OnGetList(SECURITY_CODE).Where(o => IDs.Any(p => p == o.ID)).ToArray());
         }
 
         public void Load()

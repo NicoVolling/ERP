@@ -5,7 +5,7 @@ namespace ERP.BaseLib.Objects
     /// <summary>
     /// A result contains all needed information when the server answers the client.
     /// </summary>
-    public sealed class Result
+    public class Result
     {
         /// <summary>
         /// Wether the request was successful.
@@ -26,6 +26,11 @@ namespace ERP.BaseLib.Objects
         /// All data wich server sends to client.
         /// </summary>
         public string ReturnValue;
+
+        /// <summary>
+        /// Type of <see cref="ReturnValue"/>
+        /// </summary>
+        public virtual string ReturnValueType { get; set; }
 
         /// <summary>
         /// Constructor
@@ -71,17 +76,17 @@ namespace ERP.BaseLib.Objects
         /// <summary>
         /// Result for False-Answer
         /// </summary>
-        public static Result False { get => new("False"); }
+        public static Result False { get => new Result<bool>(false); }
 
         /// <summary>
         /// Everything worked well.
         /// </summary>
-        public static Result OK { get => new("OK"); }
+        public static Result OK { get => new Result<string>("OK"); }
 
         /// <summary>
         /// Result for True-Answer
         /// </summary>
-        public static Result True { get => new("True"); }
+        public static Result True { get => new Result<bool>(true); }
 
         public static implicit operator Result(string String)
         {
@@ -128,6 +133,16 @@ namespace ERP.BaseLib.Objects
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public Result<T> ToGenericResult<T>()
+        {
+            return Json.Deserialize<Result<T>>(this.Serialize());
+        }
+
+        public Result ToResult<T>(Result<T> Result)
+        {
+            return Json.Deserialize<Result>(Result.Serialize());
         }
 
         public override string ToString()

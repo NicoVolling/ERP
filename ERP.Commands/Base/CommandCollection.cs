@@ -245,7 +245,7 @@ namespace ERP.Commands.Base
                         throw new ParameterNotSupportedErpException(Parameter.ParameterType);
                     }
                 }
-                if (MI.ReturnType == typeof(Result))
+                if (MI.ReturnType.BaseType == typeof(Result))
                 {
                     try
                     {
