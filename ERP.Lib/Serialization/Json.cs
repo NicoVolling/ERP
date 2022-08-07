@@ -88,16 +88,6 @@ namespace ERP.BaseLib.Serialization
         /// </summary>
         /// <param name="Object">Object.</param>
         /// <returns>String.</returns>
-        //public static string Serialize(Object Object)
-        //{
-        //    return JsonConvert.SerializeObject(Object, Formatting.Indented, Settings);
-        //}
-
-        /// <summary>
-        /// Converts the object to a string.
-        /// </summary>
-        /// <param name="Object">Object.</param>
-        /// <returns>String.</returns>
         public static string Serialize(this Object Object)
         {
             return JsonConvert.SerializeObject(Object, Formatting.Indented, Settings);
