@@ -7,9 +7,12 @@ namespace ERP.Parsing.Parser
     public interface IParser
     {
         public Type Type1 { get; }
+
         public Type Type2 { get; }
 
         public bool CanParse(Object Object, Type TargetType);
+
+        public bool Compare(Object Object1, Object Object2);
 
         public bool Fits(Type Type1, Type Type2)
         {

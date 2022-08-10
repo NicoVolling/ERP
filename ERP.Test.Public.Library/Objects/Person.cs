@@ -11,7 +11,7 @@ namespace ERP.Test.Public.Library.Objects
         private string firstname;
         private string name;
 
-        [ShowGUI("Geburtstag", 2)]
+        [ShowGUI("Geburtstag", 3)]
         [JsonConverter(typeof(DateOnlyConverter))]
         public DateOnly Birthday
         {
@@ -19,21 +19,21 @@ namespace ERP.Test.Public.Library.Objects
             set { birthday = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(Salary)); }
         }
 
-        [ShowGUI("Vorname", 0)]
+        [ShowGUI("Vorname", 1)]
         public string Firstname
         {
             get => firstname;
             set { firstname = value; NotifyPropertyChanged(); }
         }
 
-        [ShowGUI("Nachname", 1)]
+        [ShowGUI("Nachname", 2)]
         public string Name
         {
             get => name;
             set { name = value; NotifyPropertyChanged(); }
         }
 
-        [ShowGUI("Gehalt", 3, "N2", " €")]
+        [ShowGUI("Gehalt", 4, "N2", " €")]
         [JsonIgnore]
         public double Salary
         {
@@ -46,6 +46,9 @@ namespace ERP.Test.Public.Library.Objects
                 return 0;
             }
         }
+
+        [ShowGUI("Person", 0)]
+        public override string ToStringValue => base.ToStringValue;
 
         public override string OnToString()
         {

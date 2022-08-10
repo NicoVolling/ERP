@@ -29,6 +29,11 @@ namespace ERP.Parsing.Parser
             return Object.GetType().Equals(TargetType);
         }
 
+        public bool Compare(Object Object1, Object Object2)
+        {
+            return Object1.Equals(Object2);
+        }
+
         public object GetDefault(Type TargeType)
         {
             return GetDefault1();

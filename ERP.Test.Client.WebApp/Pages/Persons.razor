@@ -1,0 +1,83 @@
+﻿@page "/persons"
+@using ERP.Business.Objects.Attributes
+@using ERP.Parsing.Parser
+@using ERP.Test.Public.Library.Objects;
+@using System.Reflection
+@inherits BaseComponent
+<PageTitle>Personen</PageTitle>
+<h1>Personen</h1>
+
+<p>Hier können Personen über die Weboberfläche verwaltet werden.</p>
+
+<table class="styled-table" style="width: 100%; min-height: 100%;">
+    @{
+        IEnumerable<(PropertyInfo PI, ShowGUIAttribute SGA)> props = typeof(Person).GetProperties().Select<PropertyInfo, (PropertyInfo PI, ShowGUIAttribute SGA)>(o => new(o, o.GetCustomAttribute<ShowGUIAttribute>())).Where(o => o.SGA != null).OrderBy(o => o.SGA.ID);
+        string width = ((double)100 / (props.Count() + 1)).ToString("N4");
+    }
+    <thead>
+        <tr>
+            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+            {
+                <th style="width: @width%;">
+                    @Property.SGA.UserFriendlyName
+                </th>
+            }
+            <th style="width: @width%;">
+                Aktionen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(Person Person in Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o.ID).ToArray()))
+    {
+        <tr>
+            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+            {
+                <td>
+                    <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly/>
+                </td>
+            }
+            <td>
+                <table class="no-table">
+                    <tr >
+                        <td style="width: 50%;">
+                            <button class="button-yellow" @onclick="() => Edit(Person.ID)">Edit</button>
+                        </td>
+                        <td style="width: 50%;">
+                            <button class="button-red" @onclick="() => Delete(Person.ID)">Delete</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    }
+    <tr>
+        @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+        {
+            <td>
+                    @if(Property.PI.PropertyType == typeof(DateOnly))
+                    {
+                        <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>                        
+                    } else
+                    {
+                        <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>
+                    }
+            </td> 
+        }
+        <td>
+            <Container SetChild="SetChildAction" Group="@nameof(NewPerson)">
+                <table class="no-table">
+                    <tr>
+                        <td style="width: 50%;">
+                            <button class="button-green" @onclick="Save" disabled=@CanSave>@(NewPerson.ID == Guid.Empty ? "Create" : "Save")</button>
+                        </td>
+                        <td style="width: 50%;">
+                            <button class="button-black" @onclick="New" disabled=@CanSave>Abort</button>
+                        </td>
+                    </tr>
+                </table>
+            </Container>
+        </td>
+    </tr>
+    </tbody>
+</table>

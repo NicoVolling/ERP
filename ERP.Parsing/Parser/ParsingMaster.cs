@@ -87,10 +87,11 @@ namespace ERP.Parsing.Parser
                 ));
 
             AddParser(new StringParser<bool>(
-                (o, fo) => bool.Parse(o),
-                (o, fo) => o.ToString(),
+                (o, fo) => o.ToLower().Equals("true"),
+                (o, fo) => o ? "true" : "false",
                 o => o == false,
-                () => false
+                () => false,
+                () => "false"
                 ));
 
             AddParser(new StringParser<TimeOnly>(

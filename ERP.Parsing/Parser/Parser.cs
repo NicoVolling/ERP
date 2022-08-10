@@ -246,10 +246,13 @@ namespace ERP.Parsing.Parser
         }
 
         public Func<T1, ShowGUIAttribute, T2> OnParse1To2 { get; private set; }
+
         public Func<T2, ShowGUIAttribute, T1> OnParse2To1 { get; private set; }
+
         public Type Type1 { get => typeof(T1); }
 
         public Type Type2 { get => typeof(T2); }
+
         private Func<Object, Object, bool> Compare1 { get; set; }
 
         private Func<Object, Object, bool> Compare2 { get; set; }
@@ -271,6 +274,11 @@ namespace ERP.Parsing.Parser
             canParse = canParse || (TargetType == typeof(T1) && (Object is T2 || IsDefault2(Object)));
 
             return canParse;
+        }
+
+        public bool Compare(Object Object1, Object Object2)
+        {
+            return Object1 is T1 O1 && Object2 is T1 O2 ? Compare1(O1, O2) : Object1 is T2 P1 && Object2 is T2 P2 ? Compare2(P1, P2) : false;
         }
 
         public Object GetDefault(Type TargeType)

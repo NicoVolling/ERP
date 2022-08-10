@@ -22,6 +22,8 @@ namespace ERP.Business.Objects
         public Guid ID
         { get => iD; set { iD = value; NotifyPropertyChanged(); } }
 
+        public virtual string ToStringValue { get => ToString(); }
+
         public bool IsEmpty()
         {
             return ID == Empty.ID;

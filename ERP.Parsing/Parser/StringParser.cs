@@ -32,6 +32,10 @@ namespace ERP.Parsing.Parser
         {
         }
 
+        public StringParser(Func<string, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, string> OnParse2To1, Func<T2, bool> IsDefault2, Func<object> GetDefault2, Func<string> GetStringDefault) : base(OnParse1To2, OnParse2To1, IsStringDefault, IsDefault2, GetStringDefault, GetDefault2)
+        {
+        }
+
         public StringParser(Func<string, ShowGUIAttribute, T2> OnParse1To2, Func<T2, ShowGUIAttribute, string> OnParse2To1, Func<T2, T2, bool> Compare2, Func<T2, bool> IsDefault2, Func<object> GetDefault2) : base(OnParse1To2, OnParse2To1, Compare2, IsStringDefault, IsDefault2, GetStringDefault, GetDefault2)
         {
         }
