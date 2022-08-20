@@ -1,86 +1,95 @@
-﻿namespace ERP.IO.FileSystem
+﻿using ERP.Exceptions.ErpExceptions;
+using System.IO.Enumeration;
+
+namespace ERP.IO.FileSystem
 {
     /// <summary>
     /// Provides functions for saving the Data withing the class.
     /// </summary>
-    public interface IFileSaver
+    public class FileSaver
     {
-        /// <summary>
-        /// The relative path to the file.
-        /// </summary>
-        protected internal string Filename { get; }
-
-        /// <summary>
-        /// Loads all data.
-        /// </summary>
-        public static void Load(IFileSaver Target)
+        public FileSaver(string Namespace, string Name)
         {
-            if (!Target.CanLoad()) { return; }
-            try
+            Filename = $"{Namespace}.{Name}";
+        }
+
+        protected string Filename { get; }
+
+        public void Delete(Guid ID)
+        {
+            if (ObjectExists(ID))
             {
-                if (System.IO.File.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"))))
-                {
-                    Target.DeserializeData(System.IO.File.ReadAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json")));
-                }
-            }
-            catch
-            {
-                throw;
+                System.IO.Directory.Delete(GetFolderName(ID), true);
             }
         }
 
-        /// <summary>
-        /// Saves all data.
-        /// </summary>
-        public static void Save(IFileSaver Target)
+        public string GetBasePath()
         {
-            if (!Target.CanSave()) { return; }
-            try
+            string result = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Filename));
+            if (!System.IO.Directory.Exists(result))
             {
-                if (!System.IO.Directory.Exists(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data"))))
-                {
-                    System.IO.Directory.CreateDirectory(System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data")));
-                }
-                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Target.Filename + ".json"), Target.SerializeData());
+                System.IO.Directory.CreateDirectory(result);
             }
-            catch
+            return result;
+        }
+
+        public string GetFileName(Guid ID)
+        {
+            return System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Filename, ID.ToString().ToUpper(), "Data.json"));
+        }
+
+        public string GetFolderName(Guid ID)
+        {
+            return System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Filename, ID.ToString().ToUpper()));
+        }
+
+        public IEnumerable<Guid> GetList()
+        {
+            foreach (string str in System.IO.Directory.GetDirectories(GetBasePath()))
             {
-                throw;
+                if (Guid.TryParse(new DirectoryInfo(str).Name, out Guid ID))
+                {
+                    yield return ID;
+                }
             }
         }
 
-        /// <summary>
-        /// Loads all data.
-        /// </summary>
-        public void Load();
+        public string GetMeta(Guid ID)
+        {
+            if (ObjectExists(ID))
+            {
+                return System.IO.File.ReadAllText(GetMetaFileName(ID));
+            }
+            throw new MissingObjectErpException(typeof(Guid), ID);
+        }
 
-        /// <summary>
-        /// Loads all data.
-        /// </summary>
-        public void Save();
+        public string GetMetaFileName(Guid ID)
+        {
+            return System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Data", Filename, ID.ToString().ToUpper(), "Meta.json"));
+        }
 
-        /// <summary>
-        /// Will be executed before data will be loaded.
-        /// </summary>
-        /// <returns>If it is allowed to load data now.</returns>
-        protected internal bool CanLoad();
+        public string GetObject(Guid ID)
+        {
+            if (ObjectExists(ID))
+            {
+                return System.IO.File.ReadAllText(GetFileName(ID));
+            }
+            throw new MissingObjectErpException(typeof(Guid), ID);
+        }
 
-        /// <summary>
-        /// Will be executed before data will be saved.
-        /// </summary>
-        /// <returns>If it is allowed to save data now.</returns>
-        protected internal bool CanSave();
+        public bool ObjectExists(Guid ID)
+        {
+            return System.IO.File.Exists(GetFileName(ID));
+        }
 
-        /// <summary>
-        /// Deserializes the data in the class.
-        /// </summary>
-        /// <param name="Raw">Serialized Data.</param>
-        protected internal void DeserializeData(string Raw);
-
-        /// <summary>
-        /// Serializes the data in the class.
-        /// </summary>
-        /// <returns>Serialized Data.</returns>
-        protected internal string SerializeData();
+        public void Save(Guid ID, string Data, string MetaData)
+        {
+            if (!System.IO.Directory.Exists(GetFolderName(ID)))
+            {
+                System.IO.Directory.CreateDirectory(GetFolderName(ID));
+            }
+            System.IO.File.WriteAllText(GetFileName(ID), Data);
+            System.IO.File.WriteAllText(GetMetaFileName(ID), MetaData);
+        }
     }
 }

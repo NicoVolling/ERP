@@ -8,13 +8,13 @@ namespace ERP.Test.Client.WindowsApp.Windows
     public class PersonForm_DataContext : DataContext
     {
         private IBusinessObjectClient client;
-        private List<BusinessObjectIdentifier> objects;
+        private List<Guid> objects;
         private Person person;
 
         public IBusinessObjectClient Client
         { get => client; set { client = value; NotifyPropertyChanged(nameof(Client)); } }
 
-        public List<BusinessObjectIdentifier> Objects
+        public List<Guid> Objects
         { get => objects; set { objects = value; NotifyPropertyChanged(nameof(Objects)); } }
 
         public Person Person

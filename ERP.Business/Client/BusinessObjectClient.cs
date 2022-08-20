@@ -136,12 +136,31 @@ namespace ERP.Business.Client
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public List<BusinessObjectIdentifier> GetList(Guid SECURITY_CODE)
+        public List<Guid> GetList(Guid SECURITY_CODE)
         {
             Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetList(SECURITY_CODE);
             if (!Result.Error)
             {
-                return Json.Deserialize<List<BusinessObjectIdentifier>>(Result.ReturnValue);
+                return Json.Deserialize<List<Guid>>(Result.ReturnValue);
+            }
+            else
+            {
+                throw new ErpException($"{Result.ErrorType}:{Result.ErrorMessage}");
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of all objects metas from the server.
+        /// </summary>
+        /// <param name="SECURITY_CODE"></param>
+        /// <returns></returns>
+        /// <exception cref="ErpException"></exception>
+        public List<BusinessObjectMeta> GetMetaList(Guid SECURITY_CODE)
+        {
+            Result Result = CommandCollection.GetInstance<T_CommandCollection>().GetMetaList(SECURITY_CODE);
+            if (!Result.Error)
+            {
+                return Json.Deserialize<List<BusinessObjectMeta>>(Result.ReturnValue);
             }
             else
             {

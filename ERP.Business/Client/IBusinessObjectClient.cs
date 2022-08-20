@@ -56,7 +56,15 @@ namespace ERP.Business.Client
         /// <param name="SECURITY_CODE"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public List<BusinessObjectIdentifier> GetList(Guid SECURITY_CODE);
+        public List<Guid> GetList(Guid SECURITY_CODE);
+
+        /// <summary>
+        /// Gets a list of all objects metas from the server.
+        /// </summary>
+        /// <param name="SECURITY_CODE"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public List<BusinessObjectMeta> GetMetaList(Guid SECURITY_CODE);
 
         /// <summary>
         /// Gets Data of given Objects.

@@ -46,13 +46,13 @@ namespace ERP.Windows.WF.Binding.Controls
         [Category("Bindung")]
         public string BindingDestinationClient { get => ClientBinder.BindingDestination; set => ClientBinder.BindingDestination = value; }
 
-        public List<BusinessObjectIdentifier> BOIList { get; set; }
+        public List<Guid> BOIList { get; set; }
 
         public IBusinessObjectClient Client { get => ClientBinder.Value as IBusinessObjectClient; }
 
         public BaseBindable ClientBinder { get; } = new BaseBindable();
 
-        public Type OriginType => typeof(List<BusinessObjectIdentifier>);
+        public Type OriginType => typeof(List<Guid>);
 
         public bool ReadOnly { get; set; }
 
@@ -102,7 +102,7 @@ namespace ERP.Windows.WF.Binding.Controls
 
         public void SetControlValue(object Value)
         {
-            BOIList = Value as List<BusinessObjectIdentifier>;
+            BOIList = Value as List<Guid>;
             if (BOIList != null)
             {
                 currentSite = 1;
@@ -194,10 +194,11 @@ namespace ERP.Windows.WF.Binding.Controls
                 Guid[] array;
                 if (BOIList.Count() > 1)
                 {
-                    array = BOIList.Take(new Range(objectsfrom - 1, objectsto - 1)).Select(o => o.ID).ToArray();
-                } else 
+                    array = BOIList.Take(new Range(objectsfrom - 1, objectsto)).Select(o => o).ToArray();
+                }
+                else
                 {
-                    array = BOIList.Select(o => o.ID).ToArray();
+                    array = BOIList.Select(o => o).ToArray();
                 }
                 CurrentObjects = Client.GetObjects(DataContext.SECURITY_CODE, array);
 

@@ -33,7 +33,7 @@ namespace ERP.Test.Client.WebApp.Pages
 
         private bool NewPersonAnyError { get => GetChilds<TextInput>(nameof(NewPerson)).Any(o => o.Error); }
 
-        private IEnumerable<Person> PersonList { get => Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o.ID).ToArray()); }
+        private IEnumerable<Person> PersonList { get => Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o).ToArray()); }
 
         private IEnumerable<(PropertyInfo PI, ShowGUIAttribute SGA)> PersonPropertyTuple { get => typeof(Person).GetProperties().Select<PropertyInfo, (PropertyInfo PI, ShowGUIAttribute SGA)>(o => new(o, o.GetCustomAttribute<ShowGUIAttribute>())).Where(o => o.SGA != null).OrderBy(o => o.SGA.ID); }
 

@@ -12,7 +12,7 @@ namespace ERP.Test.Client.App
         {
             Log.Prefix = "Client";
 
-            CommandCollection.ParentNamespace = "ERP.Test.Server.Library";
+            CommandCollection.ParentNamespace = "ERP.Test.Server.Library.Commands";
 
             try
             {

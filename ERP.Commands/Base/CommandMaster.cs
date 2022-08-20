@@ -11,8 +11,6 @@ namespace ERP.Commands.Base
     /// </summary>
     public static class CommandMaster
     {
-        private static Timer timer;
-
         /// <summary>
         /// All CommandCollectionTypes founded in the Namespace.
         /// </summary>
@@ -71,31 +69,6 @@ namespace ERP.Commands.Base
                         throw;
                     }
                     CommandCollectionTypes.Add(Type);
-                }
-            }
-            if (timer is null)
-            {
-                timer = new Timer(new TimerCallback((o) =>
-                {
-                    Save();
-                    Log.WriteLine("Data has been saved", ConsoleColor.Blue);
-                }), null, 150000, 150000); //2:30 min.
-            }
-        }
-
-        /// <summary>
-        /// Executes Save() on every CommandCollection that is in Cache.
-        /// </summary>
-        public static void Save()
-        {
-            foreach (Type Type in CommandCollectionTypes)
-            {
-                if (CommandCollection.DoesInstanceExists(Type))
-                {
-                    if (CommandCollection.GetInstance(Type) is IFileSaver FS)
-                    {
-                        FS.Save();
-                    }
                 }
             }
         }
