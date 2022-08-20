@@ -1,4 +1,5 @@
-﻿using ERP.Test.ObjectClients;
+﻿using ERP.Business.Objects.Attributes;
+using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
 using ERP.Web.Razor.Components.Base;
 using ERP.Web.Razor.Components.Bindables;
@@ -31,6 +32,10 @@ namespace ERP.Test.Client.WebApp.Pages
         private string CanSave { get => NewPersonAnyError ? "disabled" : null; }
 
         private bool NewPersonAnyError { get => GetChilds<TextInput>(nameof(NewPerson)).Any(o => o.Error); }
+
+        private IEnumerable<Person> PersonList { get => Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o.ID).ToArray()); }
+
+        private IEnumerable<(PropertyInfo PI, ShowGUIAttribute SGA)> PersonPropertyTuple { get => typeof(Person).GetProperties().Select<PropertyInfo, (PropertyInfo PI, ShowGUIAttribute SGA)>(o => new(o, o.GetCustomAttribute<ShowGUIAttribute>())).Where(o => o.SGA != null).OrderBy(o => o.SGA.ID); }
 
         public void New()
         {

@@ -23,7 +23,7 @@ namespace ERP.Test.Public.Library.Objects
         public string Firstname
         {
             get => firstname;
-            set { firstname = value; NotifyPropertyChanged(); }
+            set { firstname = value; NotifyPropertyChanged(nameof(Firstname)); }
         }
 
         [ShowGUI("Nachname", 2)]

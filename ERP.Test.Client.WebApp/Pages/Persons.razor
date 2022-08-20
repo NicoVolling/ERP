@@ -11,12 +11,11 @@
 
 <table class="styled-table" style="width: 100%; min-height: 100%;">
     @{
-        IEnumerable<(PropertyInfo PI, ShowGUIAttribute SGA)> props = typeof(Person).GetProperties().Select<PropertyInfo, (PropertyInfo PI, ShowGUIAttribute SGA)>(o => new(o, o.GetCustomAttribute<ShowGUIAttribute>())).Where(o => o.SGA != null).OrderBy(o => o.SGA.ID);
-        string width = ((double)100 / (props.Count() + 1)).ToString("N4");
+        string width = ((double)100 / (PersonPropertyTuple.Count() + 1)).ToString("N4");
     }
     <thead>
         <tr>
-            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
             {
                 <th style="width: @width%;">
                     @Property.SGA.UserFriendlyName
@@ -28,10 +27,10 @@
         </tr>
     </thead>
     <tbody>
-    @foreach(Person Person in Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o.ID).ToArray()))
+    @foreach(Person Person in PersonList)
     {
         <tr>
-            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
             {
                 <td>
                     <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly/>
@@ -39,7 +38,7 @@
             }
             <td>
                 <table class="no-table">
-                    <tr >
+                    <tr>
                         <td style="width: 50%;">
                             <button class="button-yellow" @onclick="() => Edit(Person.ID)">Edit</button>
                         </td>
@@ -52,16 +51,17 @@
         </tr>
     }
     <tr>
-        @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in props)
+        @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
         {
             <td>
-                    @if(Property.PI.PropertyType == typeof(DateOnly))
-                    {
-                        <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>                        
-                    } else
-                    {
-                        <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>
-                    }
+                @if(Property.PI.PropertyType == typeof(DateOnly))
+                {
+                    <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>                        
+                }
+                else
+                {
+                    <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>
+                }
             </td> 
         }
         <td>
