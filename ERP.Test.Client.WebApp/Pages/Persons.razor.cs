@@ -1,4 +1,5 @@
 ﻿using ERP.Business.Objects.Attributes;
+using ERP.Test.Client.WebApp.Shared;
 using ERP.Test.ObjectClients;
 using ERP.Test.Public.Library.Objects;
 using ERP.Web.Razor.Components.Base;
@@ -13,6 +14,7 @@ namespace ERP.Test.Client.WebApp.Pages
         private Person newPerson;
 
         private bool refresh = true;
+
         public PersonClient Client { get; private set; }
 
         public Person NewPerson
@@ -33,7 +35,7 @@ namespace ERP.Test.Client.WebApp.Pages
 
         private bool NewPersonAnyError { get => GetChilds<TextInput>(nameof(NewPerson)).Any(o => o.Error); }
 
-        private IEnumerable<Person> PersonList { get => Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o).ToArray()); }
+        private IEnumerable<Person> PersonList { get => Client.GetObjects(Guid.Empty, Client.GetList(Guid.Empty).Select(o => o).ToArray()).OrderBy(o => o.Firstname).ThenBy(o => o.Name).ThenBy(o => o.Birthday); }
 
         private IEnumerable<(PropertyInfo PI, ShowGUIAttribute SGA)> PersonPropertyTuple { get => typeof(Person).GetProperties().Select<PropertyInfo, (PropertyInfo PI, ShowGUIAttribute SGA)>(o => new(o, o.GetCustomAttribute<ShowGUIAttribute>())).Where(o => o.SGA != null).OrderBy(o => o.SGA.ID); }
 

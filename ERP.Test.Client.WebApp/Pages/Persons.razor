@@ -5,79 +5,94 @@
 @using System.Reflection
 @inherits BaseComponent
 <PageTitle>Personen</PageTitle>
-<h1>Personen</h1>
 
-<p>Hier können Personen über die Weboberfläche verwaltet werden.</p>
+<h1 class="block text-2xl leading-loose text-gray-200">Personen</h1>
+<p class="text-gray-200">Hier können Personen über die Weboberfläche verwaltet werden.</p>
 
-<table class="styled-table" style="width: 100%; min-height: 100%;">
-    @{
-        string width = ((double)100 / (PersonPropertyTuple.Count() + 1)).ToString("N4");
-    }
-    <thead>
-        <tr>
-            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
-            {
-                <th style="width: @width%;">
-                    @Property.SGA.UserFriendlyName
-                </th>
-            }
-            <th style="width: @width%;">
-                Aktionen
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach(Person Person in PersonList)
-    {
-        <tr>
-            @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
-            {
-                <td>
-                    <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly/>
-                </td>
-            }
-            <td>
-                <table class="no-table">
+<div class="flex flex-col">
+    <div class="py-2 inline-block w-full sm:px-6 lg:px-8">
+        <div class="overflow-hidden">
+            <table class="w-full">
+                <thead>
                     <tr>
-                        <td style="width: 50%;">
-                            <button class="button-yellow" @onclick="() => Edit(Person.ID)">Edit</button>
-                        </td>
-                        <td style="width: 50%;">
-                            <button class="button-red" @onclick="() => Delete(Person.ID)">Delete</button>
+                        @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
+                        {
+                            <th scope="col" class="text-md font-medium px-6 py-4 text-left @(Property.SGA.ID != 0 ? "hidden lg:table-cell":"")">
+                                @Property.SGA.UserFriendlyName
+                            </th>
+                        }
+                        <th scope="col" class="text-md font-medium px-6 py-4 text-left flex justify-center">
+                            Aktion
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(Person Person in PersonList)
+                    {
+                    <tr>
+                        @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
+                        {
+                            <td class="text-sm font-light px-6 py-4 whitespace-nowrap @(Property.SGA.ID != 0 ? "hidden lg:table-cell":"")">
+                                <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly />
+                            </td>
+                        }
+                        <td class="text-sm font-light px-1 py-4 whitespace-nowrap">
+                            <div class="w-full flex justify-center">
+                                <div class="px-1.5 py-1.5 flex justify-center">
+                                        <button class="border-0 bg-orange-500 hover:bg-orange-300 hover:text-black p-2 rounded-md" @onclick="() => Edit(Person.ID)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                            </svg>
+                                        </button>
+                                </div>
+                                <div class="px-1.5 py-1.5 flex justify-center">
+                                        <button class="border-0 bg-red-600 hover:bg-red-400 hover:text-black p-2 rounded-md" @onclick="() => Delete(Person.ID)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                            </svg>
+                                        </button>
+                                </div>
+                            </div>
                         </td>
                     </tr>
-                </table>
-            </td>
-        </tr>
-    }
-    <tr>
-        @foreach((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
-        {
-            <td>
-                @if(Property.PI.PropertyType == typeof(DateOnly))
-                {
-                    <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>                        
-                }
-                else
-                {
-                    <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)"/>
-                }
-            </td> 
-        }
-        <td>
-            <Container SetChild="SetChildAction" Group="@nameof(NewPerson)">
-                <table class="no-table">
+                    }
                     <tr>
-                        <td style="width: 50%;">
-                            <button class="button-green" @onclick="Save" disabled=@CanSave>@(NewPerson.ID == Guid.Empty ? "Create" : "Save")</button>
-                        </td>
-                        <td style="width: 50%;">
-                            <button class="button-black" @onclick="New" disabled=@CanSave>Abort</button>
+                        @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
+                        {
+                            <td class="text-sm font-light px-6 py-4 whitespace-nowrap @(Property.SGA.ID != 0 ? "hidden lg:table-cell":"")">
+                                @if (Property.PI.PropertyType == typeof(DateOnly))
+                                {
+                                    <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                }
+                                else
+                                {
+                                    <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                }
+                            </td>
+                        }
+                        <td class="text-sm w-32 font-light px-1 py-4 whitespace-nowrap">
+                            <Container SetChild="SetChildAction" Group="@nameof(NewPerson)">
+                                <div class="flex justify-center">
+                                    <div class="px-1.5 py-1.5 flex justify-center">
+                                        <button class="border-0 bg-green-600 hover:bg-green-400 hover:text-black p-2 rounded-md" @onclick="Save" disabled=@CanSave>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.563 9.75a12.014 12.014 0 00-3.427 5.136L9 12.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="px-1.5 py-1.5 flex justify-center">
+                                        <button class="border-0 bg-gray-600 hover:bg-gray-400 hover:text-black p-2 rounded-md" @onclick="New" disabled=@CanSave>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m-15 0l15 15" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </Container>
                         </td>
                     </tr>
-                </table>
-            </Container>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
