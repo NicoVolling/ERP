@@ -14,8 +14,6 @@ namespace ERP.Test.Client.WebApp.Pages
     {
         private Person newPerson;
 
-        private bool refresh = true;
-
         public PersonClient Client { get; private set; }
 
         public Person NewPerson
@@ -67,9 +65,7 @@ namespace ERP.Test.Client.WebApp.Pages
                     {
                         if (iBC is IBaseBindableComponent iBBC && iBBC.PropertyName != BBC.PropertyName)
                         {
-                            refresh = false;
                             iBC.Refresh();
-                            refresh = true;
                         }
                     }
                 };
