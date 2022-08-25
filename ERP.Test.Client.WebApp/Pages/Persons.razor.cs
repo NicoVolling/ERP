@@ -25,6 +25,17 @@ namespace ERP.Test.Client.WebApp.Pages
             {
                 newPerson = value;
                 RefreshChilds(nameof(NewPerson));
+                IEnumerable<BaseComponent> childs = GetChilds<BaseComponent>(nameof(NewPerson));
+                if (childs.Any())
+                {
+                    foreach (BaseComponent child in childs)
+                    {
+                        if (child is IBaseBindableComponent BBC)
+                        {
+                            BBC.Reset();
+                        }
+                    }
+                }
             }
         }
 
@@ -43,17 +54,6 @@ namespace ERP.Test.Client.WebApp.Pages
         public void New()
         {
             NewPerson = new();
-            IEnumerable<BaseComponent> childs = GetChilds<BaseComponent>(nameof(NewPerson));
-            if (childs.Any())
-            {
-                foreach (BaseComponent child in childs)
-                {
-                    if (child is IBaseBindableComponent BBC)
-                    {
-                        BBC.Reset();
-                    }
-                }
-            }
         }
 
         protected override void OnChildAdded(BaseComponent Child)

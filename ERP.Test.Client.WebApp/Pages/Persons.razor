@@ -30,9 +30,50 @@
             @foreach(Person Person in PersonList)
             {
             <tr>
+                <!-- START MOBILE -->
+                <td class="text-sm font-light whitespace-nowrap lg:hidden table-cell">
+                    <div class="">
+                        <details class="open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-2 rounded-lg">
+                            <summary class="text-sm leading-6 text-slate-900 dark:text-white font-semibold select-none">
+                                <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="PersonPropertyTuple.First().PI" SetValue="(value) => {}" GetValue="() => PersonPropertyTuple.First().PI.GetValue(Person)" ReadOnly />
+                            </summary>
+                            <div class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                                @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple.Skip(1)) 
+                                {
+                                    <div class="my-2">
+                                    @if (NewPerson.ID == Person.ID)
+                                    {
+                                        @if (Property.PI.PropertyType == typeof(DateOnly))
+                                        {
+                                            <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                        }
+                                        else
+                                        {
+                                            <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @if (Property.PI.PropertyType == typeof(DateOnly))
+                                        {
+                                            <DateInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly />
+                                        }
+                                        else
+                                        {
+                                            <TextInput SetChild="SetChildAction" Group="@nameof(Person)" Property="Property.PI" SetValue="(value) => {}" GetValue="() => Property.PI.GetValue(Person)" ReadOnly />
+                                        }
+                                    }
+                                    </div>
+                                }
+                            </div>
+                        </details>
+                    </div>
+                </td>
+                <!-- END MOBILE -->
+                <!-- START DESKTOP -->
                 @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
                 {
-                    <td class="text-sm font-light px-6 py-4 whitespace-nowrap @(Property.SGA.ID != 0 ? "hidden lg:table-cell":"")">
+                    <td class="text-sm font-light px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                             @if (NewPerson.ID == Person.ID)
                             {   
                                 @if (Property.PI.PropertyType == typeof(DateOnly))
@@ -97,14 +138,42 @@
                         </div>
                     </div>
                 </td>
+                <!-- END DESKTOP -->
             </tr>
             }
             @if (NewPerson.ID == Guid.Empty)
             {
             <tr>
+                <!-- START MOBILE -->
+                <td class="text-sm font-light whitespace-nowrap lg:hidden table-cell">
+                    <div class="">
+                        <details class="open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-2 rounded-lg">
+                            <summary class="text-sm leading-6 text-slate-900 dark:text-white font-semibold select-none">
+                                <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="PersonPropertyTuple.First().PI" SetValue="(value) => {}" GetValue="() => PersonPropertyTuple.First().PI.GetValue(NewPerson)" ReadOnly />
+                            </summary>
+                            <div class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                                @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple.Skip(1))
+                                {
+                                    <div class="my-2">
+                                        @if (Property.PI.PropertyType == typeof(DateOnly))
+                                        {
+                                            <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                        }
+                                        else
+                                        {
+                                            <TextInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </details>
+                    </div>
+                </td>
+                <!-- END MOBILE -->
+                <!-- START DESKTOP-->
                 @foreach ((PropertyInfo PI, ShowGUIAttribute SGA) Property in PersonPropertyTuple)
                 {
-                    <td class="text-sm font-light px-6 py-4 whitespace-nowrap @(Property.SGA.ID != 0 ? "hidden lg:table-cell":"")">
+                    <td class="text-sm font-light px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                         @if (Property.PI.PropertyType == typeof(DateOnly))
                         {
                             <DateInput SetChild="SetChildAction" Group="@nameof(NewPerson)" Property="Property.PI" SetValue="(value) => { Property.PI.SetValue(NewPerson, value);}" GetValue="() => Property.PI.GetValue(NewPerson)" />
@@ -135,6 +204,7 @@
                         </div>
                     </Container>
                 </td>
+                <!-- END DESKTOP -->
             </tr>
             }
         </tbody>
