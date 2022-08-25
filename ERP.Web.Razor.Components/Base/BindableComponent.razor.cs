@@ -12,10 +12,12 @@ using System.Threading.Tasks;
 
 namespace ERP.Web.Razor.Components.Base
 {
-    public partial class BindableComponent<T_Destination> : BaseComponent
+    public partial class BindableComponent<T_Destination> : BaseComponent, IBaseBindableComponent
     {
         private bool changed;
+
         private bool error;
+
         private PropertyInfo property;
 
         public BindableComponent(Type Type_Destionation)
@@ -67,7 +69,7 @@ namespace ERP.Web.Razor.Components.Base
         [EditorRequired]
         public PropertyInfo Property
         {
-            protected get => property;
+            get => property;
             init
             {
                 property = value;
@@ -117,7 +119,13 @@ namespace ERP.Web.Razor.Components.Base
                     Value_Original = obj;
                 }
                 Changed = true;
+                Refresh();
             }
+        }
+
+        protected string BorderColorClass
+        {
+            get => Error ? "border-red-500 hover:border-red-500 focus:border-red-500" : Changed ? "border-orange-500 hover:border-orange-500 focus:border-orange-500" : "";
         }
 
         public Object Value_Original
@@ -129,6 +137,11 @@ namespace ERP.Web.Razor.Components.Base
         protected virtual string FormatOptions { get; }
 
         private IParser Parser { get; set; }
+
+        public void Reset()
+        {
+            Changed = false;
+        }
 
         protected override void OnInitialized()
         {

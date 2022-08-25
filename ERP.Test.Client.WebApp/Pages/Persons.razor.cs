@@ -5,6 +5,7 @@ using ERP.Test.Public.Library.Objects;
 using ERP.Web.Razor.Components.Base;
 using ERP.Web.Razor.Components.Bindables;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Reflection;
 
 namespace ERP.Test.Client.WebApp.Pages
@@ -42,21 +43,32 @@ namespace ERP.Test.Client.WebApp.Pages
         public void New()
         {
             NewPerson = new();
+            IEnumerable<BaseComponent> childs = GetChilds<BaseComponent>(nameof(NewPerson));
+            if (childs.Any())
+            {
+                foreach (BaseComponent child in childs)
+                {
+                    if (child is IBaseBindableComponent BBC)
+                    {
+                        BBC.Reset();
+                    }
+                }
+            }
         }
 
         protected override void OnChildAdded(BaseComponent Child)
         {
             base.OnChildAdded(Child);
-            if (Child is TextInput TI && TI.Group == nameof(NewPerson))
+            if (Child is BaseComponent BC && BC.Group == nameof(NewPerson) && BC is IBaseBindableComponent BBC)
             {
-                TI.DestinationValueChanged += (s, e) =>
+                BBC.DestinationValueChanged += (s, e) =>
                 {
-                    foreach (BaseComponent BC in GetChilds<BaseComponent>(TI.Group))
+                    foreach (BaseComponent iBC in GetChilds<BaseComponent>(BC.Group))
                     {
-                        if ((BC is TextInput tI && tI.PropertyName != TI.PropertyName) || BC is not TextInput)
+                        if (iBC is IBaseBindableComponent iBBC && iBBC.PropertyName != BBC.PropertyName)
                         {
                             refresh = false;
-                            BC.Refresh();
+                            iBC.Refresh();
                             refresh = true;
                         }
                     }

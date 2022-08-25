@@ -1,5 +1,15 @@
 ﻿@using ERP.Web.Razor.Components.Base
 @inherits BindableComponent<string>
 <input type="@(UsePasswordChar ? "password" : "text")"
-       class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 read-only:text-gray-300 read-only:cursor-cell"
-    placeholder="@Description" style="@TextAlign width: calc(100% - 6px);" value="@Value_Destination" @oninput=OnTextChanged readonly="@ReadOnlyHtml" />
+       class="
+                transition ease-in-out duration-150 
+                border-2 text-sm rounded-lg border-gray-600
+                block w-full p-2.5 
+                bg-gray-600
+                text-white
+                placeholder-gray-300 
+                hover:ring-blue-300 hover:border-blue-300 
+                focus:ring-blue-500 focus:border-blue-500 
+                read-only:placeholder-gray-400 read-only:bg-gray-700 read-only:text-gray-300 read-only:cursor-cell 
+                @BorderColorClass"
+    placeholder="@Description" value="@Value_Destination" @oninput=OnTextChanged readonly="@ReadOnlyHtml" />

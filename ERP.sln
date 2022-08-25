@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Test.Client.WebApp", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ERP.Web.Razor.Components", "ERP.Web.Razor.Components\ERP.Web.Razor.Components.csproj", "{2083E672-87F9-49DC-B50A-ED90CFBB662B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OUTPUT--ERP--Web", "OUTPUT--ERP--Web\OUTPUT--ERP--Web.csproj", "{32C29C09-980D-46FC-B924-51D24C4BF994}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OUTPUT--ERP--Web", "OUTPUT--ERP--Web\OUTPUT--ERP--Web.csproj", "{32C29C09-980D-46FC-B924-51D24C4BF994}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

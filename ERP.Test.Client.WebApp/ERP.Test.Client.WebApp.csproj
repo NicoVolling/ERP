@@ -13,8 +13,4 @@
     <ProjectReference Include="..\ERP.Web.Razor.Components\ERP.Web.Razor.Components.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
-
 </Project>

@@ -32,13 +32,6 @@ namespace ERP.Web.Razor.Components.Bindables
 
         private string ReadOnlyHtml { get => ReadOnly ? "readonly" : null; }
 
-        private string ShadowColorHtml
-        {
-            get => Error ? "css-input-red" : Changed ? "css-input-orange" : "css-input";
-        }
-
-        private string TextAlign { get => TextCenter ? "text-align: center; " : ""; }
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
