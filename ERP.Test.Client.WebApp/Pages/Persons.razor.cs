@@ -37,10 +37,6 @@ namespace ERP.Test.Client.WebApp.Pages
             }
         }
 
-        public Person Person { get; set; }
-
-        public bool tesbool { get; set; }
-
         private string CanSave { get => NewPersonAnyError ? "disabled" : null; }
 
         private bool NewPersonAnyError { get => GetChilds<TextInput>(nameof(NewPerson)).Any(o => o.Error); }
