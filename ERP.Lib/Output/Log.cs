@@ -29,7 +29,7 @@ namespace ERP.BaseLib.Output
 
         public static void WriteLine(string value, ConsoleColor Color = ConsoleColor.White)
         {
-            if (noOutput)
+            if (!noOutput)
             {
                 if (SaveOutput)
                 {
@@ -75,7 +75,7 @@ namespace ERP.BaseLib.Output
 
         private static void CreateNewFileStream()
         {
-            if (noOutput)
+            if (!noOutput)
             {
                 try
                 {

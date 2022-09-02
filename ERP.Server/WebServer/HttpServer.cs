@@ -17,7 +17,6 @@ namespace ERP.Server.WebServer
         /// </summary>
         public HttpServer()
         {
-            this.ConsoleOutput = false;
             CommandMaster.Reload();
         }
 
@@ -57,7 +56,6 @@ namespace ERP.Server.WebServer
                             DataInput Input = GetInputFromData(datastring);
                             try
                             {
-
                                 Result = CommandMaster.ExecuteCommand(Input);
                             }
                             catch (Exception ex)
