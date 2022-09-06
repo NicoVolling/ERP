@@ -2,14 +2,6 @@
 @inherits BindableComponent<string>
 <input type="@(UsePasswordChar ? "password" : "text")"
        class="
-                transition ease-in-out duration-150 
-                border-2 text-sm rounded-lg border-gray-600
-                block w-full p-2.5 
-                bg-gray-600
-                text-white
-                placeholder-gray-300 
-                hover:ring-blue-300 hover:border-blue-300 
-                focus:ring-blue-500 focus:border-blue-500 
-                read-only:placeholder-gray-400 read-only:bg-gray-700 read-only:text-gray-300 read-only:cursor-cell 
-                @BorderColorClass"
+                @Class
+                @ErrorChangedClasses"
     placeholder="@Description" value="@Value_Destination" @oninput=OnTextChanged readonly="@ReadOnlyHtml" />

@@ -22,6 +22,8 @@ namespace ERP.Web.Razor.Components.Base
             };
         }
 
+        public List<BaseComponent> ChildList { get; private set; }
+
         #region Parameters
 
         [Parameter]
@@ -32,8 +34,6 @@ namespace ERP.Web.Razor.Components.Base
         public Action<BaseComponent> SetChild { private get; init; }
 
         #endregion Parameters
-
-        public List<BaseComponent> ChildList { get; private set; }
 
         protected BaseComponent Parent { get; private set; }
 

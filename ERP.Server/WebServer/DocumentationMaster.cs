@@ -52,7 +52,7 @@ namespace ERP.Server.WebServer
                         string collectionname = collection.Name.Replace("CC_", "");
                         string returntype = "";
 
-                        if(mi.ReturnType.GenericTypeArguments.First() is Type type) 
+                        if (mi.ReturnType.GenericTypeArguments.First() is Type type)
                         {
                             returntype = GetReturnTypeFormatted(type);
                         }
@@ -105,27 +105,6 @@ namespace ERP.Server.WebServer
             }
 
             return WebPage;
-        }
-
-        private static string GetReturnTypeFormatted(Type type)
-        {
-            string returntype = "";
-            if (type.GenericTypeArguments.Length < 1)
-            {
-                returntype = type.Name;
-            }
-            else
-            {
-                returntype = string.Concat(type.Name.TakeWhile(o => o != '`'));
-                returntype += "&#60;";
-                foreach (Type tp in type.GenericTypeArguments)
-                {
-                    if (!returntype.EndsWith("&#60;")) { returntype += ", "; }
-                    returntype += tp.Name;
-                }
-                returntype += "&#62;";
-            }
-            return returntype;
         }
 
         public static WebPage GetDocumentationRequestPage(Result result)
@@ -205,7 +184,7 @@ namespace ERP.Server.WebServer
                 .AddColumn(new td().AddInnerText(GetReady(result.Error.ToString())))
                 .AddColumn(new td().AddInnerText(GetReady(result.ErrorType?.ToString())))
                 .AddColumn(new td().AddInnerText(GetReady(result.ErrorMessage)))
-                .AddColumn(new td().AddInnerText(GetReady(result.ReturnValueType.Replace("<", "&#60;").Replace(">", "&#62;"))))
+                .AddColumn(new td().AddInnerText(GetReady(result.ReturnValueType?.Replace("<", "&#60;")?.Replace(">", "&#62;"))))
                 .AddColumn(new td().AddInnerText(GetReady(result.ReturnValue)))
                 );
             div.AddInnerComponent(table);
@@ -240,6 +219,27 @@ namespace ERP.Server.WebServer
                     );
             }
             return table;
+        }
+
+        private static string GetReturnTypeFormatted(Type type)
+        {
+            string returntype = "";
+            if (type.GenericTypeArguments.Length < 1)
+            {
+                returntype = type.Name;
+            }
+            else
+            {
+                returntype = string.Concat(type.Name.TakeWhile(o => o != '`'));
+                returntype += "&#60;";
+                foreach (Type tp in type.GenericTypeArguments)
+                {
+                    if (!returntype.EndsWith("&#60;")) { returntype += ", "; }
+                    returntype += tp.Name;
+                }
+                returntype += "&#62;";
+            }
+            return returntype;
         }
 
         private static WebComponent GetSingleActionPage(string _Namespace, string _CommandCollection, string _Action, IEnumerable<Type> CommandCollectionTypeList)

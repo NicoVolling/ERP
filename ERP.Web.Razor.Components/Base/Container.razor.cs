@@ -10,6 +10,6 @@ namespace ERP.Web.Razor.Components.Base
     public partial class Container : BaseComponent
     {
         [Parameter]
-        public RenderFragment? ChildContent { get; set; }
+        public RenderFragment ChildContent { get; set; }
     }
 }

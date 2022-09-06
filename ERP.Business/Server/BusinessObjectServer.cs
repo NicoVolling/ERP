@@ -89,7 +89,7 @@ namespace ERP.Business.Server
         public Result<IEnumerable<Guid>> GetList(Guid SECURITY_CODE)
         {
             if (!ServerSide) { return GetClientResult(SECURITY_CODE).ToGenericResult<IEnumerable<Guid>>(); }
-            return new(FileSaver.GetList());
+            return new(OnGetList(SECURITY_CODE));
         }
 
         /// <summary>
@@ -221,6 +221,11 @@ namespace ERP.Business.Server
         protected virtual bool OnGetExistence(Guid SECURITY_CODE, Guid ID)
         {
             return FileSaver.ObjectExists(ID);
+        }
+
+        protected virtual IEnumerable<Guid> OnGetList(Guid SECURITY_CODE)
+        {
+            return FileSaver.GetList();
         }
 
         protected void RemoveObject(Guid ID)

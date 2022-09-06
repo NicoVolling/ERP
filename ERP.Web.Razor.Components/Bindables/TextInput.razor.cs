@@ -25,9 +25,6 @@ namespace ERP.Web.Razor.Components.Bindables
         public bool ReadOnly { get => (!Property?.CanWrite ?? true) || readyOnly; init => readyOnly = value; }
 
         [Parameter]
-        public bool TextCenter { get; init; }
-
-        [Parameter]
         public bool UsePasswordChar { get; set; }
 
         private string ReadOnlyHtml { get => ReadOnly ? "readonly" : null; }

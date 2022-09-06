@@ -5,6 +5,7 @@ using ERP.Parsing.Parser;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -47,6 +48,22 @@ namespace ERP.Web.Razor.Components.Base
             }
         }
 
+        [Parameter]
+        public string ChangedClasses { get; set; } = "border-orange-500 hover:border-orange-500 focus:border-orange-500";
+
+        [Parameter]
+        public string Class { get; set; } =
+                        @"
+                        transition ease-in-out duration-150
+                        border-2 text-sm rounded-lg border-gray-600
+                        block w-full p-2.5
+                        bg-gray-600
+                        text-white
+                        placeholder-gray-300
+                        hover:ring-blue-300 hover:border-blue-300
+                        focus:ring-blue-500 focus:border-blue-500
+                        read-only:placeholder-gray-400 read-only:bg-gray-700 read-only:text-gray-300 read-only:cursor-cell";
+
         public bool Error
         {
             get => error;
@@ -60,6 +77,9 @@ namespace ERP.Web.Razor.Components.Base
                 }
             }
         }
+
+        [Parameter]
+        public string ErrorClasses { get; set; } = "border-red-500 hover:border-red-500 focus:border-red-500";
 
         [Parameter]
         [EditorRequired]
@@ -123,15 +143,15 @@ namespace ERP.Web.Razor.Components.Base
             }
         }
 
-        protected string BorderColorClass
-        {
-            get => Error ? "border-red-500 hover:border-red-500 focus:border-red-500" : Changed ? "border-orange-500 hover:border-orange-500 focus:border-orange-500" : "";
-        }
-
         public Object Value_Original
         {
             get => GetValue();
             set { SetValue(value); OriginalValueChanged?.Invoke(this, null); }
+        }
+
+        protected string ErrorChangedClasses
+        {
+            get => Error ? ErrorClasses : Changed ? ChangedClasses : "";
         }
 
         protected virtual string FormatOptions { get; }

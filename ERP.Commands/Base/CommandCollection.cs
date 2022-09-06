@@ -219,25 +219,18 @@ namespace ERP.Commands.Base
                     if (Parameter.Name != null)
                     {
                         string arg = EnsureArgument(Input.Arguments, Parameter.Name, !Parameter.IsOptional);
-                        if (Parameter.ParameterType == typeof(string))
+                        try
                         {
-                            Params.Add(arg);
+                            Object Param = Json.Deserialize(arg, Parameter.ParameterType);
+                            if (Param is null && !Parameter.IsOptional)
+                            {
+                                throw new MissingArgumentErpException(Parameter.Name);
+                            }
+                            Params.Add(Param);
                         }
-                        else
+                        catch
                         {
-                            try
-                            {
-                                Object Param = Json.Deserialize(arg, Parameter.ParameterType);
-                                if (Param is null && !Parameter.IsOptional)
-                                {
-                                    throw new MissingArgumentErpException(Parameter.Name);
-                                }
-                                Params.Add(Param);
-                            }
-                            catch
-                            {
-                                throw;
-                            }
+                            throw;
                         }
                     }
                     else
