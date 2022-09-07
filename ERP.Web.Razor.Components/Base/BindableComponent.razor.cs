@@ -66,7 +66,7 @@ namespace ERP.Web.Razor.Components.Base
 
         public bool Error
         {
-            get => error;
+            get => error || !Verify();
             private set
             {
                 bool change = error != value;
@@ -134,7 +134,7 @@ namespace ERP.Web.Razor.Components.Base
                 DestinationValueChanged?.Invoke(this, null);
                 Object obj = Parser.Parse(value, Type_Original, SGA, out bool Error);
                 this.Error = Error;
-                if (!this.Error)
+                if (!Error)
                 {
                     Value_Original = obj;
                 }
@@ -168,5 +168,8 @@ namespace ERP.Web.Razor.Components.Base
             base.OnInitialized();
             this.Parser = ParsingMaster.GetParser(Type_Original, Type_Destination);
         }
+
+        protected virtual bool Verify()
+        { return true; }
     }
 }

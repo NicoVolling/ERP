@@ -24,6 +24,9 @@ namespace ERP.Web.Razor.Components.Bindables
         [Parameter]
         public bool ReadOnly { get => (!Property?.CanWrite ?? true) || readyOnly; init => readyOnly = value; }
 
+        [Parameter]
+        public bool ShowIcons { get; set; }
+
         protected override string FormatOptions => "yyyy-MM-dd";
 
         private string ReadOnlyHtml { get => ReadOnly ? "readonly" : null; }

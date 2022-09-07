@@ -5,6 +5,7 @@ using ERP.Parsing.Parser;
 using ERP.Web.Razor.Components.Base;
 using Microsoft.AspNetCore.Components;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ERP.Web.Razor.Components.Bindables
 {
@@ -12,7 +13,7 @@ namespace ERP.Web.Razor.Components.Bindables
     {
         private string description;
 
-        private bool readyOnly;
+        private bool readOnly;
 
         public TextInput() : base(typeof(string))
         {
@@ -22,16 +23,27 @@ namespace ERP.Web.Razor.Components.Bindables
         public string Description { get => SGA?.UserFriendlyName ?? description; init => description = value; }
 
         [Parameter]
-        public bool ReadOnly { get => (!Property?.CanWrite ?? true) || readyOnly; init => readyOnly = value; }
+        public bool ReadOnly { get => (!Property?.CanWrite ?? true) || readOnly; init => readOnly = value; }
+
+        [Parameter]
+        public bool ShowIcons { get; set; }
 
         [Parameter]
         public bool UsePasswordChar { get; set; }
+
+        [Parameter]
+        public Regex Verification { get; set; }
 
         private string ReadOnlyHtml { get => ReadOnly ? "readonly" : null; }
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
+        }
+
+        protected override bool Verify()
+        {
+            return Verification?.IsMatch(Value_Destination) != false;
         }
 
         private void OnTextChanged(ChangeEventArgs e)
